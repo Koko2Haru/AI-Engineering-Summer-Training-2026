@@ -1,0 +1,31 @@
+Python 3.11.2
+pip 22.3.1 from C:\Users\aliah\AppData\Local\Programs\Python\Python311\Lib\site-packages\pip (python 3.11)
+git version 2.55.0.windows.2
+1.109.0
+bdd88df003631aaa0bcbe057cb0a940b80a476fa
+x64
+ollama version is 0.31.1
+NAME               ID              SIZE      MODIFIED     
+llama3.2:latest    a80c4f17acd5    2.0 GB    3 hours ago     
+gemma3:4b          a2af6cc3eb7f    3.3 GB    4 months ago    
+>>> Hello! What is the wheather for today?
+I'm happy to help you with the weather, but I'm a large language model, I don't have real-time access to current 
+weather conditions. However, I can suggest some options to find out the weather for your area:
+
+1. Check online weather websites: You can check websites like AccuWeather, Weather.com, or the National Weather Service 
+(NWS) for current weather conditions and forecasts.
+2. Use a mobile app: Download a weather app on your smartphone, such as Dark Sky or The Weather Channel, to get current 
+weather conditions and forecasts.
+3. Ask a voice assistant: You can ask virtual assistants like Siri, Google Assistant, or Alexa to give you the current 
+weather for your location.
+
+Please let me know if I can help with anything else!
+
+>>> /bye
+Hello, how are you today? I'm here to help answer any questions or provide assistance you may need. Is there something specific on your mind that I can assist you with?
+origin  https://github.com/Koko2Haru/AI-Engineering-Summer-Training-2026.git (fetch)
+origin  https://github.com/Koko2Haru/AI-Engineering-Summer-Training-2026.git (push)
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
