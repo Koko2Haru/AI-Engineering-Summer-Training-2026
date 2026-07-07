@@ -5,6 +5,8 @@
 An interactive website built as the Day 3 deliverable — instead of a static
 markdown file, the tasks are presented as a live, clickable page.
 
+🔗 **Live demo:** [Open the interactive site](https://koko2haru.github.io/AI-Engineering-Summer-Training-2026/Week-1%20Foundations/Day-3%20The%20AI%20Development%20Toolchain/)
+
 ---
 
 ## 📋 The Task
