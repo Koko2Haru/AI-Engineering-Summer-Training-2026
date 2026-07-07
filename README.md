@@ -11,7 +11,7 @@ This repository documents my progress throughout a **7-week AI Engineering Summe
 ### 📅 Week 1 — Foundations of AI Engineering
 - ✔️ Day 1 — LLM Setup
 - ✔️ Day 2 — Prompting Fundamentals
-- ⏳ Day 3 — *Coming Soon*
+- ✔️ Day 3 — The AI Development Toolchain
 - ⏳ Day 4 — *Coming Soon*
 - ⏳ Day 5 — *Coming Soon*
 

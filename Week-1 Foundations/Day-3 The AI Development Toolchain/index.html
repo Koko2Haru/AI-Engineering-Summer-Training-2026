@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Day 3 · The AI Development Toolchain</title>
+  <meta name="description" content="Interactive map of the AI dev workflow: User → Prompt → LLM → API → Application. Day 3 deliverable, AI Engineering Summer Training 2026." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <span>AI ENGINEERING SUMMER TRAINING 2026</span>
+    <span>WEEK 1 · DAY 03</span>
+  </header>
+
+  <!-- ============ HERO: THE LIVE PIPELINE ============ -->
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">DAY 03 · THE AI DEV TOOLCHAIN</p>
+      <h1>One prompt, five hops.</h1>
+      <p class="lede">
+        Every AI product — from ChatGPT to a ten-line Python script — moves a request
+        through the same five stages. Type something and watch it travel.
+      </p>
+
+      <div class="sim">
+        <form id="simForm" class="sim-bar" autocomplete="off">
+          <span class="chev" aria-hidden="true">&gt;</span>
+          <input id="promptInput" type="text" placeholder="Explain APIs like I'm 12" aria-label="Type a prompt to simulate" />
+          <button type="submit" class="run-btn" id="runBtn">Run ▸</button>
+        </form>
+
+        <ol class="pipeline" id="pipeline">
+          <li>
+            <button type="button" class="stage" data-stage="user">
+              <span class="num">01</span>
+              <span class="name">User</span>
+              <span class="cap">a person with a goal</span>
+            </button>
+          </li>
+          <li class="arrow" aria-hidden="true">→</li>
+          <li>
+            <button type="button" class="stage" data-stage="prompt">
+              <span class="num">02</span>
+              <span class="name">Prompt</span>
+              <span class="cap">the goal, as text</span>
+            </button>
+          </li>
+          <li class="arrow" aria-hidden="true">→</li>
+          <li>
+            <button type="button" class="stage" data-stage="llm">
+              <span class="num">03</span>
+              <span class="name">LLM</span>
+              <span class="cap">the model thinks</span>
+            </button>
+          </li>
+          <li class="arrow" aria-hidden="true">→</li>
+          <li>
+            <button type="button" class="stage" data-stage="api">
+              <span class="num">04</span>
+              <span class="name">API</span>
+              <span class="cap">the bridge, both ways</span>
+            </button>
+          </li>
+          <li class="arrow" aria-hidden="true">→</li>
+          <li>
+            <button type="button" class="stage" data-stage="app">
+              <span class="num">05</span>
+              <span class="name">Application</span>
+              <span class="cap">the answer, delivered</span>
+            </button>
+          </li>
+        </ol>
+
+        <div class="trace">
+          <div class="trace-head">
+            <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            trace.log
+          </div>
+          <div class="trace-body" id="traceBody" aria-live="polite">
+            <p class="hint"># press Run to trace a request through the pipeline —
+or click any stage below for details</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STAGE DETAIL ============ -->
+  <section class="section detail-section">
+    <div class="wrap">
+      <p class="eyebrow">STAGE DETAIL — CLICK A STAGE ABOVE</p>
+      <h2 id="detailTitle">01 · User</h2>
+      <div class="detail-grid panel">
+        <div>
+          <h3>WHAT HAPPENS HERE</h3>
+          <p id="detailWhat"></p>
+        </div>
+        <div>
+          <h3>REAL EXAMPLE</h3>
+          <p id="detailEx"></p>
+        </div>
+        <div>
+          <h3>TOOLS THAT LIVE HERE</h3>
+          <p id="detailTools"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TASK 1: THE TOOLS ============ -->
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">TASK 01 · THE TOOLS, IN MY OWN WORDS</p>
+      <h2>Three tools, one job each</h2>
+
+      <div class="tool-grid">
+        <article class="tool panel">
+          <span class="chip">INTERFACE</span>
+          <h3>API</h3>
+          <p class="tool-def">
+            A waiter between my code and someone else's service. I never walk into their
+            kitchen — their servers, their model — I just hand a request to the waiter
+            and it comes back with the answer. The menu is fixed: the API defines exactly
+            what I can ask for and how.
+          </p>
+          <p class="tool-ex">my code → request → their service → JSON → my code</p>
+          <p class="tool-fit"><strong>Where it fits:</strong> inside the pipeline itself —
+          it's the bridge between my Application and the LLM. Requests go in, answers come back.</p>
+        </article>
+
+        <article class="tool panel">
+          <span class="chip">TERMINAL</span>
+          <h3>CLI</h3>
+          <p class="tool-def">
+            Talking to the computer with text instead of clicks. One line in the terminal
+            installs a library, runs a script, or pushes code — no hunting through menus.
+            Slower to learn, much faster to use.
+          </p>
+          <p class="tool-ex">pip install requests · git push · curl api.model.com</p>
+          <p class="tool-fit"><strong>Where it fits:</strong> around the pipeline, not inside it —
+          it's how I install SDKs, run my script, and test API calls while building.</p>
+        </article>
+
+        <article class="tool panel">
+          <span class="chip">WORKSHOP</span>
+          <h3>IDE</h3>
+          <p class="tool-def">
+            The workshop where the code gets written. Editor, autocomplete, debugger and a
+            terminal, all in one app — so I'm not juggling ten separate tools while I build.
+          </p>
+          <p class="tool-ex">VS Code, PyCharm — mine is VS Code</p>
+          <p class="tool-fit"><strong>Where it fits:</strong> where the Application step is born.
+          The prompt strings and the API calls are all typed here first.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TASK 2: THE PIPELINE IN THE WILD ============ -->
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">TASK 02 · THE SAME PIPELINE, THREE PLACES</p>
+      <h2>Spot the pipeline in the wild</h2>
+
+      <div class="tabs" role="tablist" id="tabs">
+        <button type="button" class="tab is-on" role="tab" aria-selected="true" data-ex="chatgpt">ChatGPT</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-ex="website">A website using AI</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-ex="python">A Python script</button>
+      </div>
+
+      <div class="panel tab-panel" id="tabPanel"><!-- filled by JS --></div>
+    </div>
+  </section>
+
+  <footer>
+    Built by Ali · Day 3 deliverable · AI Engineering Summer Training 2026 —
+    an interactive page instead of a markdown file.
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
