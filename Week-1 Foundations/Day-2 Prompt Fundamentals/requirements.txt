@@ -1,0 +1,4 @@
+ollama
+jupyter
+nbconvert
+ipykernel
