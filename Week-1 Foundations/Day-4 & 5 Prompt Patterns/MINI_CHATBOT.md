@@ -270,7 +270,9 @@ Default sampling parameters (editable at startup in the CLI, sliders in the GUI)
 
 ## 🧫 Testing
 
-`TEST_CASES.md` is the manual test plan: **6 sessions, 40+ checkbox cases** covering startup validation, every experiment-creation path (including Arabic folder names and the typo shield), all four save paths, the parser stress cases, Arabic display and documents, model selection, and the failure paths (Ollama down, unknown file types). Tick the boxes in VS Code's markdown preview.
+[`TEST_CASES.md`](Prompt_Logger/Helpful_Notes/TEST_CASES.md) is the manual test plan: **6 sessions, 40+ checkbox cases** covering startup validation, every experiment-creation path (including Arabic folder names and the typo shield), all four save paths, the parser stress cases, Arabic display and documents, model selection, and the failure paths (Ollama down, unknown file types). Tick the boxes in VS Code's markdown preview.
+
+[`PROMPT_TEMPLATES.md`](Prompt_Logger/Helpful_Notes/PROMPT_TEMPLATES.md) has four reusable prompt-engineering templates — Role Prompting, Few-Shot, Chain-of-Thought, and Structured Output — each with placeholders, a worked example, and expected output.
 
 ---
 
@@ -288,4 +290,4 @@ Default sampling parameters (editable at startup in the CLI, sliders in the GUI)
 
 ---
 
-Built by **Alwi** ([koko2haru](https://github.com/koko2haru)) during the AI Engineering Summer Training 2026 — pair-programmed and debugged with Claude. 🤝
+Built by **Ali** ([koko2haru](https://github.com/koko2haru)) during the AI Engineering Summer Training 2026 — pair-programmed and debugged with Claude. 🤝

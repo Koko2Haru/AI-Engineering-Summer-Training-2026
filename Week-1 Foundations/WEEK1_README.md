@@ -2,7 +2,7 @@
 
 **AI Engineering Summer Training 2026**
 Instructor: **Eng. Abdullah Barghash**
-Student: **Alwi** ([koko2haru](https://github.com/koko2haru))
+Student: **Ali** ([koko2haru](https://github.com/koko2haru))
 
 The first week of the program: from *what a token is* to a **Dockerized, Arabic-capable LLM application** by the end. Five days, each building on the last — LLM literacy, prompting, the developer toolchain, prompt patterns, and a full end-to-end mini-project.
 
