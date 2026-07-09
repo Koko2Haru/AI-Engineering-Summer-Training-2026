@@ -12,7 +12,7 @@ This repository documents my progress throughout a **7-week AI Engineering Summe
 - ✔️ Day 1 — [LLM Setup](Week-1%20Foundations/Day-1%20LLM%20Setup/FIRST_API_CALL.md)
 - ✔️ Day 2 — [Prompting Fundamentals](Week-1%20Foundations/Day-2%20Prompt%20Fundamentals/DOCKER_TESTING.md)
 - ✔️ Day 3 — [The AI Development Toolchain](Week-1%20Foundations/Day-3%20The%20AI%20Development%20Toolchain/DIAGRAM.md)
-- ⏳ Day 4 & 5 Combined — [Mini-ChatBot (mini-project)](Week-1%20Foundations/Day-4%20&%205%20Prompt%20Patterns/MINI_CHATBOT.md)
+- ✔️ Day 4 & 5 Combined — [Mini-ChatBot (mini-project)](Week-1%20Foundations/Day-4%20&%205%20Prompt%20Patterns/MINI_CHATBOT.md)
 ---
 
 ### 📅 Week 2 — AI-Assisted Development
