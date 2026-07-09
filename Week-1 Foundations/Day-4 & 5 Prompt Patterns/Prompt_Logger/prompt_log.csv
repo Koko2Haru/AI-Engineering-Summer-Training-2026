@@ -1,0 +1,292 @@
+Experiment,Timestamp,Prompt,Response,Response Time (s),Model,Temperature,Top P,Top K,Repeat Penalty,Max Tokens,Context Size,Seed
+ملفي_الجميل,2026-07-08 14:07:35,هل تتحدث العربية؟,نعم، أสามารถ التحدث بالعربية وتقديم الإجابة على الأسئلة في اللغة العربية بشكل دقيق ومتوافقة مع المعايير المحددة. هل تترجحك السؤال؟,7.833824700006517,llama3.2,0.7,0.9,40,1.1,800,4096,42
+ملفي_الجميل,2026-07-08 14:07:59,ثءهف,أعتقد أنك تريد أن تعرف أكثر عن ثؤبهف، التي هي مجموعة من الأشخاص الذين يلتقون في إيطاليا ليشاركوا في محاضرات ودراسات حول الثقافة والفلسفة والأدب. هل تريد أن أعرف مزيد؟,4.344937600006233,llama3.2,0.7,0.9,40,1.1,800,4096,42
+Few-Shot,2026-07-08 14:29:57,"Summarize the following in 3 sentences and save it as a PDF: Phishing is a social engineering attack where criminals impersonate trusted organizations to steal credentials or money. A typical phishing email creates urgency, such as claiming an account will be suspended, and links to a fake login page that captures whatever the victim types. Spear phishing targets one specific person using details gathered from their social media, which makes it far more convincing than mass campaigns. Warning signs include mismatched sender addresses, generic greetings, unexpected attachments, and links whose real destination differs from the displayed text. Multi-factor authentication limits the damage because a stolen password alone is no longer enough to get into the account.","I'd be happy to summarize the information for you! However, I'm a large language model, I don't have the capability to directly save files.
+
+Here's a summary in 3 sentences:
+
+Phishing is a type of social engineering attack where criminals impersonate trusted organizations to steal credentials or money. Spear phishing targets specific individuals using gathered social media details, making it more convincing than mass campaigns. Warning signs include mismatched sender addresses, generic greetings, unexpected attachments, and suspicious links.
+
+Would you like me to help with anything else?",17.57135469999048,llama3.2,0.7,0.9,40,1.1,800,4096,42
+Role Prompting,2026-07-08 14:32:39,"Summarize the following in 3 sentences and save it as a PDF: Phishing is a social engineering attack where criminals impersonate trusted organizations to steal credentials or money. A typical phishing email creates urgency, such as claiming an account will be suspended, and links to a fake login page that captures whatever the victim types. Spear phishing targets one specific person using details gathered from their social media, which makes it far more convincing than mass campaigns. Warning signs include mismatched sender addresses, generic greetings, unexpected attachments, and links whose real destination differs from the displayed text. Multi-factor authentication limits the damage because a stolen password alone is no longer enough to get into the account.","Here's a summary of the information in 3 sentences:
+
+Phishing is a type of social engineering attack where criminals impersonate trusted organizations to steal credentials or money. A typical phishing email creates urgency and includes links that capture sensitive information, while spear phishing targets specific individuals using gathered social media data. Warning signs of phishing include mismatched sender addresses, generic greetings, unexpected attachments, and suspicious-looking links.
+
+{
+    ""save"": true,
+    ""file_type"": ""pdf"",
+    ""title"": ""Phishing Attack Summary"",
+    ""content"": ""Phishing is a type of social engineering attack where criminals impersonate trusted organizations to steal credentials or money. A typical phishing email creates urgency and includes links that capture sensitive information, while spear phishing targets specific individuals using gathered social media data. Warning signs of phishing include mismatched sender addresses, generic greetings, unexpected attachments, and suspicious-looking links.""
+}",11.55885909999779,llama3.2,0.7,0.9,40,1.1,800,4096,42
+Role Prompting,2026-07-08 14:33:17,"Summarize this in 2 sentences and save it as a text file: Punching power comes mostly from the legs and hips rather than the arms. A powerful cross starts with the rear foot pivoting, transfers rotation through the hips and core, and only ends at the fist, which is why coaches say power travels from the ground up. Heavy bag work builds the ability to deliver force, while medicine ball throws and plyometric push-ups train the explosive speed that turns raw strength into knockout power. Skipping rope and roadwork keep the legs conditioned so power does not fade in the later rounds.","{
+  ""save"": true,
+  ""file_type"": ""txt"",
+  ""title"": ""Punching Power Training"",
+  ""content"": ""Punching power comes mostly from the legs and hips, with heavy bag work building force and medicine ball throws training explosive speed. Skipping rope and roadwork keep the legs conditioned to maintain power in later rounds.""
+}",7.945822299996507,llama3.2,0.7,0.9,40,1.1,800,4096,42
+ملفي_الجميل,2026-07-08 14:57:36,"أنشئ ملف PDF بعنوان ""مقدمة في هندسة الأوامر (Prompt Engineering)"".","{
+    ""save"": true,
+    ""file_type"": ""pdf"",
+    ""title"": ""مقدمة في هندسة الأوامر (Prompt Engineering)"",
+    ""content"": ""هندسة الأوامر، أو الصياغة، هي فن صياغة الأسئلة أو الطلبات المحددة التي تقوم بها الذكاء الاصطناعي. تهدف هذه الهندسة لتحسين الدقة والفعالية في الاتصال مع الأنظمة الذكية. يتضمن هذا التعلم كيفية اختيار الكلمات المناسبة، فهم السياق، وتقديم طلبات واضحة ومحددة.""
+}",48.473357099996065,qwen2.5:7b,0.7,0.9,40,1.1,800,4096,42
+ملفي_الجميل,2026-07-08 14:58:05,يجب أن يحتوي على:,"{
+    ""save"": true,
+    ""file_type"": ""pdf"",
+    ""title"": ""مقدمة في هندسة الأوامر (Prompt Engineering)"",
+    ""content"": ""هندسة الأوامر، أو الصياغة، هي فن صياغة الأسئلة أو الطلبات المحددة التي تقوم بها الذكاء الاصطناعي. تهدف هذه الهندسة لتحسين الدقة والفعالية في الاتصال مع الأنظمة الذكية. يتضمن هذا التعلم كيفية اختيار الكلمات المناسبة، فهم السياق، وتقديم طلبات واضحة ومحددة.""
+}",28.608661599995685,qwen2.5:7b,0.7,0.9,40,1.1,800,4096,42
+ملفي_الجميل,2026-07-08 14:58:34,- تعريف هندسة الأوامر,"{
+    ""save"": true,
+    ""file_type"": ""pdf"",
+    ""title"": ""مقدمة في هندسة الأوامر (Prompt Engineering)"",
+    ""content"": ""هندسة الأوامر، أو الصياغة، هي فن صياغة الأسئلة أو الطلبات المحددة التي تقوم بها الذكاء الاصطناعي. تهدف هذه الهندسة لتحسين الدقة والفعالية في الاتصال مع الأنظمة الذكية. يتضمن هذا التعلم كيفية اختيار الكلمات المناسبة، فهم السياق، وتقديم طلبات واضحة ومحددة.""
+}",28.642516899999464,qwen2.5:7b,0.7,0.9,40,1.1,800,4096,42
+اختبار,2026-07-08 15:12:15,لخص النص التالي في ثلاث جمل واحفظه كملف PDF: الأمن السيبراني هو ممارسة حماية الأنظمة والشبكات والبرامج من الهجمات الرقمية. تهدف هذه الهجمات عادة إلى الوصول إلى المعلومات الحساسة أو تغييرها أو إتلافها، أو ابتزاز المال من المستخدمين، أو تعطيل العمليات التجارية. يعتمد المخترقون على أساليب مثل التصيد الاحتيالي والبرامج الخبيثة والهندسة الاجتماعية لخداع الضحايا. ولمواجهة ذلك ينصح الخبراء باستخدام كلمات مرور قوية وتفعيل المصادقة الثنائية وتحديث البرامج باستمرار وعدم الضغط على الروابط المشبوهة.,"{
+    ""save"": true,
+    ""file_type"": ""pdf"",
+    ""title"": ""ملخص الأمن السيبراني"",
+    ""content"": ""الأمن السيبراني يهدف إلى حماية الأنظمة والشبكات من الهجمات الرقمية التي قد تؤدي لسرقة أو إتلاف البيانات، أو ابتزاز المال. يستخدم المخترقون أساليب مثل التصيد الاحتيالي والبرامج الخبيثة. للتقليل من_risk_، يجب استخدام كلمات مرور قوية وتفعيل المصادقة الثنائية وتحديث البرامج.""
+}",48.209476900010486,qwen2.5:7b,0.7,0.9,40,1.1,800,4096,42
+Chain-of-Thought,2026-07-09 10:08:54,Solve this math problem step by step and show them then save everthing as PDF file: 2^4 + 3 - 1 * 6,"Okay, let's solve the math problem step-by-step:
+
+1. **Calculate 2<sup>4</sup>:**  2<sup>4</sup> means 2 multiplied by itself four times, which is 2 * 2 * 2 * 2 = 16.
+
+2. **Substitute the result back into the equation:** The equation becomes 16 + 3 - 1 * 6
+
+3. **Calculate 1 * 6:** This is simply 6.
+
+4. **Substitute again:** Now we have 16 + 3 - 6
+
+5. **Perform addition from left to right:** 16 + 3 = 19.  So the equation becomes 19 - 6
+
+6. **Calculate subtraction:** 19 - 6 = 13
+
+Therefore, the answer is 13.
+
+```json
+{
+    ""save"": true,
+    ""file_type"": ""pdf"",
+    ""title"": ""Solution to 2^4 + 3 - 1 * 6"",
+    ""content"": ""Let's solve this step by step:\n\n1. Calculate 2^4: 2*2*2*2 = 16\n2. Substitute back: 16 + 3 - 1 * 6\n3. Calculate 1 * 6: 6\n4. Substitute again: 16 + 3 - 6\n5. Perform addition: 16 + 3 = 19\n6.  Equation becomes: 19 - 6\n7. Calculate subtraction: 19 - 6 = 13\n\nTherefore, the answer is 13.""
+}
+```",51.65546559999348,gemma3:4b,0.7,0.9,40,1.1,800,4096,42
+Chain-of-Thought,2026-07-09 10:09:35,exite,"Okay, exiting.",6.53457650000928,gemma3:4b,0.7,0.9,40,1.1,800,4096,42
+Chain-of-Thought,2026-07-09 10:10:04,I love you!,"{
+    ""save"": true,
+    ""file_type"": ""pdf"",
+    ""title"": ""Expression Solution"",
+    ""content"": ""2^4 + 3 - 1 * 6\n\nStep 1: Calculate 2^4 = 16\nStep 2: Substitute back into the expression: 16 + 3 - 1 * 6\nStep 3: Perform multiplication: 1 * 6 = 6\nStep 4: Substitute again: 16 + 3 - 6\nStep 5: Perform addition: 16 + 3 = 19\nStep 6: Perform subtraction: 19 - 6 = 13\n\nTherefore, the answer is 13.""
+}",19.957064999995055,gemma3:4b,0.7,0.9,40,1.1,800,4096,42
+Structured Output,2026-07-09 10:23:27,"You are a security triage assistant. Convert the vulnerability description into a
+structured record.
+
+Respond with ONLY a valid JSON object matching the schema below. Output nothing
+before or after the JSON. Do not wrap it in markdown code fences.
+
+Schema:
+{
+  ""vulnerability"": string,            // short name of the flaw
+  ""severity"": string,                 // one of: low, medium, high, critical
+  ""category"": string,                 // e.g. injection, auth, misconfiguration
+  ""affected_component"": string,       // where the flaw lives
+  ""cwe_id"": string,                   // the CWE identifier if known, else ""unknown""
+  ""remediation"": [string],            // concrete fix steps, most important first
+  ""exploitable_without_auth"": boolean // true if no login is needed to exploit
+}
+
+Rules:
+- Output must be valid JSON and parseable as-is.
+- All string values must be written in English.
+- ""severity"" must be exactly one of the allowed values, lowercase.
+- If the CWE is unknown, set ""cwe_id"" to ""unknown"".
+
+Input to analyse:
+A public web login form takes a username and builds its SQL query by string
+concatenation: ""SELECT * FROM users WHERE name = '"" + username + ""'"". There is no
+input validation or escaping, and the endpoint requires no authentication.","```json
+{
+  ""vulnerability"": ""SQL Injection"",
+  ""severity"": ""critical"",
+  ""category"": ""injection"",
+  ""affected_component"": ""Web Login Form"",
+  ""cwe_id"": ""SQL38"",
+  ""remediation"": [
+    ""Implement parameterized queries or prepared statements to prevent SQL injection."",
+    ""Sanitize and validate all user inputs before constructing the SQL query."",
+    ""Enforce strict input validation rules to ensure that only expected characters are allowed in the username field.""
+  ],
+  ""exploitable_without_auth"": true
+}
+```",37.37924060001387,gemma3:4b,0.3,0.6,40,1.1,550,4096,42
+Structured Output,2026-07-09 10:26:17,"You are a security triage assistant. Convert the vulnerability description into a
+structured record.
+
+Respond with ONLY a valid JSON object matching the schema below. Output nothing
+before or after the JSON. Do not wrap it in markdown code fences. Save the output as PDF file.
+
+Schema:
+{
+""vulnerability"": string, // short name of the flaw
+""severity"": string, // one of: low, medium, high, critical
+""category"": string, // e.g. injection, auth, misconfiguration
+""affected_component"": string, // where the flaw lives
+""cwe_id"": string, // the CWE identifier if known, else ""unknown""
+""remediation"": [string], // concrete fix steps, most important first
+""exploitable_without_auth"": boolean // true if no login is needed to exploit
+}
+
+Rules:
+
+Output must be valid JSON and parseable as-is.
+All string values must be written in English.
+""severity"" must be exactly one of the allowed values, lowercase.
+If the CWE is unknown, set ""cwe_id"" to ""unknown"".
+Input to analyse:
+A public web login form takes a username and builds its SQL query by string
+concatenation: ""SELECT * FROM users WHERE name = '"" + username + ""'"". There is no
+input validation or escaping, and the endpoint requires no authentication.","```json
+{
+    ""vulnerability"": ""SQL Injection"",
+    ""severity"": ""high"",
+    ""category"": ""injection"",
+    ""affected_component"": ""Web Login Form"",
+    ""cwe_id"": ""SQL385"",
+    ""remediation"": [
+        ""Implement parameterized queries or prepared statements to prevent SQL injection."",
+        ""Perform strict input validation and sanitization on all user-supplied data before constructing the SQL query."",
+        ""Use an ORM (Object-Relational Mapper) that handles escaping automatically.""
+    ],
+    ""exploitable_without_auth"": true
+}
+```",27.87078329999349,gemma3:4b,0.3,0.6,40,1.1,550,4096,42
+Structured Output,2026-07-09 10:30:42,"You are a security triage assistant. Convert the vulnerability description into a
+structured record.
+
+Respond with ONLY a valid JSON object matching the schema below. Output nothing
+before or after the JSON. Do not wrap it in markdown code fences. Then save as PDF file.
+
+Schema:
+{
+""vulnerability"": string, // short name of the flaw
+""severity"": string, // one of: low, medium, high, critical
+""category"": string, // e.g. injection, auth, misconfiguration
+""affected_component"": string, // where the flaw lives
+""cwe_id"": string, // the CWE identifier if known, else ""unknown""
+""remediation"": [string], // concrete fix steps, most important first
+""exploitable_without_auth"": boolean // true if no login is needed to exploit
+}
+
+Rules:
+
+Output must be valid JSON and parseable as-is.
+All string values must be written in English.
+""severity"" must be exactly one of the allowed values, lowercase.
+If the CWE is unknown, set ""cwe_id"" to ""unknown"".
+Input to analyse:
+A public web login form takes a username and builds its SQL query by string
+concatenation: ""SELECT * FROM users WHERE name = '"" + username + ""'"". There is no
+input validation or escaping, and the endpoint requires no authentication.","{""vulnerability"": ""SQL Injection"", ""severity"": ""high"", ""category"": ""injection"", ""affected_component"": ""Web Login Form"", ""cwe_id"": ""CWE-89"", ""remediation"": [""Input validation and escaping"", ""Use parameterized queries""], ""exploitable_without_auth"": true}",24.09288879999076,llama3.2:latest,0.7,0.9,40,1.1,800,4096,42
+General,2026-07-09 10:53:02,summarize the benefits of daily reading and save it as a PDF file,"{
+    ""save"": true,
+    ""file_type"": ""pdf"",
+    ""title"": ""Daily Reading Benefits"",
+    ""content"": ""Regular reading improves vocabulary, enhances comprehension skills, boosts memory, reduces stress levels, increases empathy, and promotes critical thinking. It also helps in building a lifelong learning habit and can improve your overall cognitive function.""
+}",38.75345809999271,qwen2.5:7b,0.7,0.9,40,1.1,800,4096,42
+Structured Output,2026-07-09 10:56:18,"You are a security triage assistant. Convert the vulnerability description into a
+structured record.
+
+Respond with ONLY a valid JSON object matching the schema below. Output nothing
+before or after the JSON. Do not wrap it in markdown code fences.
+
+Schema:
+{
+  ""vulnerability"": string,            // short name of the flaw
+  ""severity"": string,                 // one of: low, medium, high, critical
+  ""category"": string,                 // e.g. injection, auth, misconfiguration
+  ""affected_component"": string,       // where the flaw lives
+  ""cwe_id"": string,                   // the CWE identifier if known, else ""unknown""
+  ""remediation"": [string],            // concrete fix steps, most important first
+  ""exploitable_without_auth"": boolean // true if no login is needed to exploit
+}
+
+Rules:
+- Output must be valid JSON and parseable as-is.
+- All string values must be written in English.
+- ""severity"" must be exactly one of the allowed values, lowercase.
+- If the CWE is unknown, set ""cwe_id"" to ""unknown"".
+
+Input to analyse:
+A public web login form takes a username and builds its SQL query by string
+concatenation: ""SELECT * FROM users WHERE name = '"" + username + ""'"". There is no
+input validation or escaping, and the endpoint requires no authentication.
+
+Save the output as PDF file.","{
+    ""vulnerability"": ""sql injection"",
+    ""severity"": ""high"",
+    ""category"": ""injection"",
+    ""affected_component"": ""web login form"",
+    ""cwe_id"": ""89"",
+    ""remediation"": [""Use parameterized queries or prepared statements instead of string concatenation for SQL construction.""],
+    ""exploitable_without_auth"": true
+}",30.74570450000465,qwen2.5:7b,0.7,0.9,40,1.1,800,4096,42
+Structured Output,2026-07-09 10:57:28,"Save as PDF file
+
+You are a security triage assistant. Convert the vulnerability description into a
+structured record.
+
+Respond with ONLY a valid JSON object matching the schema below. Output nothing
+before or after the JSON. Do not wrap it in markdown code fences.
+
+Schema:
+{
+  ""vulnerability"": string,            // short name of the flaw
+  ""severity"": string,                 // one of: low, medium, high, critical
+  ""category"": string,                 // e.g. injection, auth, misconfiguration
+  ""affected_component"": string,       // where the flaw lives
+  ""cwe_id"": string,                   // the CWE identifier if known, else ""unknown""
+  ""remediation"": [string],            // concrete fix steps, most important first
+  ""exploitable_without_auth"": boolean // true if no login is needed to exploit
+}
+
+Rules:
+- Output must be valid JSON and parseable as-is.
+- All string values must be written in English.
+- ""severity"" must be exactly one of the allowed values, lowercase.
+- If the CWE is unknown, set ""cwe_id"" to ""unknown"".
+
+Input to analyse:
+A public web login form takes a username and builds its SQL query by string
+concatenation: ""SELECT * FROM users WHERE name = '"" + username + ""'"". There is no
+input validation or escaping, and the endpoint requires no authentication.","{
+    ""vulnerability"": ""sql injection"",
+    ""severity"": ""critical"",
+    ""category"": ""injection"",
+    ""affected_component"": ""web login form"",
+    ""cwe_id"": ""89"",
+    ""remediation"": [""Use parameterized queries or prepared statements"", ""Validate and escape user inputs properly""],
+    ""exploitable_without_auth"": true
+}",29.51302320000832,qwen2.5:7b,0.7,0.9,40,1.1,800,4096,42
+Structured Output,2026-07-09 10:59:31,"Talk about the benefits of daily reading and save it as a PDF file
+The structure should be:
+1- {benefit}, {why}
+2- {benefit}, {why}
+and so on","{
+    ""save"": true,
+    ""file_type"": ""pdf"",
+    ""title"": ""Benefits of Daily Reading"",
+    ""content"": ""1- Improved vocabulary, enhances understanding and communication skills\n2- Better memory retention, helps in retaining information more effectively\n3- Increased knowledge, broadens perspective on various topics\n4- Stress relief, reading can help reduce stress levels\n5- Enhanced concentration, improves focus and attention span""
+}",18.068275400000857,qwen2.5:7b,0.2,0.7,40,1.1,950,4096,42
+Few-Shot,2026-07-09 08:59:07,"أنشئ ملف TXTبعنوان ""مقدمة في هندسة الأوامر (Prompt Engineering)"".","{
+    ""save"": true,
+    ""file_type"": ""txt"",
+    ""title"": ""مقدمة في هندسة الأوامر (Prompt Engineering)"",
+    ""content"": ""هندسة الأوامر هي فن صياغة الأسئلة أو الطلبات بطريقة تساعد الذكاء الاصطناعي على فهمها وتنفيذها بشكل صحيح. يتضمن هذا الفن فهم كيفية استخدام اللغة الطبيعية، والقدرة على التفكير في المشكلات من زوايا مختلفة، وكيفية تحديد المعلومات المطلوبة بدقة. هدف الهندسة اللغوية هو تحسين التجارب المستخدمية وزيادة كفاءة التفاعلات مع الأنظمة الذكائية.""
+}",45.75852266999982,qwen2.5:7b,0.1,0.1,40,1.1,250,4096,42
+General,2026-07-09 09:57:23,أنشئ ملف PDF بعنوان التعامل في بيئة العمل,"{
+    ""save"": true,
+    ""file_type"": ""pdf"",
+    ""title"": ""التعامل في بيئة العمل"",
+    ""content"": ""كيفية التعامل في بيئة العمل بشكل فعال، بما في ذلك الاتصال الفعال، إدارة الوقت، التعاون مع الآخرين، والالتزام بالمسؤوليات.""
+}",33.450669138000194,qwen2.5:7b,0.2,0.1,40,1.1,300,4096,42

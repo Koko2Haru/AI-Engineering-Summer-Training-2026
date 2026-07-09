@@ -1,0 +1,11 @@
+.venv
+__pycache__/
+*.pyc
+saved_responses/
+prompt_log.csv
+*.md
+.git
+.gitignore
+Dockerfile
+docker-compose.yml
+.dockerignore

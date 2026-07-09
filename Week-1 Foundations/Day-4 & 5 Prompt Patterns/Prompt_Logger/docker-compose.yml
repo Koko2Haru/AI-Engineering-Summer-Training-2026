@@ -1,0 +1,13 @@
+services:
+  prompt-logger:
+    build: .
+    ports:
+      - "7860:7860"
+    volumes:
+      # Your real Prompt_Logger folder becomes /data inside the container:
+      # it reads and writes the SAME prompt_log.csv and saved_responses/
+      # that your CLI already uses. Delete the container, keep the data.
+      - .:/data
+    extra_hosts:
+      # Required on Linux; harmless on Docker Desktop (Windows/Mac)
+      - "host.docker.internal:host-gateway"

@@ -12,9 +12,7 @@ This repository documents my progress throughout a **7-week AI Engineering Summe
 - ✔️ Day 1 — LLM Setup
 - ✔️ Day 2 — Prompting Fundamentals
 - ✔️ Day 3 — The AI Development Toolchain
-- ⏳ Day 4 — *Coming Soon*
-- ⏳ Day 5 — *Coming Soon*
-
+- ⏳ Day 4 & 5 Combined — Mine-ChatBot (mini-project)
 ---
 
 ### 📅 Week 2 — AI-Assisted Development
