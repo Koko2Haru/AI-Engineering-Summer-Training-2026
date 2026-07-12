@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoinQuest — one-page software specification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAFBF7; --ink:#152A1F; --pine:#14532D;
+    --hp:#16A34A; --hp-soft:#E4F4E8;
+    --gold:#996A0C; --gold-bright:#F0B429; --gold-soft:#FBF3DC;
+    --epic:#6D28D9; --epic-soft:#F1EBFB;
+    --bug:#B3261E; --muted:#5C6B60; --hairline:rgba(20,83,45,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  html{background:#E8EBE4}
+  body{font-family:"IBM Plex Sans",sans-serif;color:var(--ink)}
+
+  .toolbar{max-width:210mm;margin:18px auto 10px;display:flex;align-items:center;gap:14px;font-size:13px;color:#41504A}
+  .toolbar button{font-family:"Chakra Petch",sans-serif;font-weight:600;font-size:13px;letter-spacing:.04em;
+    background:var(--pine);color:#fff;border:none;border-radius:6px;padding:9px 16px;cursor:pointer}
+  .toolbar button:hover{background:#0E3D21}
+  .toolbar button:focus-visible{outline:3px solid var(--gold-bright);outline-offset:2px}
+
+  .page{width:210mm;min-height:297mm;margin:0 auto 28px;background:var(--paper);
+    padding:12mm 14mm 10mm;box-shadow:0 3px 24px rgba(21,42,31,.18);
+    display:flex;flex-direction:column}
+
+  .masthead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
+  h1{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:36px;line-height:1;
+    letter-spacing:.015em;color:var(--pine)}
+  h1 .coin{color:var(--gold-bright)}
+  .tagline{font-size:12.5px;color:var(--muted);margin-top:5px}
+  .stamp{text-align:right;font-family:"IBM Plex Mono",monospace;font-size:10px;line-height:1.65;color:var(--muted);white-space:nowrap}
+  .stamp b{color:var(--pine);font-weight:500}
+
+  .hud{display:flex;gap:9px;margin-top:9px}
+  .hud-cell{border:1px solid var(--pine);border-radius:7px;background:#fff;
+    padding:5px 10px 6px;display:flex;flex-direction:column;gap:3px}
+  .hud-cell.hp{flex:1}
+  .hud-label{font-family:"Chakra Petch",sans-serif;font-size:9.5px;font-weight:600;
+    letter-spacing:.13em;color:var(--pine);display:flex;justify-content:space-between;gap:12px}
+  .hud-label .val{font-family:"IBM Plex Mono",monospace;letter-spacing:0;color:var(--muted);font-weight:400}
+  .bar{height:10px;border:1px solid var(--pine);border-radius:4px;background:var(--hp-soft);overflow:hidden}
+  .bar .fill{height:100%;width:100%;background:repeating-linear-gradient(90deg,var(--hp) 0 26px,#1DB558 26px 28px)}
+  .hud-num{font-family:"Chakra Petch",sans-serif;font-size:14px;font-weight:600;color:var(--pine);line-height:1.1}
+
+  section{margin-top:11px;padding-top:9px;border-top:1px solid var(--hairline)}
+  .sec-label{font-family:"Chakra Petch",sans-serif;font-size:11.5px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--pine);margin-bottom:6px}
+  .sec-label .no{color:var(--gold);margin-right:8px}
+  p.lead{font-size:12.8px;line-height:1.48;max-width:182mm}
+  p.lead em{font-style:normal;font-weight:600;color:var(--pine)}
+
+  .tier{margin-top:6px}
+  .tier-head{display:flex;align-items:baseline;gap:9px;margin-bottom:3px}
+  .chip{font-family:"Chakra Petch",sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.1em;
+    text-transform:uppercase;border-radius:4px;padding:2px 8px;border:1px solid;white-space:nowrap}
+  .chip.common{background:var(--hp-soft);border-color:var(--hp);color:var(--pine)}
+  .chip.rare{background:var(--gold-soft);border-color:var(--gold-bright);color:var(--gold)}
+  .chip.epic{background:var(--epic-soft);border-color:var(--epic);color:var(--epic)}
+  .tier-note{font-size:11px;color:var(--muted)}
+  .feat{display:flex;gap:10px;padding:2.5px 0 2.5px 10px;border-left:2px solid var(--hairline);
+    margin-left:2px;align-items:baseline}
+  .feat .name{font-weight:600;font-size:12.4px;flex:0 0 128px;color:var(--ink)}
+  .feat .desc{font-size:12.2px;line-height:1.38;color:#2C3B32}
+  .feat code,.mono{font-family:"IBM Plex Mono",monospace;font-size:10.8px;background:#EFF3EC;
+    border-radius:3px;padding:1px 4px;color:var(--pine)}
+
+  .loadout{display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+  .pill{font-family:"IBM Plex Mono",monospace;font-size:10.5px;border:1px solid var(--hairline);
+    border-radius:99px;padding:2.5px 10px;background:#fff;color:var(--ink)}
+  .pill b{font-weight:500;color:var(--pine)}
+
+  .cols{display:grid;grid-template-columns:1.15fr 1fr;gap:20px}
+  ul.nots,ul.done{list-style:none;display:flex;flex-direction:column;gap:4px}
+  ul.nots li{font-size:12px;line-height:1.35;padding-left:19px;position:relative;color:#2C3B32}
+  ul.nots li::before{content:"✕";position:absolute;left:1px;top:0;font-family:"Chakra Petch",sans-serif;
+    font-weight:700;font-size:10.5px;color:var(--bug)}
+  ul.nots li b{font-weight:600;color:var(--ink)}
+  ul.done li{font-size:12px;line-height:1.35;padding-left:21px;position:relative;color:#2C3B32}
+  ul.done li::before{content:"";position:absolute;left:1px;top:2px;width:9px;height:9px;
+    border:1.5px solid var(--pine);border-radius:2.5px;background:var(--hp-soft)}
+
+  footer{margin-top:auto;padding-top:8px;border-top:1px solid var(--hairline);
+    display:flex;justify-content:space-between;gap:14px;
+    font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--muted)}
+
+  @page{size:A4;margin:0}
+  @media print{
+    html{background:#fff}
+    .toolbar{display:none}
+    .page{margin:0;box-shadow:none;width:210mm;min-height:297mm}
+    section{break-inside:avoid}
+  }
+  @media (max-width:820px){
+    .page{width:100%;min-height:0;padding:24px 18px}
+    .cols{grid-template-columns:1fr}
+    .masthead{flex-direction:column;align-items:flex-start}
+    .stamp{text-align:left}
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button onclick="window.print()">Save as PDF</button>
+  <span>Print dialog: destination <b>Save as PDF</b> · paper <b>A4</b> · enable <b>Background graphics</b> · disable headers &amp; footers. If it spills, set scale ≈ 95%.</span>
+</div>
+
+<div class="page">
+
+  <header>
+    <div class="masthead">
+      <div>
+        <h1>CO<span class="coin">I</span>NQUEST</h1>
+        <div class="tagline">A gamified expense tracker with a local AI coach — log, level up, and conquer the month</div>
+      </div>
+      <div class="stamp">
+        ONE-PAGE SOFTWARE SPEC <b>v1.0</b> · 12 JUL 2026<br>
+        AI Engineering Summer Training 2026<br>
+        Week 2 — AI-assisted development · <b>Day 1</b>
+      </div>
+    </div>
+    <div class="hud" aria-hidden="true">
+      <div class="hud-cell hp">
+        <div class="hud-label"><span>Budget HP</span><span class="val">1500 / 1500 SAR</span></div>
+        <div class="bar"><div class="fill"></div></div>
+      </div>
+      <div class="hud-cell">
+        <div class="hud-label">Streak</div>
+        <div class="hud-num">Day 0</div>
+      </div>
+      <div class="hud-cell">
+        <div class="hud-label">XP</div>
+        <div class="hud-num">0</div>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-label"><span class="no">01</span>The problem it solves</div>
+    <p class="lead">
+      Expense trackers have a retention problem: logging what you spend is a chore with no feedback
+      loop, so most people quit within a week — and students rarely find out where the allowance went.
+      <em>CoinQuest reframes the habit as a game:</em> the monthly budget is a health bar, consistent
+      logging builds streaks and XP, and a local AI coach turns the numbers into advice — or a roast.
+      Tracking money should feel like maintaining a save file, not filing taxes.
+    </p>
+  </section>
+
+  <section>
+    <div class="sec-label"><span class="no">02</span>Key features</div>
+
+    <div class="tier" style="margin-top:1px">
+      <div class="tier-head"><span class="chip common">Common · core slice</span><span class="tier-note">built day 2 — one thin path through every layer</span></div>
+      <div class="feat"><span class="name">Log an expense</span><span class="desc">amount, category, note, date → <code>POST /api/expenses</code> → SQLite</span></div>
+      <div class="feat"><span class="name">Expense list</span><span class="desc">newest first from <code>GET /api/expenses</code> — proof the full stack is wired</span></div>
+    </div>
+
+    <div class="tier">
+      <div class="tier-head"><span class="chip rare">Rare · v1.0</span><span class="tier-note">shipped by day 5</span></div>
+      <div class="feat"><span class="name">Budget HP bar</span><span class="desc">drains in real time; green → yellow → red, and 0 HP triggers a "defeated" state</span></div>
+      <div class="feat"><span class="name">Streak &amp; XP</span><span class="desc">consecutive logging days keep the streak alive; every entry earns XP</span></div>
+      <div class="feat"><span class="name">Monthly summary</span><span class="desc">backend computes totals at <code>GET /api/summary</code>; Chart.js draws the charts</span></div>
+      <div class="feat"><span class="name">AI coach</span><span class="desc">Ollama turns pre-computed stats into a review + one tip — Coach / Roast / Pirate modes</span></div>
+      <div class="feat"><span class="name">Monthly boss fight</span><span class="desc">top spending category becomes the month's boss — "Restaurant Monster dealt 720 SAR"</span></div>
+    </div>
+
+    <div class="tier">
+      <div class="tier-head"><span class="chip epic">Epic · stretch</span><span class="tier-note">only if day 5 has hours left</span></div>
+      <div class="feat"><span class="name">If time allows</span><span class="desc">AI expense entry ("Lunch at AlBaik 28 SAR" → structured JSON) · AI weekly quests · achievements &amp; titles — full detail in <code>SPEC.md</code></span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-label">Tech loadout</div>
+    <div class="loadout">
+      <span class="pill"><b>FastAPI</b> · Python 3</span>
+      <span class="pill"><b>SQLite</b></span>
+      <span class="pill"><b>HTML · CSS · JS</b></span>
+      <span class="pill"><b>Chart.js</b></span>
+      <span class="pill"><b>Ollama</b> local LLM</span>
+      <span class="pill"><b>Git + GitHub</b> · tags v0.1 → v1.0</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="cols">
+      <div>
+        <div class="sec-label"><span class="no">03</span>Constraints — what it will not do</div>
+        <ul class="nots">
+          <li><b>No accounts, logins, or multi-user.</b> One player, on localhost.</li>
+          <li><b>No bank sync, card data, or real financial integrations.</b></li>
+          <li><b>No cloud deployment.</b> Data never leaves the machine.</li>
+          <li><b>The AI never does arithmetic.</b> Python computes every number; the model only writes text.</li>
+          <li><b>AI output is advisory only.</b> It never creates, edits, or deletes records.</li>
+          <li><b>One person + one AI assistant, five days.</b> Features that threaten the deadline move down a tier.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="sec-label">Definition of done</div>
+        <ul class="done">
+          <li>Clone, run one command, add an expense, watch the HP bar drop.</li>
+          <li>Monthly summary shows real charted totals plus the AI coach's boss report.</li>
+          <li>Repo history tells the week's story: daily tags v0.1 → v1.0, <span class="mono">REVIEW.md</span>, <span class="mono">BUGLOG.md</span>.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Prepared by Ali · Instructor: Eng. Mohammed Mashat</span>
+    <span>Full detail &amp; ideation log: SPEC.md in the repo</span>
+  </footer>
+
+</div>
+
+</body>
+</html>
