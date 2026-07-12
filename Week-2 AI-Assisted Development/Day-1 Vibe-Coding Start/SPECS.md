@@ -6,7 +6,7 @@
 
 ---
 
-## 1. Ideation log — how CoinQuest happened
+## 1. Ideation log — how CoinQuest happened [View in site]()
 
 ### 1.1 Research phase
 

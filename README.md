@@ -16,11 +16,11 @@ This repository documents my progress throughout a **7-week AI Engineering Summe
 ---
 
 ### 📅 Week 2 — AI-Assisted Development
-- ⏳ Day 1
-- ⏳ Day 2
-- ⏳ Day 3
-- ⏳ Day 4
-- ⏳ Day 5
+- ✔️ Day 1 - [Vibe-Coding Start](Week-2%20AI-Assisted%20Development/Day-1%20Vibe-Coding%20Start/SPECS.md)
+- ⏳ Day 2 - *Coming soon*
+- ⏳ Day 3 - *Coming soon*
+- ⏳ Day 4 - *Coming soon*
+- ⏳ Day 5 - *Coming soon*
 
 ---
 
