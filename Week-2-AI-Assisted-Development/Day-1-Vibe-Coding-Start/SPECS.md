@@ -6,7 +6,7 @@
 
 ---
 
-## 🧠 1. Ideation log — how CoinQuest happened --> [View in Site for TL;DR](https://koko2haru.github.io/AI-Engineering-Summer-Training-2026/Week-2%20AI-Assisted%20Development/Day-1%20Vibe-Coding%20Start/coinQuest.html)
+## 🧠 1. Ideation log — how CoinQuest happened --> [View in Browser for TL;DR](https://koko2haru.github.io/AI-Engineering-Summer-Training-2026/Week-2-AI-Assisted-Development/Day-1-Vibe-Coding-Start/coinQuest.html)
 
 ### 🔍 1.1 Research phase
 
