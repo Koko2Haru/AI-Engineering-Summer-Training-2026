@@ -16,9 +16,9 @@ This repository documents my progress throughout a **7-week AI Engineering Summe
 ---
 
 ### 📅 Week 2 — AI-Assisted Development
-- ✔️ Day 1 - [Vibe-Coding Start](Week-2-AI-Assisted-Development/Day-1-Vibe-Coding-Start/SPECS.md)
+- ✔️ Day 1 - [Vibe-Coding-Start](Week-2-AI-Assisted-Development/Day-1-Vibe-Coding-Start/SPECS.md)
 - ✔️ Day 2 - [Building-with-an-AI-Partner](/Week-2-AI-Assisted-Development/Day-2-Building-with-an-AI-Partner/SKELETON-V01.md)
-- ⏳ Day 3 - *Coming soon*
+- ✔️ Day 3 - [Reading-AI-Written-Code](/Week-2-AI-Assisted-Development/Day-3-Reading-AI-Written-Code/COINQUEST-V02.md)
 - ⏳ Day 4 - *Coming soon*
 - ⏳ Day 5 - *Coming soon*
 
