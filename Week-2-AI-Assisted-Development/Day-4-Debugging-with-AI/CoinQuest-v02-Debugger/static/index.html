@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CoinQuest v0.1</title>
+<style>
+  body { font-family: sans-serif; max-width: 500px; margin: 40px auto; padding: 0 16px; }
+  h1 { font-size: 1.4rem; }
+  form { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+  label { font-size: 0.85rem; color: #444; }
+  input, select { padding: 6px; font-size: 1rem; }
+  button { padding: 8px; font-size: 1rem; cursor: pointer; }
+  ul { list-style: none; padding: 0; }
+  li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #ddd; }
+  .amount { font-weight: bold; }
+</style>
+</head>
+<body>
+  <h1>CoinQuest — expenses</h1>
+
+  <form id="expense-form">
+    <label>Amount (SAR)
+      <input type="number" id="amount" step="0.01" min="0" required>
+    </label>
+    <label>Category
+      <select id="category" required>
+        <option value="Food">Food</option>
+        <option value="Transport">Transport</option>
+        <option value="Shopping">Shopping</option>
+        <option value="Bills">Bills</option>
+        <option value="Other">Other</option>
+      </select>
+    </label>
+    <label>Note
+      <input type="text" id="note">
+    </label>
+    <label>Date
+      <input type="date" id="date" required>
+    </label>
+    <button type="submit">Log expense</button>
+  </form>
+
+  <ul id="expense-list"></ul>
+
+  <script>
+    const form = document.getElementById("expense-form");
+    const list = document.getElementById("expense-list");
+    const amountInput = document.getElementById("amount");
+    const categoryInput = document.getElementById("category");
+    const noteInput = document.getElementById("note");
+    const dateInput = document.getElementById("date");
+
+    // Local YYYY-MM-DD. NOT toISOString(), which is UTC and can roll to yesterday.
+    function todayLocal() {
+      const d = new Date();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      return `${d.getFullYear()}-${mm}-${dd}`;
+    }
+
+    dateInput.value = todayLocal();
+
+    async function loadExpenses() {
+      const res = await fetch("/api/expenses");
+      const expenses = await res.json();
+
+      const fragment = document.createDocumentFragment();
+      for (const e of expenses) {
+        const li = document.createElement("li");
+
+        // textContent (not innerHTML) so user notes can't inject HTML.
+        const left = document.createElement("span");
+        left.textContent =
+          `${e.spent_on} — ${e.category}` + (e.note ? ` (${e.note})` : "");
+
+        const right = document.createElement("span");
+        right.className = "amount";
+        right.textContent = `${e.amount.toFixed(2)} SAR`;
+
+        li.append(left, right);
+        fragment.append(li);
+      }
+
+      list.replaceChildren(fragment);  // one DOM update instead of N
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const res = await fetch("/api/expenses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: parseFloat(amountInput.value),
+          category: categoryInput.value,
+          note: noteInput.value,
+          date: dateInput.value,
+        }),
+      });
+
+      if (!res.ok) {
+        alert("Couldn't save that expense — please check your input and try again.");
+        return;  // don't reset the form if it wasn't saved
+      }
+
+      form.reset();
+      dateInput.value = todayLocal();
+      loadExpenses();
+    });
+
+    loadExpenses();
+  </script>
+</body>
+</html>
