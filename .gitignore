@@ -14,3 +14,6 @@ venv/
 
 # Local DB
 *.db
+
+# my Claude
+.claude
