@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CoinQuest v1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+  :root {
+    --bg: #f5f3ff;
+    --card: #ffffff;
+    --border: #e2dbf7;
+    --text: #2c2542;
+    --muted: #746e8c;
+    --primary: #6c4fd6;
+    --primary-dark: #55399f;
+    --gold: #d99a00;
+    --flame: #e2622a;
+    --danger: #c0392b;
+    --danger-bg: #fdecea;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { font-size: 20px; background: var(--bg); }
+
+  body {
+    font-family: "Poppins", "Segoe UI", system-ui, sans-serif;
+    max-width: 1440px;
+    margin: 36px auto;
+    padding: 0 28px 44px;
+    background: transparent;
+    color: var(--text);
+    position: relative;
+  }
+
+  /* Animated background: soft drifting color blobs + a scrolling wave band,
+     fixed to the viewport so the page feels alive without distracting from content. */
+  .bg-decor {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    background: var(--bg);
+  }
+  .bg-decor .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.5;
+  }
+  .bg-decor .blob-1 {
+    width: 32rem; height: 32rem;
+    background: var(--primary);
+    top: -10rem; left: -8rem;
+    animation: drift1 24s ease-in-out infinite alternate;
+  }
+  .bg-decor .blob-2 {
+    width: 26rem; height: 26rem;
+    background: var(--gold);
+    bottom: -8rem; right: -6rem;
+    animation: drift2 28s ease-in-out infinite alternate;
+  }
+  .bg-decor .blob-3 {
+    width: 22rem; height: 22rem;
+    background: var(--flame);
+    top: 40%; right: 10%;
+    opacity: 0.35;
+    animation: drift3 20s ease-in-out infinite alternate;
+  }
+  .bg-decor .wave {
+    position: absolute;
+    left: 0; right: 0;
+    height: 14rem;
+    background-repeat: repeat-x;
+    background-size: 60rem 100%;
+    opacity: 0.5;
+  }
+  .bg-decor .wave-1 {
+    bottom: -2rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,40 C300,100 900,0 1200,55 L1200,120 L0,120 Z' fill='%236c4fd6' fill-opacity='0.16'/%3E%3C/svg%3E");
+    animation: waveScroll 22s linear infinite;
+  }
+  .bg-decor .wave-2 {
+    bottom: -3rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,70 C400,10 800,110 1200,30 L1200,120 L0,120 Z' fill='%23d99a00' fill-opacity='0.14'/%3E%3C/svg%3E");
+    animation: waveScroll 32s linear infinite reverse;
+  }
+
+  @keyframes drift1 {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(6rem, 4rem) scale(1.15); }
+  }
+  @keyframes drift2 {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(-5rem, -4rem) scale(1.1); }
+  }
+  @keyframes drift3 {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(-3rem, 3rem) scale(1.2); }
+  }
+  @keyframes waveScroll {
+    from { background-position-x: 0; }
+    to { background-position-x: -60rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bg-decor .blob, .bg-decor .wave { animation: none; }
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(320px, 440px) 1fr;
+    grid-template-areas:
+      "hp hp"
+      "summary coach"
+      "breakdown breakdown"
+      "form list";
+    gap: 28px;
+    align-items: start;
+  }
+  #hp-section { grid-area: hp; }
+  #summary { grid-area: summary; }
+  #coach { grid-area: coach; }
+  #payment-breakdown { grid-area: breakdown; }
+  #expense-form { grid-area: form; }
+  #expenses-section { grid-area: list; }
+
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: 1fr;
+      grid-template-areas: "hp" "summary" "breakdown" "coach" "form" "list";
+    }
+  }
+
+  .layout > section, .layout > form { margin-bottom: 0; }
+
+  h1 { font-size: 1.5rem; margin: 0; color: var(--primary-dark); }
+  h2 { font-size: 1.05rem; margin: 0 0 12px; color: var(--primary-dark); }
+
+  section, form {
+    position: relative;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 8px 24px rgba(85, 57, 157, 0.10);
+    overflow: hidden;
+  }
+  /* Glossy diagonal sheen across the top of every card. */
+  section::before, form::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 40%);
+    pointer-events: none;
+  }
+
+  #header-row {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px; margin-bottom: 24px;
+    background: none; border: none; padding: 0;
+  }
+  #stats { display: flex; gap: 18px; font-size: 0.9rem; font-weight: bold; }
+  #xp-counter { color: var(--gold); }
+  #streak-counter { color: var(--flame); }
+
+  form { display: flex; flex-direction: column; gap: 12px; }
+  label { font-size: 0.85rem; color: var(--muted); }
+  input, select {
+    padding: 10px; font-size: 1rem; border: 1px solid var(--border);
+    border-radius: 6px; font-family: inherit;
+  }
+  button {
+    padding: 12px; font-size: 0.95rem; cursor: pointer; border: none;
+    border-radius: 6px; background: var(--primary); color: #fff; font-weight: 600;
+  }
+  button:hover { background: var(--primary-dark); }
+  button:disabled { opacity: 0.6; cursor: default; }
+
+  ul { list-style: none; padding: 0; margin: 0; }
+
+  .list-header, li {
+    display: grid;
+    grid-template-columns: 24px 112px 108px 76px 1fr 145px 30px;
+    gap: 14px;
+    align-items: center;
+  }
+  .list-header {
+    padding: 0 0 12px; margin-bottom: 5px; border-bottom: 2px solid var(--border);
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em;
+    color: var(--muted); font-weight: 700;
+  }
+  li { padding: 12px 0; border-bottom: 1px solid var(--border); }
+  li:last-child { border-bottom: none; }
+  .col-date { white-space: nowrap; }
+  .col-notes { color: var(--muted); overflow-wrap: anywhere; }
+  .col-method, .list-header .col-method { text-align: center; }
+  .col-damage, .list-header .col-damage { text-align: right; font-weight: bold; white-space: nowrap; }
+
+  .show-more-btn {
+    all: unset; cursor: pointer; color: var(--primary); font-weight: 600;
+    font-size: 0.85em; white-space: nowrap; background: transparent;
+    transition: filter 0.15s ease;
+  }
+  .show-more-btn:hover {
+    background: transparent;
+    text-decoration: underline;
+    filter: drop-shadow(0 0 6px var(--primary));
+  }
+
+  .sort-btn {
+    all: unset;
+    display: flex; align-items: center; gap: 3px; cursor: pointer;
+    font: inherit; color: inherit; text-transform: inherit; letter-spacing: inherit;
+    background: transparent; transition: color 0.15s ease, filter 0.15s ease;
+  }
+  .sort-btn:hover {
+    background: transparent;
+    color: var(--primary-dark);
+    filter: drop-shadow(0 0 6px var(--primary));
+  }
+  .list-header .sort-btn.col-method { justify-content: center; }
+  .list-header .sort-btn.col-damage { justify-content: flex-end; }
+  .sort-arrow { font-size: 0.7rem; width: 0.8em; color: var(--primary); }
+  .sort-btn.active { color: var(--primary-dark); }
+
+  .expense-checkbox { width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary); }
+  .delete-btn {
+    opacity: 0; background: transparent; color: var(--danger); border: none;
+    font-size: 1.15rem; font-weight: bold; line-height: 1; padding: 4px 9px;
+    border-radius: 4px; cursor: pointer; transition: opacity 0.15s ease, background 0.15s ease;
+  }
+  li:hover .delete-btn { opacity: 1; }
+  .delete-btn:hover { background: var(--danger-bg); }
+
+  li.empty-state { display: block; color: var(--muted); font-size: 0.9rem; text-align: center; padding: 10px 0; }
+  .empty-state { color: var(--muted); font-size: 0.9rem; text-align: center; padding: 10px 0; }
+
+  li.dmg-low { background: rgba(76, 175, 80, 0.10); }
+  li.dmg-medium { background: rgba(240, 173, 46, 0.12); }
+  li.dmg-high { background: rgba(230, 126, 34, 0.14); }
+  li.dmg-severe { background: rgba(230, 71, 61, 0.16); }
+  li.dmg-fatal { background: rgba(44, 37, 66, 0.16); }
+  .damage-badge { margin-left: 4px; }
+
+  .tier-legend {
+    display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.78rem;
+    color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);
+  }
+
+  #expenses-section h2 { text-align: center; }
+
+  .damage-cell { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+  .damage-tier-label {
+    font-size: 0.6em; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.03em;
+  }
+
+  #bulk-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; font-size: 0.85rem; }
+  #bulk-toolbar[hidden] { display: none; }
+  .select-all-label { display: flex; align-items: center; gap: 8px; color: var(--muted); cursor: pointer; }
+  #delete-selected-btn { background: var(--danger); padding: 9px 16px; font-size: 0.82rem; }
+  #delete-selected-btn:hover:not(:disabled) { background: #a3291c; }
+  #delete-selected-btn:disabled { background: var(--muted); }
+
+  #chart-wrap { max-width: 340px; margin: 0 auto 24px; }
+  table.totals { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+  table.totals td { padding: 7px 0; }
+  table.totals td:last-child { text-align: right; font-weight: bold; }
+
+  .breakdown-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  @media (max-width: 700px) {
+    .breakdown-charts { grid-template-columns: 1fr; }
+  }
+  .breakdown-chart-wrap h3 { font-size: 0.95rem; margin: 0 0 10px; color: var(--primary-dark); text-align: center; }
+  .breakdown-chart-wrap .chart-box { position: relative; height: 180px; }
+
+  .hp-row { margin-bottom: 16px; }
+  .hp-row:last-of-type { margin-bottom: 0; }
+  .hp-bar-label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
+
+  .hp-bar { position: relative; height: 44px; background: #eee; border: 1px solid var(--border); border-radius: 9px; overflow: hidden; }
+  .hp-fill { height: 100%; width: 0%; transition: width 0.3s ease, background-color 0.3s ease; }
+  .hp-fill.hp-green { background: #4caf50; }
+  .hp-fill.hp-yellow { background: #f0ad2e; }
+  .hp-fill.hp-red { background: #e6473d; }
+  .hp-label {
+    position: absolute; inset: 0; display: flex; align-items: center;
+    justify-content: center; font-size: 0.85rem; font-weight: bold;
+    color: #222; text-shadow: 0 0 3px #fff;
+  }
+  .hp-controls { display: flex; justify-content: flex-end; margin-top: 12px; }
+  .hp-controls button { padding: 7px 16px; font-size: 0.8rem; background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+  .hp-controls button:hover { background: var(--primary); color: #fff; }
+  #budget-edit { display: flex; gap: 10px; margin-top: 12px; align-items: center; justify-content: flex-end; flex-wrap: wrap; }
+  #budget-edit input { width: 130px; }
+
+  .mode-selector { display: flex; gap: 10px; margin-bottom: 14px; }
+  .mode-selector button { flex: 1; padding: 10px; font-size: 0.82rem; background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+  .mode-selector button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  #summon-btn { width: 100%; }
+  #coach-result { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+  .coach-card, .boss-card { border: 1px solid var(--border); border-radius: 9px; padding: 14px 16px; font-size: 0.9rem; }
+  .boss-card { background: #fff4f0; border-color: #f0c4b0; }
+  .boss-card h3 { margin: 0 0 6px; font-size: 1rem; }
+  .boss-card .damage { color: var(--danger); font-weight: bold; }
+  #coach-error, .field-error {
+    color: var(--danger); background: var(--danger-bg); border: 1px solid #f3c6c1;
+    border-radius: 6px; padding: 8px 10px; font-size: 0.85rem; margin-top: 8px;
+  }
+  #coach-loading { font-size: 0.9rem; color: var(--muted); margin-top: 8px; }
+
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(44, 37, 66, 0.45);
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px; z-index: 100;
+  }
+  .modal-overlay[hidden] { display: none; }
+  .modal-card {
+    background: var(--card); border-radius: 14px; padding: 28px;
+    max-width: 380px; width: 100%; box-shadow: 0 10px 30px rgba(44, 37, 66, 0.25);
+    margin: 0;
+  }
+  .modal-card p { margin: 0 0 18px; font-size: 0.95rem; }
+  .modal-actions { display: flex; gap: 12px; justify-content: flex-end; }
+  .modal-actions button { padding: 10px 18px; font-size: 0.9rem; }
+  #confirm-cancel-btn { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  #confirm-cancel-btn:hover { background: var(--bg); }
+  #confirm-delete-btn { background: var(--danger); }
+  #confirm-delete-btn:hover { background: #a3291c; }
+</style>
+</head>
+<body>
+  <div class="bg-decor" aria-hidden="true">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+    <span class="wave wave-2"></span>
+    <span class="wave wave-1"></span>
+  </div>
+
+  <div id="header-row">
+    <h1>🎮 CoinQuest v1.0</h1>
+    <div id="stats">
+      <span id="xp-counter">⭐ XP: —</span>
+      <span id="streak-counter">🔥 Streak: —</span>
+    </div>
+  </div>
+
+  <div class="layout">
+  <section id="hp-section">
+    <div class="hp-row">
+      <span class="hp-bar-label">💵 Cash</span>
+      <div class="hp-bar">
+        <div id="hp-fill-cash" class="hp-fill"></div>
+        <span id="hp-label-cash" class="hp-label">— / — SAR</span>
+      </div>
+    </div>
+    <div class="hp-row">
+      <span class="hp-bar-label">💳 Credit</span>
+      <div class="hp-bar">
+        <div id="hp-fill-credit" class="hp-fill"></div>
+        <span id="hp-label-credit" class="hp-label">— / — SAR</span>
+      </div>
+    </div>
+    <div class="hp-row">
+      <span class="hp-bar-label">🧮 Total</span>
+      <div class="hp-bar">
+        <div id="hp-fill-total" class="hp-fill"></div>
+        <span id="hp-label-total" class="hp-label">— / — SAR</span>
+      </div>
+    </div>
+
+    <div class="hp-controls">
+      <button id="edit-budget-btn" type="button">Edit coins</button>
+    </div>
+    <div id="budget-edit" hidden>
+      <label>Cash coins (SAR)
+        <input type="number" id="cash-budget-input" step="0.01" min="0">
+      </label>
+      <label>Credit coins (SAR)
+        <input type="number" id="credit-budget-input" step="0.01" min="0">
+      </label>
+      <button id="save-budget-btn" type="button">Save</button>
+      <button id="cancel-budget-btn" type="button">Cancel</button>
+      <p id="budget-error" class="field-error" hidden></p>
+    </div>
+  </section>
+
+  <section id="summary">
+    <h2>This month</h2>
+    <div id="chart-wrap"><canvas id="category-chart"></canvas></div>
+    <p id="chart-empty" class="empty-state" hidden>No spending yet this month — add some damage to see your chart.</p>
+    <table class="totals">
+      <tr><td>Coins</td><td id="summary-budget">—</td></tr>
+      <tr><td>Total spent</td><td id="summary-spent">—</td></tr>
+      <tr><td>Remaining</td><td id="summary-remaining">—</td></tr>
+    </table>
+  </section>
+
+  <section id="payment-breakdown">
+    <h2>Cash vs Credit</h2>
+    <div class="breakdown-charts">
+      <div class="breakdown-chart-wrap">
+        <h3>💵 Cash</h3>
+        <div class="chart-box"><canvas id="cash-chart"></canvas></div>
+      </div>
+      <div class="breakdown-chart-wrap">
+        <h3>💳 Credit</h3>
+        <div class="chart-box"><canvas id="credit-chart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="coach">
+    <h2>AI Coach &amp; Boss Fight</h2>
+    <div class="mode-selector">
+      <button type="button" class="mode-btn active" data-mode="coach">🧑‍🏫 Coach</button>
+      <button type="button" class="mode-btn" data-mode="roast">🔥 Roast</button>
+      <button type="button" class="mode-btn" data-mode="pirate">🏴‍☠️ Pirate</button>
+    </div>
+    <button id="summon-btn" type="button">Summon the Coach</button>
+
+    <p id="coach-loading" hidden>Summoning… the AI coach is thinking (this can take up to 30s).</p>
+    <p id="coach-error" hidden></p>
+
+    <div id="coach-result" hidden>
+      <div class="coach-card">
+        <p id="coach-review"></p>
+        <p><strong>Tip:</strong> <span id="coach-tip"></span></p>
+      </div>
+      <div class="boss-card">
+        <h3>🐉 Boss report: <span id="boss-name"></span></h3>
+        <p>Damage dealt: <span id="boss-damage" class="damage"></span></p>
+        <p>Weakness: <span id="boss-weakness"></span></p>
+      </div>
+    </div>
+  </section>
+
+  <form id="expense-form">
+    <h2>Add Damage</h2>
+    <label>Amount (SAR)
+      <input type="number" id="amount" step="0.01" min="0" required>
+    </label>
+    <label>Category
+      <select id="category" required>
+        <option value="Food">Food</option>
+        <option value="Transport">Transport</option>
+        <option value="Shopping">Shopping</option>
+        <option value="Bills">Bills</option>
+        <option value="Other">Other</option>
+      </select>
+    </label>
+    <label id="custom-category-label" hidden>Custom category
+      <input type="text" id="custom-category" maxlength="40">
+    </label>
+    <label>Payment method
+      <select id="payment-method" required>
+        <option value="Cash">💵 Cash</option>
+        <option value="Credit">💳 Credit</option>
+      </select>
+    </label>
+    <label>Note
+      <input type="text" id="note">
+    </label>
+    <label>Date
+      <input type="date" id="date" required>
+    </label>
+    <button type="submit">Log expense</button>
+    <p id="expense-error" class="field-error" hidden></p>
+  </form>
+
+  <section id="expenses-section">
+    <h2>Damage History</h2>
+    <div id="bulk-toolbar" hidden>
+      <label class="select-all-label">
+        <input type="checkbox" id="select-all-checkbox">
+        Select all
+      </label>
+      <button id="delete-selected-btn" type="button" disabled>Delete selected (0)</button>
+    </div>
+    <div class="list-header">
+      <span></span>
+      <button type="button" class="sort-btn" data-key="spent_on">Date<span class="sort-arrow"></span></button>
+      <button type="button" class="sort-btn" data-key="category">Category<span class="sort-arrow"></span></button>
+      <button type="button" class="sort-btn col-method" data-key="payment_method">Method<span class="sort-arrow"></span></button>
+      <button type="button" class="sort-btn" data-key="note">Notes<span class="sort-arrow"></span></button>
+      <button type="button" class="sort-btn col-damage" data-key="amount">Damage<span class="sort-arrow"></span></button>
+      <span></span>
+    </div>
+    <ul id="expense-list"></ul>
+    <p id="list-error" class="field-error" hidden></p>
+    <div class="tier-legend">
+      <span>🟢 Low</span>
+      <span>🟡 Medium</span>
+      <span>🟠 High</span>
+      <span>🔴 Severe</span>
+      <span>💀 Fatal — pushed you over your coins</span>
+    </div>
+  </section>
+  </div>
+
+  <div id="confirm-modal" class="modal-overlay" hidden>
+    <div class="modal-card">
+      <p id="confirm-message">Delete this expense?</p>
+      <div class="modal-actions">
+        <button id="confirm-cancel-btn" type="button">Cancel</button>
+        <button id="confirm-delete-btn" type="button">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("expense-form");
+    const list = document.getElementById("expense-list");
+    const amountInput = document.getElementById("amount");
+    const categoryInput = document.getElementById("category");
+    const paymentMethodInput = document.getElementById("payment-method");
+    const noteInput = document.getElementById("note");
+    const dateInput = document.getElementById("date");
+    const expenseError = document.getElementById("expense-error");
+    const listError = document.getElementById("list-error");
+
+    // Local YYYY-MM-DD. NOT toISOString(), which is UTC and can roll to yesterday.
+    function todayLocal() {
+      const d = new Date();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      return `${d.getFullYear()}-${mm}-${dd}`;
+    }
+
+    dateInput.value = todayLocal();
+
+    // Clicking anywhere on the field opens the native calendar, not just the tiny icon.
+    dateInput.addEventListener("click", () => {
+      if (typeof dateInput.showPicker === "function") dateInput.showPicker();
+    });
+
+    Chart.defaults.font.family = "'Poppins', 'Segoe UI', sans-serif";
+
+    let categoryChart = null;
+    let cashChart = null;
+    let creditChart = null;
+
+    // Draws the row's total (sum across all stacked datasets) at the tip of
+    // each horizontal bar — e.g. the combined length of the Spent segments.
+    Chart.register({
+      id: "rowTotalLabels",
+      afterDatasetsDraw(chart) {
+        if (chart.config.type !== "bar") return;
+        const { ctx, data, scales } = chart;
+        const meta = chart.getDatasetMeta(0);
+
+        data.labels.forEach((rowLabel, rowIndex) => {
+          if (rowLabel === "Remaining") return; // single segment already labels itself
+
+          const bar = meta.data[rowIndex];
+          if (!bar) return;
+
+          const total = data.datasets.reduce((sum, ds) => sum + (ds.data[rowIndex] || 0), 0);
+          const x = scales.x.getPixelForValue(total) + (total >= 0 ? 6 : -6);
+
+          ctx.save();
+          ctx.fillStyle = "#2c2542";
+          ctx.font = "bold 12px 'Poppins', sans-serif";
+          ctx.textAlign = total >= 0 ? "left" : "right";
+          ctx.textBaseline = "middle";
+          ctx.fillText(total.toFixed(2), x, bar.y);
+          ctx.restore();
+        });
+      },
+    });
+
+    // Draws each segment's own value in the middle of that segment, so you don't
+    // have to hover — doughnut slices and each color block within a stacked bar.
+    Chart.register({
+      id: "segmentValueLabels",
+      afterDatasetsDraw(chart) {
+        const { ctx, data } = chart;
+
+        if (chart.config.type === "doughnut") {
+          const meta = chart.getDatasetMeta(0);
+          const total = data.datasets[0].data.reduce((sum, v) => sum + v, 0);
+
+          meta.data.forEach((arc, i) => {
+            const value = data.datasets[0].data[i];
+            if (!value) return;
+            if (arc.endAngle - arc.startAngle < 0.35) return; // too thin to label
+
+            const midAngle = (arc.startAngle + arc.endAngle) / 2;
+            const midRadius = (arc.innerRadius + arc.outerRadius) / 2;
+            const x = arc.x + Math.cos(midAngle) * midRadius;
+            const y = arc.y + Math.sin(midAngle) * midRadius;
+            const percent = total > 0 ? (value / total) * 100 : 0;
+
+            ctx.save();
+            ctx.fillStyle = "#fff";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.font = "bold 12px 'Poppins', sans-serif";
+            ctx.fillText(value.toFixed(2), x, y - 7);
+            ctx.font = "11px 'Poppins', sans-serif";
+            ctx.fillText(`${percent.toFixed(0)}%`, x, y + 7);
+            ctx.restore();
+          });
+          return;
+        }
+
+        if (chart.config.type === "bar") {
+          // Each row's own percentage denominator (e.g. a category's share of
+          // that row's Spent total; trivially 100% for the single-segment rows).
+          const rowTotals = data.labels.map((_, rowIndex) =>
+            data.datasets.reduce((sum, ds) => sum + (ds.data[rowIndex] || 0), 0)
+          );
+
+          data.datasets.forEach((dataset, datasetIndex) => {
+            const meta = chart.getDatasetMeta(datasetIndex);
+            meta.data.forEach((bar, rowIndex) => {
+              const value = dataset.data[rowIndex];
+              if (!value) return;
+              if (Math.abs(bar.x - bar.base) < 30) return; // too narrow to label
+
+              const midX = (bar.x + bar.base) / 2;
+              const showPercent = data.labels[rowIndex] !== "Remaining";
+
+              ctx.save();
+              ctx.fillStyle = "#fff";
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
+              ctx.font = "bold 11px 'Poppins', sans-serif";
+              ctx.fillText(value.toFixed(2), midX, showPercent ? bar.y - 7 : bar.y);
+
+              if (showPercent) {
+                const rowTotal = rowTotals[rowIndex];
+                const percent = rowTotal > 0 ? (value / rowTotal) * 100 : 0;
+                ctx.font = "9px 'Poppins', sans-serif";
+                ctx.fillText(`${percent.toFixed(0)}%`, midX, bar.y + 7);
+              }
+              ctx.restore();
+            });
+          });
+        }
+      },
+    });
+
+    // Every category keeps the same color everywhere (doughnut chart, cash/credit
+    // breakdown bars) — assigned from this palette the first time it's seen.
+    const CATEGORY_PALETTE = [
+      "#6c4fd6", "#d99a00", "#e6473d", "#4caf50", "#3d9dc9", "#e2622a", "#8e44ad", "#16a085",
+    ];
+    const categoryColorMap = new Map();
+
+    function getCategoryColor(category) {
+      if (!categoryColorMap.has(category)) {
+        categoryColorMap.set(category, CATEGORY_PALETTE[categoryColorMap.size % CATEGORY_PALETTE.length]);
+      }
+      return categoryColorMap.get(category);
+    }
+
+    // "Spent" is a stacked bar broken down by category, colored just like the
+    // doughnut chart; "Coins" and "Remaining" stay single flat-colored bars.
+    // Same green/yellow/red thresholds as the HP bars above.
+    function remainingColor(remaining, budget) {
+      const percent = budget > 0 ? (remaining / budget) * 100 : 0;
+      if (percent > 50) return "#4caf50";
+      if (percent >= 20) return "#f0ad2e";
+      return "#e6473d";
+    }
+
+    function buildBreakdownDatasets(budget, categoryTotals, remaining) {
+      const datasets = [
+        { label: "Coins", data: [budget, 0, 0], backgroundColor: "#9c93c2" },
+      ];
+
+      for (const [category, amount] of Object.entries(categoryTotals)) {
+        datasets.push({
+          label: category,
+          data: [0, amount, 0],
+          backgroundColor: getCategoryColor(category),
+        });
+      }
+
+      datasets.push({
+        label: "Remaining",
+        data: [0, 0, remaining],
+        backgroundColor: remainingColor(remaining, budget),
+      });
+
+      return datasets;
+    }
+
+    function upsertBreakdownChart(existing, canvasId, budget, categoryTotals, remaining) {
+      const datasets = buildBreakdownDatasets(budget, categoryTotals, remaining);
+
+      // Leave headroom proportional to the largest bar so the tip label never
+      // gets clipped against the canvas edge, no matter how big the numbers are.
+      const spentTotal = Object.values(categoryTotals).reduce((sum, v) => sum + v, 0);
+      const axisMax = Math.max(budget, spentTotal, remaining, 1) * 1.2;
+
+      if (existing) {
+        existing.data.datasets = datasets;
+        existing.options.scales.x.max = axisMax;
+        existing.update();
+        return existing;
+      }
+
+      const ctx = document.getElementById(canvasId);
+      return new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["Coins", "Spent", "Remaining"],
+          datasets,
+        },
+        options: {
+          indexAxis: "y",
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: { padding: { right: 46 } },
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { stacked: true, beginAtZero: true, max: axisMax },
+            y: { stacked: true },
+          },
+        },
+      });
+    }
+
+    function fmtSAR(n) {
+      return `${n.toFixed(2)} SAR`;
+    }
+
+    function renderBar(key, remaining, budget) {
+      const hpFill = document.getElementById(`hp-fill-${key}`);
+      const hpLabel = document.getElementById(`hp-label-${key}`);
+
+      const percent = budget > 0 ? (remaining / budget) * 100 : 0;
+      const width = Math.max(0, Math.min(100, percent));
+
+      hpFill.style.width = `${width}%`;
+      hpFill.classList.remove("hp-green", "hp-yellow", "hp-red");
+      if (percent > 50) {
+        hpFill.classList.add("hp-green");
+      } else if (percent >= 20) {
+        hpFill.classList.add("hp-yellow");
+      } else {
+        hpFill.classList.add("hp-red");
+      }
+
+      hpLabel.textContent = remaining <= 0
+        ? `Defeated — ${Math.abs(remaining).toFixed(2)} SAR over your coins`
+        : `${remaining.toFixed(2)} / ${budget.toFixed(2)} SAR`;
+    }
+
+    function renderHP(summary) {
+      renderBar("cash", summary.cash_remaining, summary.cash_budget);
+      renderBar("credit", summary.credit_remaining, summary.credit_budget);
+      renderBar("total", summary.remaining, summary.budget);
+    }
+
+    async function loadSummary() {
+      const res = await fetch("/api/summary");
+      const summary = await res.json();
+
+      renderHP(summary);
+
+      document.getElementById("xp-counter").textContent = `⭐ XP: ${summary.xp}`;
+      document.getElementById("streak-counter").textContent =
+        `🔥 Streak: ${summary.streak} day${summary.streak === 1 ? "" : "s"}`;
+
+      document.getElementById("summary-spent").textContent = fmtSAR(summary.total_spent);
+      document.getElementById("summary-budget").textContent = fmtSAR(summary.budget);
+      document.getElementById("summary-remaining").textContent = fmtSAR(summary.remaining);
+
+      cashChart = upsertBreakdownChart(
+        cashChart, "cash-chart", summary.cash_budget, summary.cash_category_totals, summary.cash_remaining
+      );
+      creditChart = upsertBreakdownChart(
+        creditChart, "credit-chart", summary.credit_budget, summary.credit_category_totals, summary.credit_remaining
+      );
+
+      const labels = Object.keys(summary.category_totals);
+      const data = Object.values(summary.category_totals);
+      const colors = labels.map(getCategoryColor);
+      const chartWrap = document.getElementById("chart-wrap");
+      const chartEmpty = document.getElementById("chart-empty");
+
+      if (labels.length === 0) {
+        chartWrap.hidden = true;
+        chartEmpty.hidden = false;
+        return;
+      }
+      chartWrap.hidden = false;
+      chartEmpty.hidden = true;
+
+      const ctx = document.getElementById("category-chart");
+
+      if (categoryChart) {
+        categoryChart.data.labels = labels;
+        categoryChart.data.datasets[0].data = data;
+        categoryChart.data.datasets[0].backgroundColor = colors;
+        categoryChart.update();
+        return;
+      }
+
+      categoryChart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels,
+          datasets: [{
+            data,
+            backgroundColor: colors,
+          }],
+        },
+        options: { plugins: { legend: { position: "bottom" } } },
+      });
+    }
+
+    let selectedIds = new Set();
+    let currentExpenses = [];
+    let currentBudgets = { cash_budget: 0, credit_budget: 0 };
+    let runningTotals = new Map();
+    let sortState = { key: "spent_on", dir: "desc" };
+
+    const NOTE_CHUNK_SIZE = 40;
+    let notesShownChars = new Map();
+
+    // WhatsApp-style progressive reveal: truncate long notes, "Show more"
+    // reveals another chunk at a time rather than the whole note at once.
+    function buildNotesCell(e) {
+      const cell = document.createElement("span");
+      cell.className = "col-notes";
+
+      const note = e.note || "";
+      if (!note) {
+        cell.textContent = "—";
+        return cell;
+      }
+
+      const shown = notesShownChars.get(e.id) || NOTE_CHUNK_SIZE;
+
+      if (note.length <= shown) {
+        cell.textContent = note;
+        return cell;
+      }
+
+      const textSpan = document.createElement("span");
+      textSpan.textContent = note.slice(0, shown) + "… ";
+
+      const moreBtn = document.createElement("button");
+      moreBtn.type = "button";
+      moreBtn.className = "show-more-btn";
+      moreBtn.textContent = "Show more";
+      moreBtn.addEventListener("click", () => {
+        notesShownChars.set(e.id, shown + NOTE_CHUNK_SIZE);
+        renderExpenseList(applySort(currentExpenses));
+      });
+
+      cell.append(textSpan, moreBtn);
+      return cell;
+    }
+
+    // Cumulative spend within the same month AND payment method, in true
+    // chronological order (independent of whatever column the table is sorted by).
+    // Cash and credit are tracked separately since each has its own budget.
+    function computeRunningTotals(expenses) {
+      const byGroup = new Map();
+      for (const e of expenses) {
+        const key = `${e.spent_on.slice(0, 7)}|${e.payment_method}`;
+        if (!byGroup.has(key)) byGroup.set(key, []);
+        byGroup.get(key).push(e);
+      }
+
+      const totals = new Map();
+      for (const group of byGroup.values()) {
+        const chronological = [...group].sort((a, b) =>
+          a.spent_on === b.spent_on ? a.id - b.id : a.spent_on.localeCompare(b.spent_on)
+        );
+        let sum = 0;
+        for (const e of chronological) {
+          sum += e.amount;
+          totals.set(e.id, sum);
+        }
+      }
+      return totals;
+    }
+
+    // Fatal overrides size-based tiers: it means *this* expense is the one whose
+    // month-to-date running total (within its own payment method) first pushed
+    // spending past that payment method's budget.
+    function classifyDamage(expense) {
+      const budget = expense.payment_method === "Credit"
+        ? currentBudgets.credit_budget
+        : currentBudgets.cash_budget;
+
+      const runningTotal = runningTotals.get(expense.id) ?? expense.amount;
+      if (budget > 0 && runningTotal > budget) {
+        return { tier: "fatal", emoji: "💀" };
+      }
+      const ratio = budget > 0 ? expense.amount / budget : 0;
+      if (ratio >= 0.30) return { tier: "severe", emoji: "🔴" };
+      if (ratio >= 0.15) return { tier: "high", emoji: "🟠" };
+      if (ratio >= 0.05) return { tier: "medium", emoji: "🟡" };
+      return { tier: "low", emoji: "🟢" };
+    }
+
+    const sortButtons = document.querySelectorAll(".sort-btn");
+
+    function applySort(expenses) {
+      const { key, dir } = sortState;
+      if (!key) return expenses;
+
+      return [...expenses].sort((a, b) => {
+        let av = a[key];
+        let bv = b[key];
+        if (key === "note") {
+          av = av || "";
+          bv = bv || "";
+        }
+
+        const cmp = typeof av === "number" && typeof bv === "number"
+          ? av - bv
+          : String(av).localeCompare(String(bv), undefined, { sensitivity: "base" });
+
+        return dir === "asc" ? cmp : -cmp;
+      });
+    }
+
+    function updateSortIndicators() {
+      for (const btn of sortButtons) {
+        const arrow = btn.querySelector(".sort-arrow");
+        const isActive = btn.dataset.key === sortState.key;
+        btn.classList.toggle("active", isActive);
+        arrow.textContent = isActive ? (sortState.dir === "asc" ? "▲" : "▼") : "";
+      }
+    }
+
+    for (const btn of sortButtons) {
+      btn.addEventListener("click", () => {
+        const key = btn.dataset.key;
+        if (sortState.key === key) {
+          sortState.dir = sortState.dir === "asc" ? "desc" : "asc";
+        } else {
+          sortState = { key, dir: "asc" };
+        }
+        updateSortIndicators();
+        renderExpenseList(applySort(currentExpenses));
+      });
+    }
+
+    async function loadExpenses() {
+      const [expensesRes, budgetRes] = await Promise.all([
+        fetch("/api/expenses"),
+        fetch("/api/budget"),
+      ]);
+      currentExpenses = await expensesRes.json();
+      currentBudgets = await budgetRes.json();
+      runningTotals = computeRunningTotals(currentExpenses);
+      selectedIds = new Set();
+      notesShownChars = new Map();
+      renderExpenseList(applySort(currentExpenses));
+    }
+
+    function renderExpenseList(expenses) {
+      if (expenses.length === 0) {
+        const li = document.createElement("li");
+        li.className = "empty-state";
+        li.textContent = "No damage yet — your HP bar is safe.";
+        list.replaceChildren(li);
+        bulkToolbar.hidden = true;
+        return;
+      }
+
+      bulkToolbar.hidden = false;
+
+      const fragment = document.createDocumentFragment();
+      for (const e of expenses) {
+        const li = document.createElement("li");
+        const { tier, emoji } = classifyDamage(e);
+        li.classList.add(`dmg-${tier}`);
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "expense-checkbox";
+        checkbox.dataset.id = e.id;
+        checkbox.checked = selectedIds.has(e.id);
+        checkbox.setAttribute("aria-label", "Select this expense");
+        checkbox.addEventListener("change", () => {
+          if (checkbox.checked) selectedIds.add(e.id);
+          else selectedIds.delete(e.id);
+          updateBulkToolbar();
+        });
+
+        // textContent (not innerHTML) so user notes can't inject HTML.
+        const dateCell = document.createElement("span");
+        dateCell.className = "col-date";
+        dateCell.textContent = e.spent_on;
+
+        const categoryCell = document.createElement("span");
+        categoryCell.className = "col-category";
+        categoryCell.textContent = e.category;
+
+        const methodCell = document.createElement("span");
+        methodCell.className = "col-method";
+        methodCell.textContent = e.payment_method === "Credit" ? "💳" : "💵";
+        methodCell.title = e.payment_method;
+
+        const notesCell = buildNotesCell(e);
+
+        const damageCell = document.createElement("span");
+        damageCell.className = "col-damage damage-cell";
+
+        const amountLine = document.createElement("span");
+        amountLine.textContent = `-${e.amount.toFixed(2)} SAR `;
+
+        const badge = document.createElement("span");
+        badge.className = "damage-badge";
+        badge.textContent = emoji;
+        amountLine.append(badge);
+
+        const tierLabel = document.createElement("span");
+        tierLabel.className = "damage-tier-label";
+        tierLabel.textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
+
+        damageCell.append(amountLine, tierLabel);
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.type = "button";
+        deleteBtn.className = "delete-btn";
+        deleteBtn.textContent = "✕";
+        deleteBtn.setAttribute("aria-label", "Delete this expense");
+        deleteBtn.addEventListener("click", () => deleteExpense(e.id));
+
+        li.append(checkbox, dateCell, categoryCell, methodCell, notesCell, damageCell, deleteBtn);
+        fragment.append(li);
+      }
+
+      list.replaceChildren(fragment);  // one DOM update instead of N
+      updateBulkToolbar();
+    }
+
+    const bulkToolbar = document.getElementById("bulk-toolbar");
+    const selectAllCheckbox = document.getElementById("select-all-checkbox");
+    const deleteSelectedBtn = document.getElementById("delete-selected-btn");
+
+    function updateBulkToolbar() {
+      const total = document.querySelectorAll(".expense-checkbox").length;
+      const selected = selectedIds.size;
+
+      deleteSelectedBtn.disabled = selected === 0;
+      deleteSelectedBtn.textContent = `Delete selected (${selected})`;
+      selectAllCheckbox.checked = total > 0 && selected === total;
+      selectAllCheckbox.indeterminate = selected > 0 && selected < total;
+    }
+
+    selectAllCheckbox.addEventListener("change", () => {
+      const checkboxes = document.querySelectorAll(".expense-checkbox");
+      for (const cb of checkboxes) {
+        cb.checked = selectAllCheckbox.checked;
+        if (selectAllCheckbox.checked) selectedIds.add(Number(cb.dataset.id));
+      }
+      if (!selectAllCheckbox.checked) selectedIds.clear();
+      updateBulkToolbar();
+    });
+
+    deleteSelectedBtn.addEventListener("click", async () => {
+      listError.hidden = true;
+      const ids = Array.from(selectedIds);
+      if (ids.length === 0) return;
+
+      const confirmed = await confirmDialog(
+        `Delete ${ids.length} selected expense${ids.length === 1 ? "" : "s"}?`
+      );
+      if (!confirmed) return;
+
+      const res = await fetch("/api/expenses/bulk-delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
+
+      if (!res.ok) {
+        listError.textContent = "Couldn't delete the selected expenses — please try again.";
+        listError.hidden = false;
+        return;
+      }
+
+      loadExpenses();
+      loadSummary();
+    });
+
+    const confirmModal = document.getElementById("confirm-modal");
+    const confirmMessage = document.getElementById("confirm-message");
+    const confirmCancelBtn = document.getElementById("confirm-cancel-btn");
+    const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
+
+    function confirmDialog(message) {
+      confirmMessage.textContent = message;
+      confirmModal.hidden = false;
+
+      return new Promise((resolve) => {
+        function onCancel() { settle(false); }
+        function onConfirm() { settle(true); }
+        function onOverlayClick(event) {
+          if (event.target === confirmModal) settle(false);
+        }
+        function settle(result) {
+          confirmModal.hidden = true;
+          confirmCancelBtn.removeEventListener("click", onCancel);
+          confirmDeleteBtn.removeEventListener("click", onConfirm);
+          confirmModal.removeEventListener("click", onOverlayClick);
+          resolve(result);
+        }
+        confirmCancelBtn.addEventListener("click", onCancel);
+        confirmDeleteBtn.addEventListener("click", onConfirm);
+        confirmModal.addEventListener("click", onOverlayClick);
+      });
+    }
+
+    async function deleteExpense(id) {
+      listError.hidden = true;
+      const confirmed = await confirmDialog("Delete this expense?");
+      if (!confirmed) return;
+
+      const res = await fetch(`/api/expenses/${id}`, { method: "DELETE" });
+
+      if (!res.ok) {
+        listError.textContent = "Couldn't delete that expense — please try again.";
+        listError.hidden = false;
+        return;
+      }
+
+      loadExpenses();
+      loadSummary();
+    }
+
+    const customCategoryLabel = document.getElementById("custom-category-label");
+    const customCategoryInput = document.getElementById("custom-category");
+
+    categoryInput.addEventListener("change", () => {
+      const isOther = categoryInput.value === "Other";
+      customCategoryLabel.hidden = !isOther;
+      if (!isOther) customCategoryInput.value = "";
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      expenseError.hidden = true;
+
+      const usingCustomCategory = categoryInput.value === "Other";
+      const category = usingCustomCategory ? customCategoryInput.value.trim() : categoryInput.value;
+
+      if (usingCustomCategory && !category) {
+        expenseError.textContent = "Please type a custom category, or pick one from the list.";
+        expenseError.hidden = false;
+        return;
+      }
+
+      const res = await fetch("/api/expenses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: parseFloat(amountInput.value),
+          category,
+          note: noteInput.value,
+          date: dateInput.value,
+          payment_method: paymentMethodInput.value,
+        }),
+      });
+
+      if (!res.ok) {
+        expenseError.textContent = "Couldn't save that expense — please check your input and try again.";
+        expenseError.hidden = false;
+        return;  // don't reset the form if it wasn't saved
+      }
+
+      // Keep the last-used predefined category selected (handy for logging several
+      // in a row); a typed custom "Other" category resets back to the default.
+      amountInput.value = "";
+      noteInput.value = "";
+      dateInput.value = todayLocal();
+      if (usingCustomCategory) {
+        categoryInput.value = "Food";
+        customCategoryLabel.hidden = true;
+        customCategoryInput.value = "";
+      }
+
+      loadExpenses();
+      loadSummary();
+    });
+
+    const editBudgetBtn = document.getElementById("edit-budget-btn");
+    const budgetEdit = document.getElementById("budget-edit");
+    const cashBudgetInput = document.getElementById("cash-budget-input");
+    const creditBudgetInput = document.getElementById("credit-budget-input");
+    const saveBudgetBtn = document.getElementById("save-budget-btn");
+    const cancelBudgetBtn = document.getElementById("cancel-budget-btn");
+    const budgetError = document.getElementById("budget-error");
+
+    editBudgetBtn.addEventListener("click", async () => {
+      const res = await fetch("/api/budget");
+      const budget = await res.json();
+      cashBudgetInput.value = budget.cash_budget;
+      creditBudgetInput.value = budget.credit_budget;
+      budgetError.hidden = true;
+      budgetEdit.hidden = false;
+    });
+
+    cancelBudgetBtn.addEventListener("click", () => {
+      budgetEdit.hidden = true;
+    });
+
+    saveBudgetBtn.addEventListener("click", async () => {
+      budgetError.hidden = true;
+      const cashBudget = parseFloat(cashBudgetInput.value);
+      const creditBudget = parseFloat(creditBudgetInput.value);
+      if (!(cashBudget >= 0) || !(creditBudget >= 0)) {
+        budgetError.textContent = "Both coin amounts must be zero or a positive number.";
+        budgetError.hidden = false;
+        return;
+      }
+
+      const res = await fetch("/api/budget", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cash_budget: cashBudget, credit_budget: creditBudget }),
+      });
+
+      if (!res.ok) {
+        budgetError.textContent = "Couldn't save the coins — please try again.";
+        budgetError.hidden = false;
+        return;
+      }
+
+      budgetEdit.hidden = true;
+      loadSummary();
+      loadExpenses();
+    });
+
+    let coachMode = "coach";
+    const modeButtons = document.querySelectorAll(".mode-btn");
+    const summonBtn = document.getElementById("summon-btn");
+    const coachLoading = document.getElementById("coach-loading");
+    const coachError = document.getElementById("coach-error");
+    const coachResult = document.getElementById("coach-result");
+
+    for (const btn of modeButtons) {
+      btn.addEventListener("click", () => {
+        coachMode = btn.dataset.mode;
+        for (const b of modeButtons) b.classList.toggle("active", b === btn);
+      });
+    }
+
+    summonBtn.addEventListener("click", async () => {
+      coachError.hidden = true;
+      coachResult.hidden = true;
+      coachLoading.hidden = false;
+      summonBtn.disabled = true;
+
+      try {
+        const res = await fetch("/api/coach", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ mode: coachMode }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          coachError.textContent = data.detail || "The AI coach is unavailable right now.";
+          coachError.hidden = false;
+          return;
+        }
+
+        document.getElementById("coach-review").textContent = data.review;
+        document.getElementById("coach-tip").textContent = data.tip;
+        document.getElementById("boss-name").textContent = data.boss.name;
+        document.getElementById("boss-damage").textContent = fmtSAR(data.boss.damage);
+        document.getElementById("boss-weakness").textContent = data.boss.weakness;
+        coachResult.hidden = false;
+      } catch {
+        coachError.textContent = "The AI coach is unavailable right now — please try again later.";
+        coachError.hidden = false;
+      } finally {
+        coachLoading.hidden = true;
+        summonBtn.disabled = false;
+      }
+    });
+
+    // Idle XP ticks up on its own (doubling each interval) as long as no new
+    // expense is logged, so poll it independently of the heavier loadSummary().
+    async function updateXPDisplay() {
+      const res = await fetch("/api/xp");
+      const { xp } = await res.json();
+      document.getElementById("xp-counter").textContent = `⭐ XP: ${xp}`;
+    }
+    setInterval(updateXPDisplay, 1000);
+
+    updateSortIndicators();
+    loadExpenses();
+    loadSummary();
+  </script>
+</body>
+</html>

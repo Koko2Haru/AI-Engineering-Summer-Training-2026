@@ -15,12 +15,12 @@ This repository documents my progress throughout a **7-week AI Engineering Summe
 - ✔️ Day 4 & 5 Combined — [Mini-ChatBot (mini-project)](Week-1%20Foundations/Day-4%20&%205%20Prompt%20Patterns/MINI_CHATBOT.md)
 ---
 
-### 📅 Week 2 — AI-Assisted Development
+### 📅 Week 2 — [AI-Assisted Development](/Week-2-AI-Assisted-Development/WEEK2-README.md)
 - ✔️ Day 1 - [Vibe-Coding-Start](Week-2-AI-Assisted-Development/Day-1-Vibe-Coding-Start/SPECS.md)
 - ✔️ Day 2 - [Building-with-an-AI-Partner](/Week-2-AI-Assisted-Development/Day-2-Building-with-an-AI-Partner/SKELETON-V01.md)
 - ✔️ Day 3 - [Reading-AI-Written-Code](/Week-2-AI-Assisted-Development/Day-3-Reading-AI-Written-Code/COINQUEST-V02.md)
 - ✔️ Day 4 - [Debugging-with-AI](/Week-2-AI-Assisted-Development/Day-4-Debugging-with-AI/REVIEW.md)
-- ⏳ Day 5 - *Coming soon*
+- ✔️ Day 5 - [Polishing and Shipping](/Week-2-AI-Assisted-Development/Day-5-Polishing-and-Shipping/COINQUEST-V10.md)
 
 ---
 
