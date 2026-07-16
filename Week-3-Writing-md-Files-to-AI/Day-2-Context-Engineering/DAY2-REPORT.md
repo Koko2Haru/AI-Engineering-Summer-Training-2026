@@ -19,8 +19,8 @@ have to guess a hundred things — which library to use, whether to add a backen
 "difficulty" means, whether infinite loops matter. Every guess is a place where the
 output drifts from what I want.
 
-`CONTEXT.md` exists to remove the guessing. It deliberately contains **zero build
-instructions** — those belong to Day 3's `spec.md`. Instead it carries everything
+[`CONTEXT.md`](./Context/CONTEXT.md) exists to remove the guessing. It deliberately contains **zero build
+instructions** — those belong to Day 3's [`SPEC.md`](../Day-3-Writing-Clear-Specs/Specifications/SPEC.md). Instead it carries everything
 *around* the task:
 
 | Section | What it prevents |
@@ -55,6 +55,6 @@ what a hidden test is. Context isn't just *what* you say — it's *when* you say
 
 ## 🔜 Next Up — Day 3: Writing Clear Specs
 
-`spec.md` sits on top of this context and says only *what to build and how to verify
+[`SPEC.md`](../Day-3-Writing-Clear-Specs/Specifications/SPEC.md) sits on top of this context and says only *what to build and how to verify
 it*: objectives, inputs, outputs, and acceptance criteria written as literally
 checkable statements.

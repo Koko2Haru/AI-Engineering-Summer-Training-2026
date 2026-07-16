@@ -47,7 +47,7 @@ with every element the task asked for:
 - **Headings** — Overview, Goals, Core Features, Behavior Rules, Constraints, Out of Scope, Success Criteria
 - **Lists** — goals, behavior rules, constraints
 - **Table** — the nine v1.0 core features
-- **Code block** — the problem JSON format (which will become the backbone of Day 3's `spec.md` and the target format for the AI question generator)
+- **Code block** — the problem JSON format (which will become the backbone of Day 3's [`SPEC.md`](/Week-3-Writing-md-Files-to-AI/Day-3-Writing-Clear-Specs/Specifications/SPEC.md) and the target format for the AI question generator)
 
 The point of the exercise became obvious in the diff: the messy version needs a human
 to *interpret* it; the structured version can be *executed* — by a person or a model.
@@ -65,6 +65,6 @@ to *interpret* it; the structured version can be *executed* — by a person or a
 
 ## 🔜 Next Up — Day 2: Context Engineering
 
-Build `CONTEXT.md`: everything an AI needs *besides* the task itself — tech
+Build [`CONTEXT.md`](/Week-3-Writing-md-Files-to-AI/Day-2-Context-Engineering/Context/CONTEXT.md): everything an AI needs *besides* the task itself — tech
 constraints with their reasons, definitions, scope boundaries. Half of it already
 exists in today's scoping table.

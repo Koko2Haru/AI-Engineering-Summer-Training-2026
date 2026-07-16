@@ -1,7 +1,7 @@
 # CONTEXT.md — Coddiction
 
 > **Purpose of this document:** everything an AI model needs to know *around* the task
-> before touching it. This is not the task itself — the task lives in `spec.md`. Read
+> before touching it. This is not the task itself — the task lives in [`SPEC.md`](/Week-3-Writing-md-Files-to-AI/Day-3-Writing-Clear-Specs/Specifications/SPEC.md). Read
 > this first, then the spec.
 
 ---
@@ -83,7 +83,7 @@ JavaScript. Do **not** add any of these unless the spec says so.
 
 | File | Role |
 |------|------|
-| `PROJECT-BRIEF-STRUCTURED.md` | What the project is (Day 1) |
-| `CONTEXT.md` | This file — background, constraints, decisions (Day 2) |
-| `spec.md` | The exact build instructions: objectives, inputs, outputs, acceptance criteria (Day 3) |
-| `README.md` + system prompt | Human onboarding + AI operating instructions (Day 4) |
+| [`PROJECT-BRIEF-STRUCTURED.md`](/Week-3-Writing-md-Files-to-AI/Day-1-Why-Structure-Matters/Project-Documents/PROJECT-BRIEF-STRUCTURED.md) | What the project is (Day 1) |
+| [`CONTEXT.md`](#) | This file — background, constraints, decisions (Day 2) |
+| [`SPEC.md`](/Week-3-Writing-md-Files-to-AI/Day-3-Writing-Clear-Specs/Specifications/SPEC.md) | The exact build instructions: objectives, inputs, outputs, acceptance criteria (Day 3) |
+| [`README.md`](/Week-3-Writing-md-Files-to-AI/Day-4-System-Prompts-&-Documentations/Prompt-&-Documentation/README.md) + [system prompt](/Week-3-Writing-md-Files-to-AI/Day-4-System-Prompts-&-Documentations/Prompt-&-Documentation/system-prompt.txt) | Human onboarding + AI operating instructions (Day 4) |
