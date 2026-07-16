@@ -59,7 +59,7 @@ was being rejected by a provably broken test.
 |------|-------------|
 | [`ITERATION-LOG.md`](./Testing/ITERATION-LOG.md) | Full test record: per-iteration scores, notes, screenshots, diagnoses, doc changes, final findings |
 | [`Testing/t1/`–`t3/`](Testing/) | Frozen build per iteration — **`coddiction-v1.html`** (crash) through **`coddiction-v3.html`** (accepted) |
-| [`Testing/t4/coddiction-v4.html`](./Testing/t4/coddiction-v4.html) | The final build: playable sessions, working verdicts, TLE-safe judging, verified test data |
+| [`Testing/t4/coddiction-v4.html`](https://koko2haru.github.io/AI-Engineering-Summer-Training-2026/Week-3-Writing-md-Files-to-AI/Day-5-Test-%26-Iterate/Testing/t4/coddiction-v4.html) | The final build: playable sessions, working verdicts, TLE-safe judging, verified test data |
 
 ---
 

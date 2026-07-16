@@ -25,7 +25,7 @@ debugged by fixing the *documents*, not the output.
 | 2 | Context engineering | [`CONTEXT.md`](Day-2-Context-Engineering/Context/CONTEXT.md) — constraints with reasons, vocabulary, data contract, settled decisions | [Day 2](Day-2-Context-Engineering/DAY2-REPORT.md) |
 | 3 | Writing clear specs | [`SPEC.md`](Day-3-Writing-Clear-Specs/Specifications/SPEC.md) — objectives, judging rules, scoring, 16 pass/fail acceptance criteria | [Day 3](Day-3-Writing-Clear-Specs/DAY3-REPORT.md) |
 | 4 | System prompts & docs | [`README.md`](Day-4-System-Prompts-&-Documentations/Prompt-&-Documentation/README.md) for humans, [`system-prompt.txt`](Day-4-System-Prompts-&-Documentations/Prompt-&-Documentation/system-prompt.txt) for the AI (incl. a JSON-only problem generator mode) | [Day 4](Day-4-System-Prompts-&-Documentations/DAY4-REPORT.md) |
-| 5 | Test & iterate | [`ITERATION-LOG.md`](Day-5-Test-&-Iterate/Testing/ITERATION-LOG.md) + 3 frozen builds in `Testing/t1–t3/`; final game: `Testing/t4/coddiction-v4.html` | [Day 5](Day-5-Test-&-Iterate/DAY5-REPORT.md) |
+| 5 | Test & iterate | [`ITERATION-LOG.md`](Day-5-Test-&-Iterate/Testing/ITERATION-LOG.md) + 3 frozen builds in `Testing/t1–t3/`; final game: [`Testing/t4/coddiction-v4.html`](https://koko2haru.github.io/AI-Engineering-Summer-Training-2026/Week-3-Writing-md-Files-to-AI/Day-5-Test-%26-Iterate/Testing/t4/coddiction-v4.html) | [Day 5](Day-5-Test-&-Iterate/DAY5-REPORT.md) |
 
 ## 🔁 The Day-5 Arc in One Table
 

@@ -24,7 +24,7 @@ report error, no doc change.
 
 ---
 
-## Iteration 1 — [`coddiction-v1.html`](./t1/coddiction.html)
+## Iteration 1 — [`coddiction-v1.html`](https://koko2haru.github.io/AI-Engineering-Summer-Training-2026/Week-3-Writing-md-Files-to-AI/Day-5-Test-%26-Iterate/Testing/t1/coddiction.html)
 
 **Setup:** fresh session, given [`system-prompt.txt`](/Week-3-Writing-md-Files-to-AI/Day-4-System-Prompts-&-Documentations/Prompt-&-Documentation/system-prompt.txt) + [`CONTEXT.md`](/Week-3-Writing-md-Files-to-AI/Day-2-Context-Engineering/Context/CONTEXT.md) + [`SPEC.md`](/Week-3-Writing-md-Files-to-AI/Day-3-Writing-Clear-Specs/Specifications/SPEC.md) +
 kickoff message. Tested via Live Server (*`127.0.0.1:5500`*).
@@ -80,7 +80,7 @@ this is debugging the output, not changing the documents). Output saved as
 
 ---
 
-## Iteration 2 — [`Testing/t2/coddiction-v2.html`](./t2/coddiction-v2.html)
+## Iteration 2 — [`Testing/t2/coddiction-v2.html`](https://koko2haru.github.io/AI-Engineering-Summer-Training-2026/Week-3-Writing-md-Files-to-AI/Day-5-Test-%26-Iterate/Testing/t2/coddiction-v2.html)
 
 **Setup:** iteration-1 console error fed back to the same session (category (c)
 debugging); complete corrected file saved as a new version, t1 left frozen.
@@ -121,7 +121,7 @@ check across many runs · external-import scan of the file.
 
 ---
 
-## Iteration 3 — [`Testing/t3/coddiction-v3.html`](./t3/coddiction-v3.html)
+## Iteration 3 — [`Testing/t3/coddiction-v3.html`](https://koko2haru.github.io/AI-Engineering-Summer-Training-2026/Week-3-Writing-md-Files-to-AI/Day-5-Test-%26-Iterate/Testing/t3/coddiction-v3.html)
 
 **Setup:** fresh session, full rebuild from the updated documents ([`post-iteration-2 SPEC`](./t3/SPEC-MODIFIED-1.md)). No reuse of t1/t2.
 
@@ -168,7 +168,7 @@ rebuild in **`Testing/t4/`**.
 
 ---
 
-## Iteration 4 — [`Testing/t4/coddiction-v4.html`](./t4/coddiction-v4.html) ✅
+## Iteration 4 — [`Testing/t4/coddiction-v4.html`](https://koko2haru.github.io/AI-Engineering-Summer-Training-2026/Week-3-Writing-md-Files-to-AI/Day-5-Test-%26-Iterate/Testing/t4/coddiction-v4.html) ✅
 
 **Setup:** direct-prompt patch of v3 (not a rebuild): fix the stub brace, replace the
 ambiguous Two Sum hidden test, then verify **every** test of **every** problem by

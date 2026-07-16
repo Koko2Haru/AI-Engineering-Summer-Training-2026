@@ -115,3 +115,61 @@ Five days ago this was a one-page spec. Today it's a working, polished, gamified
 **CoinQuest v1.0 — shipped.** 🚀
 
 ![CoinQuest v1.0 — the full dashboard](/Week-2-AI-Assisted-Development/Day-5-Polishing-and-Shipping/CoinQuest-v1/screenshots/v10-full-dashboard.png)
+
+---
+
+## 🚀 How to Run CoinQuest
+
+CoinQuest is a FastAPI + SQLite app with an optional local AI coach (Ollama). It runs
+on your machine — it is **not** hosted on GitHub Pages, because Pages only serves
+static files and CoinQuest needs a live Python backend.
+
+### Requirements
+
+- Python 3.10+
+- pip
+- (Optional, for the AI Coach/Roast/Pirate modes) [Ollama](https://ollama.com) installed and running locally
+
+### 1. Get the code
+
+```bash
+git clone https://github.com/koko2haru/AI-Engineering-Summer-Training-2026.git
+cd AI-Engineering-Summer-Training-2026/Week-2-AI-Assisted-Development/Day-5-Polishing-and-Shipping/CoinQuest-v1
+```
+
+### 2. Install dependencies
+
+```bash
+pip install fastapi uvicorn
+```
+
+### 3. Start the server
+
+```bash
+uvicorn main:app --reload
+```
+
+Then open **http://127.0.0.1:8000** in your browser. That's it — the SQLite database
+is created automatically on first run (and is gitignored, so your expenses stay
+local).
+
+### 4. Optional: enable the AI Coach
+
+The coach features talk to a local Ollama instance:
+
+```bash
+ollama pull <model-name>   # the model used by the app
+ollama serve               # if it isn't already running
+```
+
+Start (or restart) CoinQuest afterwards. Without Ollama running, the rest of the app
+works normally — only the AI coach responses will be unavailable.
+
+### Troubleshooting
+
+| Problem | Fix |
+|---------|-----|
+| `command not found: uvicorn` | Run `pip install uvicorn`, or use `python -m uvicorn main:app --reload` |
+| Port 8000 already in use | `uvicorn main:app --reload --port 8080` and open http://127.0.0.1:8080 |
+| AI coach never replies | Make sure `ollama serve` is running and the model has been pulled |
+| Charts don't load | Chart.js loads from a CDN — you need an internet connection the first time |

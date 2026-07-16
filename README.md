@@ -24,12 +24,12 @@ This repository documents my progress throughout a **7-week AI Engineering Summe
 
 ---
 
-### 📅 Week 3 — Markdown for AI
-- ⏳ Day 1
-- ⏳ Day 2
-- ⏳ Day 3
-- ⏳ Day 4
-- ⏳ Day 5
+### 📅 Week 3 — [Markdown for AI](/Week-3-Writing-md-Files-to-AI/WEEK3-README.md)
+- ✔️ Day 1 - [Why-Structure-Matters](/Week-3-Writing-md-Files-to-AI/Day-1-Why-Structure-Matters/DAY1-REPORT.md)
+- ✔️ Day 2 - [Context-Engineering](/Week-3-Writing-md-Files-to-AI/Day-2-Context-Engineering/DAY2-REPORT.md)
+- ✔️ Day 3 - [Writing-Clear-Specs](/Week-3-Writing-md-Files-to-AI/Day-3-Writing-Clear-Specs/DAY3-REPORT.md)
+- ✔️ Day 4 - [System-Prompts-&-Documentations](/Week-3-Writing-md-Files-to-AI/Day-4-System-Prompts-&-Documentations/DAY4-REPORT.md)
+- ✔️ Day 5 - [Test-&-Iterate](/Week-3-Writing-md-Files-to-AI/Day-5-Test-&-Iterate/DAY5-REPORT.md)
 
 ---
 
