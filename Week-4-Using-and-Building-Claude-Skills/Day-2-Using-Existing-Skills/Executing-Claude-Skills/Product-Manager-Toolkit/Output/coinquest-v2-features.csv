@@ -1,0 +1,8 @@
+name,reach,impact,confidence,effort,description
+Healing Passive (daily/monthly income),90,massive,high,m,"Recurring income (daily allowance / monthly salary) auto-accrues and feeds the budget calc every session"
+Sound Design + BGM,90,low,high,s,"Click/hover SFX and background music heard passively every session; simple to wire up with free assets"
+Healing Potions (side income),26,medium,high,xs,"Preset (50/100/250/1000) or custom one-off income add for side-hustle earnings, reuses existing form pattern"
+Achievements,90,medium,medium,m,"Passive tracking each session (no-spend streaks, HP thresholds) with unlock storage and notification UI"
+Player Character with Equipment,90,medium,medium,l,"Character sprite gains/loses shields and weapons tied to HP; needs multiple equipment-tier states/assets"
+Animated Boss,90,low,medium,l,"Monster animation escalates with damage taken; multiple animation states, cosmetic only"
+Weekly/Monthly/Yearly Reports + Comparison Tool,16,high,medium,l,"Period-aggregated reports and a period-vs-period comparison view; checked roughly weekly, not daily"

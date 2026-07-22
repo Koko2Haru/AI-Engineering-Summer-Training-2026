@@ -1,0 +1,9 @@
+A/B Test Sample Size Estimate
+baseline_rate: 0.428571
+target_rate: 0.514285
+mde_type: relative
+alpha: 0.05
+power: 0.8
+n_per_group: 533
+n_total: 1066
+estimated_days_at_daily_samples_1: 1066

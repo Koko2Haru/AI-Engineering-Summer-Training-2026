@@ -1,0 +1,212 @@
+{
+  "features": [
+    {
+      "name": "Healing Passive (daily/monthly income)",
+      "reach": 90,
+      "impact": "massive",
+      "confidence": "high",
+      "effort": "m",
+      "description": "Recurring income (daily allowance / monthly salary) auto-accrues and feeds the budget calc every session",
+      "rice_score": 54.0
+    },
+    {
+      "name": "Healing Potions (side income)",
+      "reach": 26,
+      "impact": "medium",
+      "confidence": "high",
+      "effort": "xs",
+      "description": "Preset (50/100/250/1000) or custom one-off income add for side-hustle earnings, reuses existing form pattern",
+      "rice_score": 26.0
+    },
+    {
+      "name": "Sound Design + BGM",
+      "reach": 90,
+      "impact": "low",
+      "confidence": "high",
+      "effort": "s",
+      "description": "Click/hover SFX and background music heard passively every session; simple to wire up with free assets",
+      "rice_score": 15.0
+    },
+    {
+      "name": "Achievements",
+      "reach": 90,
+      "impact": "medium",
+      "confidence": "medium",
+      "effort": "m",
+      "description": "Passive tracking each session (no-spend streaks, HP thresholds) with unlock storage and notification UI",
+      "rice_score": 14.4
+    },
+    {
+      "name": "Player Character with Equipment",
+      "reach": 90,
+      "impact": "medium",
+      "confidence": "medium",
+      "effort": "l",
+      "description": "Character sprite gains/loses shields and weapons tied to HP; needs multiple equipment-tier states/assets",
+      "rice_score": 9.0
+    },
+    {
+      "name": "Animated Boss",
+      "reach": 90,
+      "impact": "low",
+      "confidence": "medium",
+      "effort": "l",
+      "description": "Monster animation escalates with damage taken; multiple animation states, cosmetic only",
+      "rice_score": 4.5
+    },
+    {
+      "name": "Weekly/Monthly/Yearly Reports + Comparison Tool",
+      "reach": 16,
+      "impact": "high",
+      "confidence": "medium",
+      "effort": "l",
+      "description": "Period-aggregated reports and a period-vs-period comparison view; checked roughly weekly, not daily",
+      "rice_score": 3.2
+    }
+  ],
+  "analysis": {
+    "total_features": 7,
+    "total_effort_months": 38,
+    "total_reach": 492,
+    "average_rice": 18.01,
+    "effort_distribution": {
+      "m": 2,
+      "xs": 1,
+      "s": 1,
+      "l": 3
+    },
+    "impact_distribution": {
+      "massive": 1,
+      "medium": 3,
+      "low": 2,
+      "high": 1
+    },
+    "quick_wins": 0,
+    "big_bets": 1,
+    "quick_wins_list": [],
+    "big_bets_list": [
+      {
+        "name": "Weekly/Monthly/Yearly Reports + Comparison Tool",
+        "reach": 16,
+        "impact": "high",
+        "confidence": "medium",
+        "effort": "l",
+        "description": "Period-aggregated reports and a period-vs-period comparison view; checked roughly weekly, not daily",
+        "rice_score": 3.2
+      }
+    ]
+  },
+  "roadmap": [
+    {
+      "quarter": 1,
+      "features": [],
+      "capacity_used": 0,
+      "capacity_available": 4
+    },
+    {
+      "quarter": 2,
+      "features": [
+        {
+          "name": "Healing Passive (daily/monthly income)",
+          "reach": 90,
+          "impact": "massive",
+          "confidence": "high",
+          "effort": "m",
+          "description": "Recurring income (daily allowance / monthly salary) auto-accrues and feeds the budget calc every session",
+          "rice_score": 54.0
+        }
+      ],
+      "capacity_used": 5,
+      "capacity_available": -1
+    },
+    {
+      "quarter": 3,
+      "features": [
+        {
+          "name": "Healing Potions (side income)",
+          "reach": 26,
+          "impact": "medium",
+          "confidence": "high",
+          "effort": "xs",
+          "description": "Preset (50/100/250/1000) or custom one-off income add for side-hustle earnings, reuses existing form pattern",
+          "rice_score": 26.0
+        },
+        {
+          "name": "Sound Design + BGM",
+          "reach": 90,
+          "impact": "low",
+          "confidence": "high",
+          "effort": "s",
+          "description": "Click/hover SFX and background music heard passively every session; simple to wire up with free assets",
+          "rice_score": 15.0
+        }
+      ],
+      "capacity_used": 4,
+      "capacity_available": 0
+    },
+    {
+      "quarter": 4,
+      "features": [
+        {
+          "name": "Achievements",
+          "reach": 90,
+          "impact": "medium",
+          "confidence": "medium",
+          "effort": "m",
+          "description": "Passive tracking each session (no-spend streaks, HP thresholds) with unlock storage and notification UI",
+          "rice_score": 14.4
+        }
+      ],
+      "capacity_used": 5,
+      "capacity_available": -1
+    },
+    {
+      "quarter": 5,
+      "features": [
+        {
+          "name": "Player Character with Equipment",
+          "reach": 90,
+          "impact": "medium",
+          "confidence": "medium",
+          "effort": "l",
+          "description": "Character sprite gains/loses shields and weapons tied to HP; needs multiple equipment-tier states/assets",
+          "rice_score": 9.0
+        }
+      ],
+      "capacity_used": 8,
+      "capacity_available": -4
+    },
+    {
+      "quarter": 6,
+      "features": [
+        {
+          "name": "Animated Boss",
+          "reach": 90,
+          "impact": "low",
+          "confidence": "medium",
+          "effort": "l",
+          "description": "Monster animation escalates with damage taken; multiple animation states, cosmetic only",
+          "rice_score": 4.5
+        }
+      ],
+      "capacity_used": 8,
+      "capacity_available": -4
+    },
+    {
+      "quarter": 7,
+      "features": [
+        {
+          "name": "Weekly/Monthly/Yearly Reports + Comparison Tool",
+          "reach": 16,
+          "impact": "high",
+          "confidence": "medium",
+          "effort": "l",
+          "description": "Period-aggregated reports and a period-vs-period comparison view; checked roughly weekly, not daily",
+          "rice_score": 3.2
+        }
+      ],
+      "capacity_used": 8,
+      "capacity_available": -4
+    }
+  ]
+}
