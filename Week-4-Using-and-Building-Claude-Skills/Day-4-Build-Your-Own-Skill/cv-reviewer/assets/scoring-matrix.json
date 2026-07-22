@@ -1,0 +1,52 @@
+{
+  "$schema_note": "Canonical machine-readable scoring configuration for the CV Reviewer skill. Mirrors references/scoring-rubric.md — keep both in sync if either changes.",
+  "overall_score": {
+    "formula": "sum(category_score * weight for each category), rounded to nearest whole number",
+    "categories": [
+      { "key": "ats_compatibility",  "label": "ATS Compatibility",  "weight": 0.20 },
+      { "key": "content_quality",    "label": "Content Quality",    "weight": 0.20 },
+      { "key": "impact",             "label": "Impact",             "weight": 0.15 },
+      { "key": "grammar_spelling",   "label": "Grammar & Spelling", "weight": 0.15 },
+      { "key": "readability",        "label": "Readability",        "weight": 0.10 },
+      { "key": "visual_layout",      "label": "Visual / Layout",    "weight": 0.10 },
+      { "key": "professionalism",    "label": "Professionalism",    "weight": 0.10 }
+    ]
+  },
+  "score_bands": [
+    { "band": "Excellent", "min": 90, "max": 100, "meaning": "Meets or exceeds professional/recruiter expectations with no notable gaps" },
+    { "band": "Strong",    "min": 75, "max": 89,  "meaning": "Solid; minor polish would help" },
+    { "band": "Adequate",  "min": 60, "max": 74,  "meaning": "Functional but has clear, fixable gaps" },
+    { "band": "Weak",      "min": 40, "max": 59,  "meaning": "Multiple significant issues that will likely cost interviews" },
+    { "band": "Poor",      "min": 0,  "max": 39,  "meaning": "Fundamental problems likely to cause ATS failure or outright rejection" }
+  ],
+  "standard_sections": [
+    "contact_info",
+    "summary",
+    "experience",
+    "projects",
+    "education",
+    "skills",
+    "certifications",
+    "achievements"
+  ],
+  "length_norms": [
+    { "profile": "student_entry_level", "years_experience_max": 2, "target_pages": 1 },
+    { "profile": "mid_level", "years_experience_min": 3, "years_experience_max": 8, "target_pages": 1, "max_pages": 2 },
+    { "profile": "senior_staff_plus", "years_experience_min": 8, "target_pages_min": 1, "target_pages_max": 2 },
+    { "profile": "academic_research", "target_pages": "variable - not length constrained" }
+  ],
+  "quantification_patterns": {
+    "description": "Regex-style signals used by scripts/helpers.py to detect quantified bullets",
+    "examples": ["\\d+%", "\\$\\d+", "\\d+x\\b", "\\b\\d+[kKmM]?\\+?\\b", "\\d+ (users|customers|engineers|people|team members)"]
+  },
+  "weak_phrases": [
+    "responsible for",
+    "helped with",
+    "assisted with",
+    "worked on",
+    "involved in",
+    "duties included",
+    "tasked with",
+    "participated in"
+  ]
+}

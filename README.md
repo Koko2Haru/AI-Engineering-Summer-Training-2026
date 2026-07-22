@@ -36,8 +36,8 @@ This repository documents my progress throughout a **7-week AI Engineering Summe
 ### 📅 Week 4 — Claude Skills
 - ✔️ Day 1 - [What-is-a-Skill](/Week-4-Using-and-Building-Claude-Skills/Day-1-What-is-a-skill/DAY1-REPORT.md)
 - ✔️ Day 2 - [Using-Existing-Skills](/Week-4-Using-and-Building-Claude-Skills/Day-2-Using-Existing-Skills/DAY2-REPORT.md)
-- ⏳ Day 3
-- ⏳ Day 4
+- ✔️ Day 3 - [The-SKILL-md-file](/Week-4-Using-and-Building-Claude-Skills/Day-3-The-SKILL-md-Structure/DAY3-REPORT.md)
+- ✔️ Day 4 - [Build-Your-Own-Skill](/Week-4-Using-and-Building-Claude-Skills/Day-4-Build-Your-Own-Skill/DAY4-REPORT.md)
 - ⏳ Day 5
 
 ---
