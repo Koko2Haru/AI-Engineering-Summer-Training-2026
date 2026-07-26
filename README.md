@@ -1,89 +1,157 @@
 # 🤖 AI Engineering Summer Training 2026
 
-Welcome to my AI Engineering Summer Training repository.
+[![Progress](https://img.shields.io/badge/progress-4%2F7%20weeks-blue)]()
+[![Status](https://img.shields.io/badge/status-in%20progress-yellow)]()
+[![Made with](https://img.shields.io/badge/made%20with-Python%20%7C%20Claude%20%7C%20n8n-informational)]()
 
-This repository documents my progress throughout a **7-week AI Engineering Summer Training Program**, where I explore Large Language Models (LLMs), prompt engineering, AI development, automation, and agentic AI through hands-on exercises and projects.
+A running log of a **7-week AI Engineering Summer Training Program** — LLMs, prompt engineering, AI-assisted development, Claude Skills, agentic AI, and workflow automation, learned through daily hands-on exercises and shipped mini-projects (not just notes).
 
----
-
-## 📚 Training Roadmap
-
-### 📅 Week 1 — [Foundations of AI Engineering](Week-1%20Foundations/WEEK1_README.md)
-- ✔️ Day 1 — [LLM Setup](Week-1%20Foundations/Day-1%20LLM%20Setup/FIRST_API_CALL.md)
-- ✔️ Day 2 — [Prompting Fundamentals](Week-1%20Foundations/Day-2%20Prompt%20Fundamentals/DOCKER_TESTING.md)
-- ✔️ Day 3 — [The AI Development Toolchain](Week-1%20Foundations/Day-3%20The%20AI%20Development%20Toolchain/DIAGRAM.md)
-- ✔️ Day 4 & 5 Combined — [Mini-ChatBot (mini-project)](Week-1%20Foundations/Day-4%20&%205%20Prompt%20Patterns/MINI_CHATBOT.md)
----
-
-### 📅 Week 2 — [AI-Assisted Development](/Week-2-AI-Assisted-Development/WEEK2-README.md)
-- ✔️ Day 1 - [Vibe-Coding-Start](Week-2-AI-Assisted-Development/Day-1-Vibe-Coding-Start/SPECS.md)
-- ✔️ Day 2 - [Building-with-an-AI-Partner](/Week-2-AI-Assisted-Development/Day-2-Building-with-an-AI-Partner/SKELETON-V01.md)
-- ✔️ Day 3 - [Reading-AI-Written-Code](/Week-2-AI-Assisted-Development/Day-3-Reading-AI-Written-Code/COINQUEST-V02.md)
-- ✔️ Day 4 - [Debugging-with-AI](/Week-2-AI-Assisted-Development/Day-4-Debugging-with-AI/REVIEW.md)
-- ✔️ Day 5 - [Polishing and Shipping](/Week-2-AI-Assisted-Development/Day-5-Polishing-and-Shipping/COINQUEST-V10.md)
+Alongside the program itself, I have also been juggling **4+ personal projects, a hackathon win, and a stack of parallel certifications** — see [Side Hustles](#-side-hustles--beyond-the-curriculum) below.
 
 ---
 
-### 📅 Week 3 — [Markdown for AI](/Week-3-Writing-md-Files-to-AI/WEEK3-README.md)
-- ✔️ Day 1 - [Why-Structure-Matters](/Week-3-Writing-md-Files-to-AI/Day-1-Why-Structure-Matters/DAY1-REPORT.md)
-- ✔️ Day 2 - [Context-Engineering](/Week-3-Writing-md-Files-to-AI/Day-2-Context-Engineering/DAY2-REPORT.md)
-- ✔️ Day 3 - [Writing-Clear-Specs](/Week-3-Writing-md-Files-to-AI/Day-3-Writing-Clear-Specs/DAY3-REPORT.md)
-- ✔️ Day 4 - [System-Prompts-&-Documentations](/Week-3-Writing-md-Files-to-AI/Day-4-System-Prompts-&-Documentations/DAY4-REPORT.md)
-- ✔️ Day 5 - [Test-&-Iterate](/Week-3-Writing-md-Files-to-AI/Day-5-Test-&-Iterate/DAY5-REPORT.md)
+## Table of Contents
+
+- [Roadmap](#-roadmap)
+- [Side Hustles — Beyond the Curriculum](#-side-hustles--beyond-the-curriculum)
+- [Technologies](#-technologies)
+- [Repository Structure](#-repository-structure)
+- [Goal](#-goal)
 
 ---
 
-### 📅 Week 4 — Claude Skills
-- ✔️ Day 1 - [What-is-a-Skill](/Week-4-Using-and-Building-Claude-Skills/Day-1-What-is-a-skill/DAY1-REPORT.md)
-- ✔️ Day 2 - [Using-Existing-Skills](/Week-4-Using-and-Building-Claude-Skills/Day-2-Using-Existing-Skills/DAY2-REPORT.md)
-- ✔️ Day 3 - [The-SKILL-md-file](/Week-4-Using-and-Building-Claude-Skills/Day-3-The-SKILL-md-Structure/DAY3-REPORT.md)
-- ✔️ Day 4 - [Build-Your-Own-Skill](/Week-4-Using-and-Building-Claude-Skills/Day-4-Build-Your-Own-Skill/DAY4-REPORT.md)
-- ✔️ Day 5 - [Test-and-Chain-Skills](/Week-4-Using-and-Building-Claude-Skills/Day-5-Test-and-Chain-Skills/DAY5-REPORT.md)
+## 🗺 Roadmap
+
+| Week | Topic | Status | Details |
+|:----:|-------|:------:|---------|
+| 1 | Foundations of AI Engineering | ✅ Done | [Week 1 README](Week-1%20Foundations/WEEK1_README.md) |
+| 2 | AI-Assisted Development — *CoinQuest* | ✅ Done | [Week 2 README](Week-2-AI-Assisted-Development/WEEK2-README.md) |
+| 3 | Markdown for AI — *Coddiction* | ✅ Done | [Week 3 README](Week-3-Writing-md-Files-to-AI/WEEK3-README.md) |
+| 4 | Claude Skills — *cv-reviewer → cv-optimizer* | ✅ Done | [Week 4 README](Week-4-Using-and-Building-Claude-Skills/WEEK4-README.md) |
+| 5 | Agentic AI | ⏳ Upcoming | — |
+| 6 | n8n Automation | ⏳ Upcoming | — |
+| 7 | Capstone Project | ⏳ Upcoming | — |
+
+<details open>
+<summary><strong>📅 Week 1 — Foundations of AI Engineering</strong></summary>
+
+| Day | Topic | What happened | Link |
+|:---:|-------|----------------|------|
+| 1 | LLM Setup | Set up Python/VS Code/Ollama, ran a local LLM, and made the first API call while learning basic model parameters. | [FIRST_API_CALL.md](Week-1%20Foundations/Day-1%20LLM%20Setup/FIRST_API_CALL.md) |
+| 2 | Prompting Fundamentals | Dockerized a Jupyter notebook (`prompts_level.ipynb`) and verified it actually executes prompt-engineering exercises inside the container, not just locally. | [DOCKER_TESTING.md](Week-1%20Foundations/Day-2%20Prompt%20Fundamentals/DOCKER_TESTING.md) |
+| 3 | The AI Development Toolchain | Instead of a static write-up, built a **live interactive site** that animates a prompt traveling through `User → Prompt → LLM → API → Application`, explaining APIs, CLIs, and IDEs along the way. | [DIAGRAM.md](Week-1%20Foundations/Day-3%20The%20AI%20Development%20Toolchain/DIAGRAM.md) |
+| 4 & 5 | Mini-ChatBot (mini-project) | Built a local Ollama chat app that logs every prompt/response/parameter to CSV, lets the model trigger PDF/TXT saving via a hand-built function-calling pattern, supports Arabic end-to-end (terminal, PDFs, filenames), and ships as CLI + Gradio GUI, fully Dockerized. | [MINI_CHATBOT.md](Week-1%20Foundations/Day-4%20&%205%20Prompt%20Patterns/MINI_CHATBOT.md) |
+
+</details>
+
+<details>
+<summary><strong>📅 Week 2 — AI-Assisted Development (project: CoinQuest)</strong></summary>
+
+| Day | Topic | What happened | Link |
+|:---:|-------|----------------|------|
+| 1 | Vibe-Coding-Start | Spent ~3 hours researching, longlisted 19 project ideas, and picked **CoinQuest** — a gamified finance tracker with enough real logic to support a full week of build → review → debug → ship. | [SPECS.md](Week-2-AI-Assisted-Development/Day-1-Vibe-Coding-Start/SPECS.md) |
+| 2 | Building with an AI Partner | Shipped CoinQuest v0.1: a FastAPI + SQLite thin vertical slice, using **two Claude instances in different roles** — one as architect, one as hands-on builder. | [SKELETON-V01.md](Week-2-AI-Assisted-Development/Day-2-Building-with-an-AI-Partner/SKELETON-V01.md) |
+| 3 | Reading AI-Written Code | Reviewed the AI-generated v0.1 line by line and found **10 improvements** (readability, efficiency, correctness, plus a security hole and a deprecated API), documented the plan, then had Claude Code apply it file-by-file. | [COINQUEST-V02.md](Week-2-AI-Assisted-Development/Day-3-Reading-AI-Written-Code/COINQUEST-V02.md) |
+| 4 | Debugging with AI | Planted **8 deliberate bugs** across 3 difficulty tiers (easy/medium/hard) and debugged them with Claude Code using **symptoms only** — never revealing bug locations. | [REVIEW.md](Week-2-AI-Assisted-Development/Day-4-Debugging-with-AI/REVIEW.md) |
+| 5 | Polishing and Shipping | Took CoinQuest from a plain, functional v0.5 to a fully gamified finance RPG (v1.0) with XP, a "Damage History" log, and a real UI — one focused Claude Code session per upgrade. | [COINQUEST-V10.md](Week-2-AI-Assisted-Development/Day-5-Polishing-and-Shipping/COINQUEST-V10.md) |
+
+</details>
+
+<details>
+<summary><strong>📅 Week 3 — Markdown for AI (project: Coddiction)</strong></summary>
+
+| Day | Topic | What happened | Link |
+|:---:|-------|----------------|------|
+| 1 | Why Structure Matters | Scoped a new project, **Coddiction** (a shrunk-down LeetCode-style site), and converted an unstructured description into clean, machine-readable Markdown. | [DAY1-REPORT.md](Week-3-Writing-md-Files-to-AI/Day-1-Why-Structure-Matters/DAY1-REPORT.md) |
+| 2 | Context Engineering | Wrote `CONTEXT.md` — everything an AI needs *around* the task (no build instructions) so it stops guessing at libraries, scope, and edge cases. | [DAY2-REPORT.md](Week-3-Writing-md-Files-to-AI/Day-2-Context-Engineering/DAY2-REPORT.md) |
+| 3 | Writing Clear Specs | Turned vague requirements ("there's a timer," "you get points") into an unambiguous `SPEC.md` with exact formulas, scoring, and verdict-priority rules. | [DAY3-REPORT.md](Week-3-Writing-md-Files-to-AI/Day-3-Writing-Clear-Specs/DAY3-REPORT.md) |
+| 4 | System Prompts & Documentation | Wrote two documents for the same project aimed at two different readers: a human-facing `README.md` and a rule-enforcing `system-prompt.txt` for an AI collaborator. | [DAY4-REPORT.md](Week-3-Writing-md-Files-to-AI/Day-4-System-Prompts-&-Documentations/DAY4-REPORT.md) |
+| 5 | Test & Iterate | Ran fresh AI sessions against the spec repeatedly, scored each rebuild against an acceptance checklist, and iterated the docs until output was consistent. | [DAY5-REPORT.md](Week-3-Writing-md-Files-to-AI/Day-5-Test-&-Iterate/DAY5-REPORT.md) |
+
+</details>
+
+<details>
+<summary><strong>📅 Week 4 — Claude Skills (built: cv-reviewer → cv-optimizer)</strong></summary>
+
+| Day | Topic | What happened | Link |
+|:---:|-------|----------------|------|
+| 1 | What is a Skill | Analyzed three existing Claude Skills and wrote up when each should trigger and what problem it solves. | [DAY1-REPORT.md](Week-4-Using-and-Building-Claude-Skills/Day-1-What-is-a-skill/DAY1-REPORT.md) |
+| 2 | Using Existing Skills | Ran those skills against real personal inputs (the actual CoinQuest backlog, real documents) and compared results to what each skill promises. | [DAY2-REPORT.md](Week-4-Using-and-Building-Claude-Skills/Day-2-Using-Existing-Skills/DAY2-REPORT.md) |
+| 3 | The SKILL.md File | Designed a first-draft, annotated `SKILL.md` template — folder layout, frontmatter, `references/`, `scripts/`, `assets/`. | [DAY3-REPORT.md](Week-4-Using-and-Building-Claude-Skills/Day-3-The-SKILL-md-Structure/DAY3-REPORT.md) |
+| 4 | Build Your Own Skill | Built a complete, production-quality skill from scratch: **cv-reviewer**, an AI CV/Resume reviewer with a scoring rubric, ATS rules, and a common-mistakes checklist. | [DAY4-REPORT.md](Week-4-Using-and-Building-Claude-Skills/Day-4-Build-Your-Own-Skill/DAY4-REPORT.md) |
+| 5 | Test and Chain Skills | Built a second skill, **cv-optimizer**, that consumes `cv-reviewer`'s output and rewrites the resume without fabricating anything, then proved the two-skill pipeline end-to-end. | [DAY5-REPORT.md](Week-4-Using-and-Building-Claude-Skills/Day-5-Test-and-Chain-Skills/DAY5-REPORT.md) |
+
+</details>
+
+<details>
+<summary><strong>📅 Week 5 — Agentic AI</strong> (upcoming)</summary>
+
+| Day | Topic | Status |
+|:---:|-------|:------:|
+| 1 | Agents vs. chatbots / the ReAct loop | ⏳ |
+| 2 | Tool use / function calling | ⏳ |
+| 3 | Adding tools & memory | ⏳ |
+| 4 | Planning & task decomposition | ⏳ |
+| 5 | Failure modes & guardrails | ⏳ |
+
+</details>
+
+<details>
+<summary><strong>📅 Week 6 — n8n Automation</strong> (upcoming)</summary>
+
+| Day | Topic | Status |
+|:---:|-------|:------:|
+| 1 | Automation foundations & intro to n8n | ⏳ |
+| 2 | Connecting tools & APIs | ⏳ |
+| 3 | AI workflows & the AI Agent node | ⏳ |
+| 4 | Error handling & human-in-the-loop | ⏳ |
+| 5 | Build an automation | ⏳ |
+
+</details>
+
+<details>
+<summary><strong>📅 Week 7 — Capstone: Agentic AI Application</strong> (upcoming)</summary>
+
+| Milestone | Status |
+|-----------|:------:|
+| Project Planning | ⏳ |
+| Build & Integrate | ⏳ |
+| Testing & Evaluation | ⏳ |
+| Documentation | ⏳ |
+| Demo Day | ⏳ |
+
+</details>
 
 ---
 
-### 📅 Week 5 — Agentic AI
-- ⏳ Day 1
-- ⏳ Day 2
-- ⏳ Day 3
-- ⏳ Day 4
-- ⏳ Day 5
+## 🚀 Side Hustles — Beyond the Curriculum
 
----
+This training hasn't happened in a vacuum — it's been running in parallel with several other things:
 
-### 📅 Week 6 — n8n Automation
-- ⏳ Day 1
-- ⏳ Day 2
-- ⏳ Day 3
-- ⏳ Day 4
-- ⏳ Day 5
-
----
-
-### 📅 Week 7 — Capstone Project
-- ⏳ Project Planning
-- ⏳ Development
-- ⏳ Testing
-- ⏳ Documentation
-- ⏳ Final Presentation
+- 🏆 **Hackathon — KANZ-AI:** Won. *(Project details are gonna be in another repository)*
+  - **AI tools used:** Replit, Claude, NotebookLM, Mini Studio, Magnific, ElevenLabs, HeyGen, Suno, n8n
+- 🛠 **4+ personal projects** — in progress alongside the daily coursework. *(Projects details kept private for now.)*
+- 🎓 **Many courses completed through:**
+  - Udemy (online) — `[NLP / ML]`
+  - Coursera (online) — `[LLM's / Chatbots]`
+  - IBM SkillsBuild (online) — `[Agentic AI / Automation]`
+- ☁️ **Cloud Computing Workshop** (in person) — `[Google Developer Group - GDG]`
 
 ---
 
 ## 🛠 Technologies
 
-- Python
-- Ollama
-- Llama 3.2
-- Jupyter Notebook
-- Git
-- GitHub
-- VS Code
-
----
-
-## 🎯 Goal
-
-By the end of this program, this repository will contain all notebooks, projects, and exercises completed throughout the training, showcasing my progress in AI Engineering.
+| Category | Tools |
+|----------|-------|
+| Language | Python, JavaScript |
+| Web | HTML, CSS |
+| LLM Runtime | Ollama, Llama 3.2 |
+| Notebooks | Jupyter Notebook, Google Colab |
+| AI Tooling | Claude, Claude Code, Claude Skills |
+| Automation | n8n |
+| Containers | Docker, Docker Compose |
+| Version Control | Git, GitHub |
+| Editor | VS Code |
 
 ---
 
@@ -93,16 +161,21 @@ By the end of this program, this repository will contain all notebooks, projects
 AI-Engineering-Summer-Training-2026/
 │
 ├── README.md
-│
 ├── Week-1 Foundations/
-├── Week-2 AI-assisted Development/
-├── Week-3 Markdown for AI/
-├── Week-4 Claude Skills/
-├── Week-5 Agentic AI/
-├── Week-6 n8n Automation/
-└── Week-7 Capstone Project/
+├── Week-2-AI-Assisted-Development/
+├── Week-3-Writing-md-Files-to-AI/
+├── Week-4-Using-and-Building-Claude-Skills/
+├── Week-5-Agentic-AI/            (coming soon)
+├── Week-6-n8n-Automation/        (coming soon)
+└── Week-7-Capstone-Project/      (coming soon)
 ```
 
 ---
 
-⭐ Follow my progress as I build practical AI engineering skills over the next seven weeks.
+## 🎯 Goal
+
+By the end of this program, this repository will contain all notebooks, projects, and exercises completed throughout the training — a full record of hands-on progress in AI Engineering, from first API call to a shipped capstone project.
+
+---
+
+⭐ Follow along as this repository grows week by week.
