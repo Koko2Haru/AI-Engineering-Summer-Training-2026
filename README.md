@@ -89,7 +89,7 @@ Alongside the program itself, I have also been juggling **4+ personal projects, 
 | Day | Topic | What happened | Status | Link |
 |:---:|-------|----------------|:------:|------|
 | 1 | Agents vs. chatbots / the ReAct loop | designed Star Gazer, wrote the agent design doc and Day 1 report, made both diagrams, and confirmed your Gemini vision API works with a real test photo — cleaned up next with structured JSON output and caching. You're set for Day 2. | ✅ Done | [DAY1-REPORT.md](/Week-5-Agentic-AI-Fundamentals/Day-1-Agents-vs-Chatbots/DAY1-REPORT.md) |
-| 2 | Tool use / function calling | — | ⏳ | — |
+| 2 | Tool use / function calling | built basic_agent.py, a single-tool agent using Gemini vision with real function calling. Fixed the .env loading bug, ran it against 5 real photos, and confirmed the loop worked correctly — it called the tool the right number of times on its own and correctly said there was no shared theme across unrelated photos instead of making one up. | ✅ Done | [DAY2-REPORT.md](/Week-5-Agentic-AI-Fundamentals/Day-2-Tool-Use-and-Function-Calling/DAY2-REPORT.md) |
 | 3 | Adding tools & memory | — | ⏳ | — |
 | 4 | Planning & task decomposition | — | ⏳ | — |
 | 5 | Failure modes & guardrails | — | ⏳ | — |
