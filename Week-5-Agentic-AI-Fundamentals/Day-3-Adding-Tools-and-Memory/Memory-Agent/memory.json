@@ -1,0 +1,30 @@
+{
+  "preferences": [
+    "the butterfly and the strawberry are the same collection, they're both from my garden",
+    "the first page is duplicated, remove it"
+  ],
+  "constellations": [
+    {
+      "name": "The Social Circle",
+      "photo_ids": [
+        "1.jpg",
+        "6.jpg",
+        "7.jpg",
+        "8.jpg",
+        "9.jpg",
+        "10.jpg"
+      ],
+      "rationale": "These photos all capture groups of friends or diverse people together in social settings, reflecting shared moments and community.",
+      "locked": false
+    },
+    {
+      "name": "My Garden Wonders",
+      "photo_ids": [
+        "2.jpg",
+        "4.jpg"
+      ],
+      "rationale": "These photos depict a butterfly and a strawberry, both captured in the user's garden.",
+      "locked": false
+    }
+  ]
+}
