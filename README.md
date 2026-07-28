@@ -28,11 +28,11 @@ Alongside the program itself, I have also been juggling **4+ personal projects, 
 | 2 | AI-Assisted Development — *CoinQuest* | ✅ Done | [Week 2 README](Week-2-AI-Assisted-Development/WEEK2-README.md) |
 | 3 | Markdown for AI — *Coddiction* | ✅ Done | [Week 3 README](Week-3-Writing-md-Files-to-AI/WEEK3-README.md) |
 | 4 | Claude Skills — *cv-reviewer → cv-optimizer* | ✅ Done | [Week 4 README](Week-4-Using-and-Building-Claude-Skills/WEEK4-README.md) |
-| 5 | Agentic AI | ⏳ Upcoming | — |
+| 5 | Agentic AI | ✅ Done | [Week 5 README](/Week-5-Agentic-AI-Fundamentals/WEEK5-README.md) |
 | 6 | n8n Automation | ⏳ Upcoming | — |
 | 7 | Capstone Project | ⏳ Upcoming | — |
 
-<details open>
+<details>
 <summary><strong>📅 Week 1 — Foundations of AI Engineering</strong></summary>
 
 | Day | Topic | What happened | Status | Link |
@@ -83,7 +83,7 @@ Alongside the program itself, I have also been juggling **4+ personal projects, 
 
 </details>
 
-<details>
+<details open>
 <summary><strong>📅 Week 5 — Agentic AI (project: Star Gazer)</strong></summary>
 
 | Day | Topic | What happened | Status | Link |
@@ -92,7 +92,7 @@ Alongside the program itself, I have also been juggling **4+ personal projects, 
 | 2 | Tool use / function calling | built basic_agent.py, a single-tool agent using Gemini vision with real function calling. Fixed the .env loading bug, ran it against 5 real photos, and confirmed the loop worked correctly — it called the tool the right number of times on its own and correctly said there was no shared theme across unrelated photos instead of making one up. | ✅ Done | [DAY2-REPORT.md](/Week-5-Agentic-AI-Fundamentals/Day-2-Tool-Use-and-Function-Calling/DAY2-REPORT.md) |
 | 3 | Adding tools & memory | added the second tool (propose_constellation, validated by code before it's accepted) and persistent memory. Ran it against 10 real photos — it correctly caught a duplicate, correctly grouped the 6 people-photos, and correctly left 4 unrelated ones alone instead of forcing a theme. Then proved memory across two separate runs: told it the butterfly and strawberry were from your garden, re-ran organize, and it built "My Garden Wonders" using that reasoning without you repeating it. Also caught and reported honestly that "The Social Circle" is a shallow grouping — a real finding, not swept under the rug. | ✅ Done | [DAY3-REPORT.md](/Week-5-Agentic-AI-Fundamentals/Day-3-Adding-Tools-and-Memory/DAY3-REPORT.md) |
 | 4 | Planning & task decomposition | expanded to 20 photos with real thematic variety, hit and fixed a rate-limit issue with prewarm_cache.py, then ran the full multi-step organize pass. It described all 20 photos, then proposed 4 constellations in one clean pass with zero rejections — two of them (Fruit Still Lifes, Friends of Furry Kind) genuinely well-reasoned, one (Friends and Gatherings) repeating the same shallow "category not memory" pattern flagged in Day 3. | ✅ Done | [DAY4-REPORT.md](/Week-5-Agentic-AI-Fundamentals/Day-4-Planning-and-Decomposition/DAY4-REPORT.md) |
-| 5 | Failure modes & guardrails | — | ⏳ | — |
+| 5 | Failure modes & guardrails | Built and tested three guardrails against real failure modes from earlier days. Two passed clean: the agent correctly refused to re-propose constellations that already existed, and correctly declined to force a theme onto random unrelated photos. The third failed — after a simulated photo failure, the agent's summary claimed all 20 photos were processed, when one had actually errored out. Only an external check caught the false claim; the agent had no way to catch its own dishonesty. Chose to report that gap honestly instead of quietly patching it. | ✅ Done  | [DAY5-REPORT.md](/Week-5-Agentic-AI-Fundamentals/Day-5-Failure-Modes-and-Guardrails/DAY5-REPORT.md) |
 
 </details>
 
@@ -165,7 +165,7 @@ AI-Engineering-Summer-Training-2026/
 ├── Week-2-AI-Assisted-Development/
 ├── Week-3-Writing-md-Files-to-AI/
 ├── Week-4-Using-and-Building-Claude-Skills/
-├── Week-5-Agentic-AI/            (coming soon)
+├── Week-5-Agentic-AI/            
 ├── Week-6-n8n-Automation/        (coming soon)
 └── Week-7-Capstone-Project/      (coming soon)
 ```
