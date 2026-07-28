@@ -1,6 +1,6 @@
 # 🤖 AI Engineering Summer Training 2026
 
-[![Progress](https://img.shields.io/badge/progress-4%2F7%20weeks-blue)]()
+[![Progress](https://img.shields.io/badge/progress-5%2F7%20weeks-blue)]()
 [![Status](https://img.shields.io/badge/status-in%20progress-yellow)]()
 [![Made with](https://img.shields.io/badge/made%20with-Python%20%7C%20Claude%20%7C%20n8n-informational)]()
 
