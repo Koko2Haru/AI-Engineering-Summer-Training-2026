@@ -1,0 +1,297 @@
+{
+  "name": "FreelanceScout - Scheduled Job Fetch",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "fcf81f58-e9ea-41a8-93de-5f5ba8b1a6a3",
+      "name": "Daily at 8am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -128,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.freelancer.com/api/projects/0.1/projects/active/?limit=50&job_details=true",
+        "options": {}
+      },
+      "id": "ba0fffa0-81e1-4f8c-92c9-bcf81352ac25",
+      "name": "Fetch Freelance Projects",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        96,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "result.projects",
+        "options": {}
+      },
+      "id": "603e4a7f-18c2-4241-9638-802e711f44f6",
+      "name": "Split Projects",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        320,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f1",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "f2",
+              "name": "url",
+              "value": "={{ 'https://www.freelancer.com/projects/' + $json.seo_url }}",
+              "type": "string"
+            },
+            {
+              "id": "f3",
+              "name": "skills",
+              "value": "={{ ($json.jobs || []).map(j => j.name).join(', ') }}",
+              "type": "string"
+            },
+            {
+              "id": "f4",
+              "name": "type",
+              "value": "={{ $json.type }}",
+              "type": "string"
+            },
+            {
+              "id": "f5",
+              "name": "budget",
+              "value": "={{ $json.budget ? ($json.budget.minimum + ' - ' + $json.budget.maximum) : '' }}",
+              "type": "string"
+            },
+            {
+              "id": "f6",
+              "name": "currency",
+              "value": "={{ $json.currency ? $json.currency.code : '' }}",
+              "type": "string"
+            },
+            {
+              "id": "f7",
+              "name": "bids",
+              "value": "={{ $json.bid_stats ? $json.bid_stats.bid_count : 0 }}",
+              "type": "number"
+            },
+            {
+              "id": "f8",
+              "name": "posted",
+              "value": "={{ new Date($json.time_submitted * 1000).toISOString().slice(0,16).replace('T',' ') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "68652ec3-cc96-41c8-92e2-5b6f7cb7e34c",
+      "name": "Normalize Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        544,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1dfJqrWXbh_mEUbOmsrzAbX8wWEP9dfxdvpj4Gy0juOY/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "skills",
+              "displayName": "skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "budget",
+              "displayName": "budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "bids",
+              "displayName": "bids",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "posted",
+              "displayName": "posted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "7811ce93-98af-4423-a137-b781475d4036",
+      "name": "Append to Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        752,
+        -16
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ymfE4oWmV60TLUhZ",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Daily at 8am": {
+      "main": [
+        [
+          {
+            "node": "Fetch Freelance Projects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Freelance Projects": {
+      "main": [
+        [
+          {
+            "node": "Split Projects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Projects": {
+      "main": [
+        [
+          {
+            "node": "Normalize Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Fields": {
+      "main": [
+        [
+          {
+            "node": "Append to Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "305cd5a7-2c8b-4395-8401-7d94c7c377a8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bd455199e9ef30ae579a0bc54f800f1843a1f19c26e5de4391365b57dfd4e106"
+  },
+  "nodeGroups": [],
+  "id": "vjy5vzn4KEfGNmDP",
+  "tags": []
+}

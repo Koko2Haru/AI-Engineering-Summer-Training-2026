@@ -1,6 +1,6 @@
 # 🤖 AI Engineering Summer Training 2026
 
-[![Progress](https://img.shields.io/badge/progress-5%2F7%20weeks-blue)]()
+[![Progress](https://img.shields.io/badge/progress-6%2F7%20weeks-blue)]()
 [![Status](https://img.shields.io/badge/status-in%20progress-yellow)]()
 [![Made with](https://img.shields.io/badge/made%20with-Python%20%7C%20Claude%20%7C%20n8n-informational)]()
 
@@ -29,7 +29,7 @@ Alongside the program itself, I have also been juggling **4+ personal projects, 
 | 3 | Markdown for AI — *Coddiction* | ✅ Done | [Week 3 README](Week-3-Writing-md-Files-to-AI/WEEK3-README.md) |
 | 4 | Claude Skills — *cv-reviewer → cv-optimizer* | ✅ Done | [Week 4 README](Week-4-Using-and-Building-Claude-Skills/WEEK4-README.md) |
 | 5 | Agentic AI | ✅ Done | [Week 5 README](/Week-5-Agentic-AI-Fundamentals/WEEK5-README.md) |
-| 6 | n8n Automation | ⏳ Upcoming | — |
+| 6 | n8n Automation | 🛠️ Working on this right now | *`Week 6 README`* |
 | 7 | Capstone Project | ⏳ Upcoming | — |
 
 <details>
@@ -83,7 +83,7 @@ Alongside the program itself, I have also been juggling **4+ personal projects, 
 
 </details>
 
-<details open>
+<details>
 <summary><strong>📅 Week 5 — Agentic AI (project: Star Gazer)</strong></summary>
 
 | Day | Topic | What happened | Status | Link |
@@ -96,12 +96,12 @@ Alongside the program itself, I have also been juggling **4+ personal projects, 
 
 </details>
 
-<details>
-<summary><strong>📅 Week 6 — n8n Automation</strong> (upcoming)</summary>
+<details open>
+<summary><strong>📅 Week 6 — n8n Automation (project: personalized freelance job looker)</strong></summary>
 
 | Day | Topic | What happened | Status | Link |
 |:---:|-------|----------------|:------:|------|
-| 1 | Automation foundations & intro to n8n | — | ⏳ | — |
+| 1 | Automation foundations & intro to n8n | Built the first n8n workflow and the data spine of FreelanceScout: a scheduled workflow that pulls 50 live freelance projects from the Freelancer.com API every morning, splits them into individual items, normalizes them into 8 clean columns, and appends them to Google Sheets. Verified it running unattended, then exported it and wrote it up. | ✅ Done | [DAY1-REPORT.md](/Week-5-Agentic-AI-Fundamentals/Day-1-Agents-vs-Chatbots/DAY1-REPORT.md)|
 | 2 | Connecting tools & APIs | — | ⏳ | — |
 | 3 | AI workflows & the AI Agent node | — | ⏳ | — |
 | 4 | Error handling & human-in-the-loop | — | ⏳ | — |
@@ -166,7 +166,7 @@ AI-Engineering-Summer-Training-2026/
 ├── Week-3-Writing-md-Files-to-AI/
 ├── Week-4-Using-and-Building-Claude-Skills/
 ├── Week-5-Agentic-AI/            
-├── Week-6-n8n-Automation/        (coming soon)
+├── Week-6-n8n-Automation/      
 └── Week-7-Capstone-Project/      (coming soon)
 ```
 
