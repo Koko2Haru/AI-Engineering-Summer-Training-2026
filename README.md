@@ -97,13 +97,13 @@ Alongside the program itself, I have also been juggling **4+ personal projects, 
 </details>
 
 <details open>
-<summary><strong>📅 Week 6 — n8n Automation (project: jobber - personalized freelance job looker)</strong></summary>
+<summary><strong>📅 Week 6 — n8n Automation (project: jobber - personalized-automated freelance job looker)</strong></summary>
 
 | Day | Topic | What happened | Status | Link |
 |:---:|-------|----------------|:------:|------|
 | 1 | Automation foundations & intro to n8n | Built the first n8n workflow and the data spine of FreelanceScout: a scheduled workflow that pulls 50 live freelance projects from the Freelancer.com API every morning, splits them into individual items, normalizes them into 8 clean columns, and appends them to Google Sheets. Verified it running unattended, then exported it and wrote it up. | ✅ Done | [DAY1-REPORT.md](/Week-6-Automation-and-Orchestration-with-n8n/Day-1-Automation-Foundations-and-Intro-to-n8n/DAY1-REPORT.md)|
 | 2 | Connecting tools & APIs | Connected three external APIs and two tools into a single n8n workflow — Freelancer.com and Arbeitnow as job sources, a live exchange-rate API to make their budgets comparable, then Google Sheets to store and Gmail to notify. Also closed out the duplication bug Day 1 exposed, and tested four candidate APIs before picking the second source instead of guessing. | ✅ Done | [DAY2-REPORT.md](/Week-6-Automation-and-Orchestration-with-n8n/Day-2-Connecting-Tools-and-APIs-in-n8n/DAY2-REPORT.md) |
-| 3 | AI workflows & the AI Agent node | — | ⏳ | — |
+| 3 | AI workflows & the AI Agent node | Turned FreelanceScout from a job scraper into the actual product. Built a 15-node workflow that reads a CV from Google Drive, extracts a skill profile with Gemini, scores all 64 collected gigs against it with DeepSeek, and writes tailored pitches for the top 5 with Llama 3.3 on Groq — three chained LLM steps, three different models, each one feeding the next. Also built a fully synthetic CV as the test fixture so nothing personal goes to third-party APIs. | ✅ Done | [DAY3-REPORT.md](/Week-6-Automation-and-Orchestration-with-n8n/Day-3-AI-Workflows-and-Chaining-Agents/DAY3-REPORT.md) |
 | 4 | Error handling & human-in-the-loop | — | ⏳ | — |
 | 5 | Build an automation | — | ⏳ | — |
 

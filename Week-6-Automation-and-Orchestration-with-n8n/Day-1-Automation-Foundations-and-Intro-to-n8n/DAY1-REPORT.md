@@ -132,8 +132,9 @@ That is Day 2's problem, and now it's grounded in observed data instead of an as
 ## 📦 6. Deliverables produced today
 
 1. **`Introduction-to-n8n/scheduled-job-fetch.json`** — the exported workflow, importable into any n8n instance.
-2. **`Introduction-to-n8n/screenshots/`** — canvas, node config, scheduled-execution proof, output, and the duplication issue.
-3. **`DAY1-REPORT.md`** — this report.
+2. **`Introduction-to-n8n/jobs-output.csv`** — the actual sheet contents exported, so the output is reviewable without needing access to my Google account. The header row has been restored to line 1 (the sort had left it at line 214), but the data itself is untouched: **all 250 rows are kept**, duplicates included, because that accumulation across repeated scheduled runs is the evidence for the duplication problem described above — and the problem Day 2 exists to fix.
+3. **`Introduction-to-n8n/screenshots/`** — canvas, node config, scheduled-execution proof, output, and the duplication issue.
+4. **`DAY1-REPORT.md`** — this report.
 
 > **Note on hosting:** Week 6 runs on an n8n Cloud trial. Every workflow is exported to this repo as JSON at the end of each day, so the work survives the trial expiring and can be re-imported into a self-hosted instance for the Week 7 capstone.
 
@@ -162,5 +163,6 @@ Per the plan: connect two external APIs and exchange data between them. For Free
 ## 📚 References
 
 - **[`Introduction-to-n8n/scheduled-job-fetch.json`](Introduction-to-n8n/scheduled-job-fetch.json)** — the workflow built today
+- **[`Introduction-to-n8n/jobs-output.csv`](Introduction-to-n8n/jobs-output.csv)** — the data this workflow actually produced
 - **Freelancer.com API** — `https://www.freelancer.com/api/projects/0.1/projects/active/`
 - **n8n docs** — Schedule Trigger, Split Out, Edit Fields, Google Sheets nodes

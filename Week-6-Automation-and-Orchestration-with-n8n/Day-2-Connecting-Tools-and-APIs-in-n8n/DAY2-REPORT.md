@@ -176,8 +176,25 @@ Recording it because the *reasoning* was the mistake, not the tool: I read row p
 ## 📦 9. Deliverables produced today
 
 1. **`Multiple-Connections/multi-api-job-pipeline.json`** — the exported 14-node workflow.
-2. **`Multiple-Connections/screenshots/`** — workflow, execution, sheet output, and the confirmed email.
-3. **`DAY2-REPORT.md`** — this report.
+2. **`Multiple-Connections/merged-jobs-output.csv`** — the 64 merged, converted and deduplicated rows this workflow produced.
+3. **`Multiple-Connections/screenshots/`** — workflow, execution, sheet output, and the confirmed email.
+4. **`DAY2-REPORT.md`** — this report.
+
+### A third bug, found while exporting that CSV
+
+The sheet's header row was written as `skill` (singular) while the workflow outputs `skills`. Auto-map could not find a matching column — and instead of failing, **it silently created new columns at the end of the sheet**:
+
+```
+col  3   skill    filled   0/64    <- orphaned by the typo
+col 11   skills   filled  64/64    <- appended by n8n
+col 12   type     filled  64/64    <- appended by n8n
+```
+
+No error, no warning, and the run reported success. The same lesson as Day 1's date bug, from a different direction: **a green execution says the workflow ran, not that the data is right.** With `Map Automatically`, a single-character header typo is enough to quietly restructure the destination.
+
+The committed CSV has the orphaned `skill` column removed (verified empty across all 64 rows before dropping). Every value produced by the workflow is intact — only the column the typo stranded is gone.
+
+(`currency` showing 53/64 is *not* a bug — the 11 Arbeitnow rows genuinely carry no currency, as described under Known limitations.)
 
 ---
 
@@ -202,6 +219,7 @@ Per the plan: multiple LLM steps processing data sequentially before producing a
 ## 📚 References
 
 - **[`Multiple-Connections/multi-api-job-pipeline.json`](Multiple-Connections/multi-api-job-pipeline.json)** — the workflow built today
+- **[`Multiple-Connections/merged-jobs-output.csv`](Multiple-Connections/merged-jobs-output.csv)** — the 64 rows it produced
 - **[`../Day-1-Automation-Foundations-and-Intro-to-n8n/DAY1-REPORT.md`](../Day-1-Automation-Foundations-and-Intro-to-n8n/DAY1-REPORT.md)** — Day 1, where the duplication bug was found
 - **Freelancer.com API** — `https://www.freelancer.com/api/projects/0.1/projects/active/`
 - **Arbeitnow API** — `https://www.arbeitnow.com/api/job-board-api`
