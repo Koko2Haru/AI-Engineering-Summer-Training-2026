@@ -29,7 +29,7 @@ Alongside the program itself, I have also been juggling **4+ personal projects, 
 | 3 | Markdown for AI — *Coddiction* | ✅ Done | [Week 3 README](Week-3-Writing-md-Files-to-AI/WEEK3-README.md) |
 | 4 | Claude Skills — *cv-reviewer → cv-optimizer* | ✅ Done | [Week 4 README](Week-4-Using-and-Building-Claude-Skills/WEEK4-README.md) |
 | 5 | Agentic AI | ✅ Done | [Week 5 README](/Week-5-Agentic-AI-Fundamentals/WEEK5-README.md) |
-| 6 | n8n Automation | 🛠️ Working on this right now | *`Week 6 README`* |
+| 6 | n8n Automation | 🛠️ Working on it | *`Week 6 README`* |
 | 7 | Capstone Project | ⏳ Upcoming | — |
 
 <details>
@@ -97,12 +97,12 @@ Alongside the program itself, I have also been juggling **4+ personal projects, 
 </details>
 
 <details open>
-<summary><strong>📅 Week 6 — n8n Automation (project: personalized freelance job looker)</strong></summary>
+<summary><strong>📅 Week 6 — n8n Automation (project: jobber - personalized freelance job looker)</strong></summary>
 
 | Day | Topic | What happened | Status | Link |
 |:---:|-------|----------------|:------:|------|
-| 1 | Automation foundations & intro to n8n | Built the first n8n workflow and the data spine of FreelanceScout: a scheduled workflow that pulls 50 live freelance projects from the Freelancer.com API every morning, splits them into individual items, normalizes them into 8 clean columns, and appends them to Google Sheets. Verified it running unattended, then exported it and wrote it up. | ✅ Done | [DAY1-REPORT.md](/Week-5-Agentic-AI-Fundamentals/Day-1-Agents-vs-Chatbots/DAY1-REPORT.md)|
-| 2 | Connecting tools & APIs | — | ⏳ | — |
+| 1 | Automation foundations & intro to n8n | Built the first n8n workflow and the data spine of FreelanceScout: a scheduled workflow that pulls 50 live freelance projects from the Freelancer.com API every morning, splits them into individual items, normalizes them into 8 clean columns, and appends them to Google Sheets. Verified it running unattended, then exported it and wrote it up. | ✅ Done | [DAY1-REPORT.md](/Week-6-Automation-and-Orchestration-with-n8n/Day-1-Automation-Foundations-and-Intro-to-n8n/DAY1-REPORT.md)|
+| 2 | Connecting tools & APIs | Connected three external APIs and two tools into a single n8n workflow — Freelancer.com and Arbeitnow as job sources, a live exchange-rate API to make their budgets comparable, then Google Sheets to store and Gmail to notify. Also closed out the duplication bug Day 1 exposed, and tested four candidate APIs before picking the second source instead of guessing. | ✅ Done | [DAY2-REPORT.md](/Week-6-Automation-and-Orchestration-with-n8n/Day-2-Connecting-Tools-and-APIs-in-n8n/DAY2-REPORT.md) |
 | 3 | AI workflows & the AI Agent node | — | ⏳ | — |
 | 4 | Error handling & human-in-the-loop | — | ⏳ | — |
 | 5 | Build an automation | — | ⏳ | — |

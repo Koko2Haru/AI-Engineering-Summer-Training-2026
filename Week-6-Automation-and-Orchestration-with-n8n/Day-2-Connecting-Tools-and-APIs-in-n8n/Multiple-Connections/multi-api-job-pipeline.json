@@ -1,0 +1,676 @@
+{
+  "name": "FreelanceScout - Multi-API Job Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "63d4d0a9-3682-46e4-a2de-44a48afb9189",
+      "name": "Daily at 8am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -64,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://open.er-api.com/v6/latest/USD",
+        "options": {}
+      },
+      "id": "9dceede7-7d03-4166-bff6-e5d59eac3e92",
+      "name": "Fetch Exchange Rates",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        176,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.freelancer.com/api/projects/0.1/projects/active/?limit=50&job_details=true",
+        "options": {}
+      },
+      "id": "c1bd826c-82ad-426f-9296-58ed4d0aa9a7",
+      "name": "Fetch Freelancer Projects",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        384,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "result.projects",
+        "options": {}
+      },
+      "id": "e0d44410-28f4-4ef8-b9f8-3cb7cd8db994",
+      "name": "Split Freelancer",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        608,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f1",
+              "name": "source",
+              "value": "freelancer",
+              "type": "string"
+            },
+            {
+              "id": "f2",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "f3",
+              "name": "url",
+              "value": "={{ 'https://www.freelancer.com/projects/' + $json.seo_url }}",
+              "type": "string"
+            },
+            {
+              "id": "f4",
+              "name": "skills",
+              "value": "={{ ($json.jobs || []).map(j => j.name).join(', ') }}",
+              "type": "string"
+            },
+            {
+              "id": "f5",
+              "name": "type",
+              "value": "={{ $json.type }}",
+              "type": "string"
+            },
+            {
+              "id": "f6",
+              "name": "budget_min",
+              "value": "={{ $json.budget ? $json.budget.minimum : 0 }}",
+              "type": "number"
+            },
+            {
+              "id": "f7",
+              "name": "budget_max",
+              "value": "={{ $json.budget ? $json.budget.maximum : 0 }}",
+              "type": "number"
+            },
+            {
+              "id": "f8",
+              "name": "currency",
+              "value": "={{ $json.currency ? $json.currency.code : '' }}",
+              "type": "string"
+            },
+            {
+              "id": "f9",
+              "name": "bids",
+              "value": "={{ $json.bid_stats ? $json.bid_stats.bid_count : 0 }}",
+              "type": "number"
+            },
+            {
+              "id": "f10",
+              "name": "posted",
+              "value": "={{ new Date($json.time_submitted * 1000).toISOString().slice(0,16).replace('T',' ') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b7d9c4c2-9625-465a-93a5-4a4df40e9a1e",
+      "name": "Normalize Freelancer",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        832,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.arbeitnow.com/api/job-board-api",
+        "options": {}
+      },
+      "id": "c1b997e5-dba4-471a-ad7c-3a0eeea259b8",
+      "name": "Fetch Arbeitnow Jobs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        384,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "de999de7-b7ff-4ad9-a1fd-42c851c37a9e",
+      "name": "Split Arbeitnow",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        608,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "contract-check",
+              "leftValue": "={{ JSON.stringify($json.job_types || '') }}",
+              "rightValue": "Contract",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5927d67c-9eb4-4deb-a309-0899c7c031c9",
+      "name": "Contract Only",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        832,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f1",
+              "name": "source",
+              "value": "arbeitnow",
+              "type": "string"
+            },
+            {
+              "id": "f2",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "f3",
+              "name": "url",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            },
+            {
+              "id": "f4",
+              "name": "skills",
+              "value": "={{ ($json.tags || []).join(', ') }}",
+              "type": "string"
+            },
+            {
+              "id": "f5",
+              "name": "type",
+              "value": "contract",
+              "type": "string"
+            },
+            {
+              "id": "f6",
+              "name": "budget_min",
+              "value": 0,
+              "type": "number"
+            },
+            {
+              "id": "f7",
+              "name": "budget_max",
+              "value": 0,
+              "type": "number"
+            },
+            {
+              "id": "f8",
+              "name": "currency",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "f9",
+              "name": "bids",
+              "value": 0,
+              "type": "number"
+            },
+            {
+              "id": "f10",
+              "name": "posted",
+              "value": "={{ new Date($json.created_at * 1000).toISOString().slice(0,16).replace('T',' ') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d1f3b5ca-a206-4a07-ba21-3bf2af9a0f2c",
+      "name": "Normalize Arbeitnow",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1056,
+        320
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "553eb9ab-8d94-48be-825f-b19f92ae960e",
+      "name": "Merge Sources",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1296,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f1",
+              "name": "budget_usd_min",
+              "value": "={{ $json.currency && $('Fetch Exchange Rates').first().json.rates[$json.currency] ? Math.round($json.budget_min / $('Fetch Exchange Rates').first().json.rates[$json.currency]) : 0 }}",
+              "type": "number"
+            },
+            {
+              "id": "f2",
+              "name": "budget_usd_max",
+              "value": "={{ $json.currency && $('Fetch Exchange Rates').first().json.rates[$json.currency] ? Math.round($json.budget_max / $('Fetch Exchange Rates').first().json.rates[$json.currency]) : 0 }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "c848aa17-da3e-4d0b-9411-58a1d2bbc6c1",
+      "name": "Convert to USD",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1504,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "removeItemsSeenInPreviousExecutions",
+        "dedupeValue": "={{ $json.url }}",
+        "options": {}
+      },
+      "id": "e7354ae3-c836-4e09-9451-ddfb0de5143e",
+      "name": "Dedupe by URL",
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        1728,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/12AIJgw-YOYW5d5T2mJLC0uKBcpMgYE90kywZec0OAbc/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "skill",
+              "displayName": "skill",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "budget_min",
+              "displayName": "budget_min",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "budget_max",
+              "displayName": "budget_max",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "budget_usd_min",
+              "displayName": "budget_usd_min",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "budget_usd_max",
+              "displayName": "budget_usd_max",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "bids",
+              "displayName": "bids",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "posted",
+              "displayName": "posted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "9ef9e7f4-504e-49bd-8469-7e292ad6e40d",
+      "name": "Append to Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1952,
+        144
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ymfE4oWmV60TLUhZ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "aliah11053@gmail.com",
+        "subject": "=FreelanceScout - {{ $('Dedupe by URL').all().length }} new gigs today",
+        "emailType": "text",
+        "message": "={{ $('Dedupe by URL').all().length }} new freelance gigs found today.\n\nTop 5 by budget:\n\n{{ $('Dedupe by URL').all().sort((a,b) => b.json.budget_usd_max - a.json.budget_usd_max).slice(0,5).map(i => '- ' + i.json.title + '\\n  ' + (i.json.budget_usd_max ? '$' + i.json.budget_usd_min + ' - $' + i.json.budget_usd_max : 'budget not listed') + ' | ' + i.json.source + '\\n  ' + i.json.url).join('\\n\\n') }}\n\nFull list in the Google Sheet.",
+        "options": {}
+      },
+      "id": "33f72dd6-1af5-4f5e-bea9-d3a13384d9b3",
+      "name": "Email Summary",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2176,
+        144
+      ],
+      "executeOnce": true,
+      "webhookId": "9cb79dc6-d9b5-4d78-b876-ea2af5720223",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "upVAVMiZa9NhHIfj",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Daily at 8am": {
+      "main": [
+        [
+          {
+            "node": "Fetch Exchange Rates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Exchange Rates": {
+      "main": [
+        [
+          {
+            "node": "Fetch Freelancer Projects",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Arbeitnow Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Freelancer Projects": {
+      "main": [
+        [
+          {
+            "node": "Split Freelancer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Freelancer": {
+      "main": [
+        [
+          {
+            "node": "Normalize Freelancer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Freelancer": {
+      "main": [
+        [
+          {
+            "node": "Merge Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Arbeitnow Jobs": {
+      "main": [
+        [
+          {
+            "node": "Split Arbeitnow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Arbeitnow": {
+      "main": [
+        [
+          {
+            "node": "Contract Only",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contract Only": {
+      "main": [
+        [
+          {
+            "node": "Normalize Arbeitnow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Arbeitnow": {
+      "main": [
+        [
+          {
+            "node": "Merge Sources",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Sources": {
+      "main": [
+        [
+          {
+            "node": "Convert to USD",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to USD": {
+      "main": [
+        [
+          {
+            "node": "Dedupe by URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dedupe by URL": {
+      "main": [
+        [
+          {
+            "node": "Append to Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append to Sheet": {
+      "main": [
+        [
+          {
+            "node": "Email Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "2553994b-f239-4383-908f-fad4a9f15dab",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bd455199e9ef30ae579a0bc54f800f1843a1f19c26e5de4391365b57dfd4e106"
+  },
+  "nodeGroups": [],
+  "id": "vjy5vzn4KEfGNmDP",
+  "tags": []
+}
