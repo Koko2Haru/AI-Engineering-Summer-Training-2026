@@ -1,0 +1,68 @@
+{
+  "name": "FreelanceScout - Error Handler",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "ef3d97c2-2380-4626-95c4-7483b465248c",
+      "name": "On Workflow Error",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "YOUR_EMAIL_HERE",
+        "subject": "=[FreelanceScout] {{ $json.workflow.name }} failed at {{ $json.execution.lastNodeExecuted }}",
+        "emailType": "text",
+        "message": "=A FreelanceScout workflow failed.\n\nWorkflow : {{ $json.workflow.name }}\nFailed at: {{ $json.execution.lastNodeExecuted }}\nWhen     : {{ new Date().toISOString().slice(0,16).replace('T',' ') }}\n\nError:\n{{ $json.execution.error.message }}\n\nOpen the failed execution:\n{{ $json.execution.url }}",
+        "options": {}
+      },
+      "id": "f75f7f3b-ef13-4e0b-8fed-d86bd6799542",
+      "name": "Email the Failure",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        208,
+        -16
+      ],
+      "webhookId": "d73f792c-615e-49fc-a01f-b565b1926cbc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "upVAVMiZa9NhHIfj",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On Workflow Error": {
+      "main": [
+        [
+          {
+            "node": "Email the Failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "5d519d2e-509c-4574-80a2-067f5dcb13f1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bd455199e9ef30ae579a0bc54f800f1843a1f19c26e5de4391365b57dfd4e106"
+  },
+  "nodeGroups": [],
+  "id": "DvJ4aWxqCopnv54a",
+  "tags": []
+}
