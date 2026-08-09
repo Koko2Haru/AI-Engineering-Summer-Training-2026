@@ -97,7 +97,7 @@ Alongside the program itself, I have also been juggling **4+ personal projects, 
 </details>
 
 <details open>
-<summary><strong>📅 Week 6 — n8n Automation (project: jobber - personalized-automated freelance job looker)</strong></summary>
+<summary><strong>📅 Week 6 — n8n Automation (project: personalized-automated freelance job looker prototype)</strong></summary>
 
 | Day | Topic | What happened | Status | Link |
 |:---:|-------|----------------|:------:|------|
