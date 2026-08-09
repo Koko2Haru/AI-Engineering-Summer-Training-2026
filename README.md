@@ -29,7 +29,7 @@ Alongside the program itself, I have also been juggling **4+ personal projects, 
 | 3 | Markdown for AI — *Coddiction* | ✅ Done | [Week 3 README](Week-3-Writing-md-Files-to-AI/WEEK3-README.md) |
 | 4 | Claude Skills — *cv-reviewer → cv-optimizer* | ✅ Done | [Week 4 README](Week-4-Using-and-Building-Claude-Skills/WEEK4-README.md) |
 | 5 | Agentic AI | ✅ Done | [Week 5 README](/Week-5-Agentic-AI-Fundamentals/WEEK5-README.md) |
-| 6 | n8n Automation | 🛠️ Working on it | *`Week 6 README`* |
+| 6 | n8n Automation | ✅ Done | [Week 6 README](/Week-6-Automation-and-Orchestration-with-n8n/WEEK6-README.md) |
 | 7 | Capstone Project | ⏳ Upcoming | — |
 
 <details>
