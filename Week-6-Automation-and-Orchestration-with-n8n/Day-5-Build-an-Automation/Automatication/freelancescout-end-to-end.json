@@ -1,0 +1,885 @@
+{
+  "name": "FreelanceScout - End to End",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "FreelanceScout",
+        "formDescription": "Upload your CV and get freelance projects matched to your skills.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "CV",
+              "fieldType": "file",
+              "acceptFileTypes": ".pdf",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Matches",
+              "fieldType": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b88f427a-1aba-47bf-91d7-3454665e1e5b",
+      "name": "CV Upload Form",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -2816,
+        48
+      ],
+      "webhookId": "43e52567-b25d-4096-b0d5-71d4d563f2cf"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "CV",
+        "options": {}
+      },
+      "id": "17c3a103-3874-4415-bb51-4899e3d97dfb",
+      "name": "Extract PDF Text",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -2624,
+        48
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Remove personal identifiers before any text reaches an external LLM.\nconst raw = $input.first().json.text || '';\nif (!raw.trim()) {\n  throw new Error('The uploaded file produced no extractable text. Is it a scanned image rather than a text PDF?');\n}\nconst cleaned = raw\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '[email removed]')\n  .replace(/\\+?\\d[\\d\\s().-]{7,}\\d/g, '[phone removed]')\n  .replace(/\\b(?:https?:\\/\\/|www\\.)\\S+/gi, '[link removed]');\nreturn [{ json: { cv_text: cleaned, cleaned_chars: cleaned.length } }];\n"
+      },
+      "id": "1a41bcda-0844-4120-bc8a-ddd196fd4f8d",
+      "name": "Strip Personal Info",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2416,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a CV parser. Read the CV text below, summarise it, and produce a structured skill profile.\n\nReturn ONLY valid JSON. No markdown fences, no commentary. Use exactly this shape:\n{\n  \"summary\": \"2-3 plain-English sentences describing who this person is professionally and what they do best\",\n  \"headline\": \"one line describing this person professionally\",\n  \"seniority\": \"junior | mid | senior\",\n  \"core_skills\": [\"skills they are genuinely strong in\"],\n  \"secondary_skills\": [\"skills they have touched but are not specialists in\"],\n  \"domains\": [\"industries or problem areas they have worked in\"],\n  \"not_suited_to\": [\"kinds of work this person should NOT be matched with\"]\n}\n\nOnly list skills that actually appear in the CV. Do not infer or invent skills.\n\nCV TEXT:\n{{ $json.cv_text }}"
+      },
+      "id": "5f6c39b8-72f7-45cf-a6d0-355f26cba529",
+      "name": "Summarize and Profile CV",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        -2224,
+        48
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {
+          "maxOutputTokens": 4096
+        }
+      },
+      "id": "b1bf6c1e-d33d-48f4-893f-630460f1835c",
+      "name": "Gemini Flash",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -2224,
+        272
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hzADi2KOTTXdXCHH",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validate and unpack the profile step so the summary is usable downstream.\nlet raw = $input.first().json.text ?? $input.first().json.output ?? '';\nraw = String(raw).replace(/```json/gi, '').replace(/```/g, '').trim();\n\nlet p;\ntry {\n  p = JSON.parse(raw);\n} catch (e) {\n  throw new Error('Profile step did not return valid JSON. First 300 chars: ' + raw.slice(0, 300));\n}\n\nreturn [{\n  json: {\n    summary: p.summary ?? '(no summary returned)',\n    headline: p.headline ?? '',\n    seniority: p.seniority ?? '',\n    profile_json: JSON.stringify(p),\n  }\n}];\n"
+      },
+      "id": "7fe51a08-18a0-490c-9dc8-47f1e0ff9d4e",
+      "name": "Parse Profile",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2016,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "12AIJgw-YOYW5d5T2mJLC0uKBcpMgYE90kywZec0OAbc",
+          "mode": "list",
+          "cachedResultName": "week-6-sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12AIJgw-YOYW5d5T2mJLC0uKBcpMgYE90kywZec0OAbc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12AIJgw-YOYW5d5T2mJLC0uKBcpMgYE90kywZec0OAbc/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "9d27493c-7281-43fb-8c7d-10086ac474b7",
+      "name": "Read Jobs from Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1824,
+        48
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ymfE4oWmV60TLUhZ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "jobs",
+        "options": {}
+      },
+      "id": "673e7927-ff9f-4478-93e0-f9aa4f0970b6",
+      "name": "Bundle Jobs",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -1616,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are matching freelance projects to one specific freelancer.\n\nFREELANCER PROFILE:\n{{ $('Parse Profile').first().json.profile_json }}\n\nPROJECTS TO SCORE (JSON array):\n{{ JSON.stringify($json.jobs.map(j => ({url: j.url, title: j.title, skills: j.skills, budget_usd_max: j.budget_usd_max}))) }}\n\nFor EVERY project in the array, score from 0 to 100 how well it fits this freelancer, and give one short sentence of reasoning.\n\nScoring rules:\n- 80-100: squarely in their core skills\n- 50-79: adjacent, they could do it with some stretch\n- 20-49: weak overlap\n- 0-19: wrong field entirely\nBe honest and be willing to give low scores. A project needing skills this freelancer does not have MUST score below 20. Do not credit them with skills absent from the profile.\n\nReturn ONLY a valid JSON array, no markdown fences, one object per project:\n[{\"url\": \"...\", \"title\": \"...\", \"score\": 0, \"reason\": \"...\"}]"
+      },
+      "id": "546c5638-6d93-41c1-bf59-8bebb7b40591",
+      "name": "Score Jobs vs Profile",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        -1424,
+        48
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": "deepseek/deepseek-chat",
+        "options": {
+          "maxTokens": 8192
+        }
+      },
+      "id": "63de96c6-e80c-498b-905d-1a3285d7b100",
+      "name": "OpenRouter Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -1424,
+        272
+      ],
+      "credentials": {
+        "openRouterApi": {
+          "id": "5twJoWCqjZuuXNnU",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse the scoring output, sort by score, keep the top K the user asked for.\nlet raw = $input.first().json.text ?? $input.first().json.output ?? '';\nraw = String(raw).replace(/```json/gi, '').replace(/```/g, '').trim();\n\nlet scored;\ntry {\n  scored = JSON.parse(raw);\n} catch (e) {\n  throw new Error('Scoring step did not return valid JSON. First 300 chars: ' + raw.slice(0, 300));\n}\nif (!Array.isArray(scored) || scored.length === 0) {\n  throw new Error('Scoring step returned no usable array of results.');\n}\n\n// K comes from the form; clamp it so a typo cannot ask for 900 matches\nconst asked = parseInt($('CV Upload Form').first().json.Matches, 10);\nconst k = Math.min(Math.max(Number.isFinite(asked) ? asked : 5, 1), 10);\n\nscored.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));\nreturn [{ json: { top: scored.slice(0, k), total_scored: scored.length, k } }];\n"
+      },
+      "id": "219b5b2f-54f9-4b56-a3b9-879f9d55fadb",
+      "name": "Rank and Take Top K",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1216,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write a short application pitch for each freelance project below, written in the voice of the freelancer.\n\nFREELANCER PROFILE:\n{{ $('Parse Profile').first().json.profile_json }}\n\nTOP PROJECTS:\n{{ JSON.stringify($json.top) }}\n\nFor each project write 3-4 sentences that:\n- open with the specific, relevant experience for THAT project\n- reference only skills and projects actually present in the profile\n- state concretely what you would do first\n- avoid greetings, sign-offs, and filler like \"I am excited\"\n\nNever invent experience the profile does not contain.\n\nReturn ONLY a valid JSON array, no markdown fences:\n[{\"title\": \"...\", \"url\": \"...\", \"score\": 0, \"pitch\": \"...\"}]"
+      },
+      "id": "575261a2-4f59-4ac3-9992-5d5b3c8a8a47",
+      "name": "Write Pitches",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        -1024,
+        48
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {}
+      },
+      "id": "fd5bccdd-f7ee-4ebc-8555-1b7132ce3ea8",
+      "name": "Groq Llama 3.3",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -1024,
+        272
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "W1O2GB3CUIkzIO9t",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// One item per match, ready for the sheet.\nlet raw = $input.first().json.text ?? $input.first().json.output ?? '';\nraw = String(raw).replace(/```json/gi, '').replace(/```/g, '').trim();\n\nlet pitches;\ntry {\n  pitches = JSON.parse(raw);\n} catch (e) {\n  throw new Error('Pitch step did not return valid JSON. First 300 chars: ' + raw.slice(0, 300));\n}\n\nconst stamp = new Date().toISOString().slice(0, 16).replace('T', ' ');\nreturn pitches.map((p, i) => ({\n  json: { rank: i + 1, title: p.title, url: p.url, score: p.score, pitch: p.pitch, matched_at: stamp }\n}));\n"
+      },
+      "id": "49f633ba-8148-4e9b-bccb-e3023ee47dd8",
+      "name": "Split Pitches",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -816,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "matches",
+        "options": {}
+      },
+      "id": "a22b88b5-c098-48c1-b314-d1d7c923082c",
+      "name": "Bundle for Approval",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -624,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "={{ $('CV Upload Form').first().json.Email }}",
+        "subject": "=FreelanceScout - approve {{ $json.matches.length }} matches?",
+        "message": "=Your CV has been processed.\n\nSUMMARY\n{{ $('Parse Profile').first().json.summary }}\n\n{{ $json.matches.length }} MATCHES FOUND\n{{ $json.matches.map(m => m.rank + '. ' + m.title + '  (score ' + m.score + ')\\n   ' + m.url + '\\n   ' + m.pitch).join('\\n\\n') }}\n\nApprove to save these. Decline and nothing is written.",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double"
+          }
+        },
+        "options": {}
+      },
+      "id": "349eef0f-e310-484a-9730-3374f3ad0ecf",
+      "name": "Request Approval",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -416,
+        48
+      ],
+      "webhookId": "9584f91f-9824-4116-8a04-9f00cd63bbaf",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "upVAVMiZa9NhHIfj",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "approval-check",
+              "leftValue": "={{ $json.data.approved }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "75bf1f23-c2ad-4c9a-810c-afb24fabe7f7",
+      "name": "Approved",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -224,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Approved. Recover the matches held before the gate.\nreturn $('Bundle for Approval').first().json.matches.map(m => ({ json: m }));\n"
+      },
+      "id": "8d508d44-4125-4c9c-bf37-6c0bb903111e",
+      "name": "Restore Matches",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "12AIJgw-YOYW5d5T2mJLC0uKBcpMgYE90kywZec0OAbc",
+          "mode": "list",
+          "cachedResultName": "week-6-sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12AIJgw-YOYW5d5T2mJLC0uKBcpMgYE90kywZec0OAbc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1293682649,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12AIJgw-YOYW5d5T2mJLC0uKBcpMgYE90kywZec0OAbc/edit#gid=1293682649"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "rank",
+              "displayName": "rank",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "score",
+              "displayName": "score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "pitch",
+              "displayName": "pitch",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "matched_at",
+              "displayName": "matched_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "6e9db84a-0c91-4691-a77a-cc2a55e11147",
+      "name": "Save Matches",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        192,
+        -96
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ymfE4oWmV60TLUhZ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('CV Upload Form').first().json.Email }}",
+        "subject": "=FreelanceScout - {{ $('Bundle for Approval').first().json.matches.length }} matches saved",
+        "emailType": "text",
+        "message": "=Done - your matches are saved.\n\nSUMMARY OF YOUR CV\n{{ $('Parse Profile').first().json.summary }}\n\nSAVED MATCHES\n{{ $('Bundle for Approval').first().json.matches.map(m => m.rank + '. ' + m.title + '  (score ' + m.score + ')\\n   ' + m.url).join('\\n\\n') }}\n\nScored {{ $('Rank and Take Top K').first().json.total_scored }} live freelance projects to find these.",
+        "options": {}
+      },
+      "id": "5da06724-90fd-4ae5-9034-a4f8c8f66b67",
+      "name": "Send Results",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        384,
+        -96
+      ],
+      "executeOnce": true,
+      "webhookId": "6b3d625c-fa01-42ac-960f-7c9d445ba023",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "upVAVMiZa9NhHIfj",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Declined - record it, save nothing to Matches.\nconst matches = $('Bundle for Approval').first().json.matches;\nreturn [{\n  json: {\n    rejected_at: new Date().toISOString().slice(0, 16).replace('T', ' '),\n    match_count: matches.length,\n    titles: matches.map(m => m.title).join(' | '),\n    outcome: 'rejected by human reviewer - not saved to Matches',\n  }\n}];\n"
+      },
+      "id": "921da994-b915-499e-893b-91d53793db5a",
+      "name": "Log Rejection",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "12AIJgw-YOYW5d5T2mJLC0uKBcpMgYE90kywZec0OAbc",
+          "mode": "list",
+          "cachedResultName": "week-6-sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12AIJgw-YOYW5d5T2mJLC0uKBcpMgYE90kywZec0OAbc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1563583853,
+          "mode": "list",
+          "cachedResultName": "Sheet3",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12AIJgw-YOYW5d5T2mJLC0uKBcpMgYE90kywZec0OAbc/edit#gid=1563583853"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "rejected_at",
+              "displayName": "rejected_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "match_count",
+              "displayName": "match_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "titles",
+              "displayName": "titles",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "outcome",
+              "displayName": "outcome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "345790bc-a388-4b09-bc84-6a620658e0b2",
+      "name": "Save Rejection",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        192,
+        192
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ymfE4oWmV60TLUhZ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('CV Upload Form').first().json.Email }}",
+        "subject": "=FreelanceScout FAILED: {{ String($json.error?.message ?? $json.error ?? 'unknown step').slice(0,60) }}",
+        "emailType": "text",
+        "message": "=A step in FreelanceScout failed after 3 retries.\n\nError:\n{{ JSON.stringify($json.error ?? $json, null, 2) }}\n\nNothing was saved.",
+        "options": {}
+      },
+      "id": "0d86b8c1-eb06-4e1c-89f4-079de535626f",
+      "name": "Failure Alert",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1216,
+        496
+      ],
+      "executeOnce": true,
+      "webhookId": "e13d343b-84df-43dc-971a-fc23ad94445f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "upVAVMiZa9NhHIfj",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "CV Upload Form": {
+      "main": [
+        [
+          {
+            "node": "Extract PDF Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract PDF Text": {
+      "main": [
+        [
+          {
+            "node": "Strip Personal Info",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Failure Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Strip Personal Info": {
+      "main": [
+        [
+          {
+            "node": "Summarize and Profile CV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize and Profile CV": {
+      "main": [
+        [
+          {
+            "node": "Parse Profile",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Failure Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Profile": {
+      "main": [
+        [
+          {
+            "node": "Read Jobs from Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Jobs from Sheet": {
+      "main": [
+        [
+          {
+            "node": "Bundle Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bundle Jobs": {
+      "main": [
+        [
+          {
+            "node": "Score Jobs vs Profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Score Jobs vs Profile": {
+      "main": [
+        [
+          {
+            "node": "Rank and Take Top K",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Failure Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rank and Take Top K": {
+      "main": [
+        [
+          {
+            "node": "Write Pitches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Pitches": {
+      "main": [
+        [
+          {
+            "node": "Split Pitches",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Failure Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Pitches": {
+      "main": [
+        [
+          {
+            "node": "Bundle for Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bundle for Approval": {
+      "main": [
+        [
+          {
+            "node": "Request Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request Approval": {
+      "main": [
+        [
+          {
+            "node": "Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approved": {
+      "main": [
+        [
+          {
+            "node": "Restore Matches",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Rejection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Restore Matches": {
+      "main": [
+        [
+          {
+            "node": "Save Matches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Matches": {
+      "main": [
+        [
+          {
+            "node": "Send Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Rejection": {
+      "main": [
+        [
+          {
+            "node": "Save Rejection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Flash": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Summarize and Profile CV",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Score Jobs vs Profile",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Llama 3.3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Write Pitches",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "0efc38a9-8ca6-408b-acf5-b25ab95b2896",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bd455199e9ef30ae579a0bc54f800f1843a1f19c26e5de4391365b57dfd4e106"
+  },
+  "nodeGroups": [],
+  "id": "ed1CWAXSztb2oFXJ",
+  "tags": []
+}

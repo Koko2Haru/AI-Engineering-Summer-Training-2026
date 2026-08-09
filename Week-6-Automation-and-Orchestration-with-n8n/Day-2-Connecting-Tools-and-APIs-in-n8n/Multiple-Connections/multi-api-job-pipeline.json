@@ -484,7 +484,7 @@
     },
     {
       "parameters": {
-        "sendTo": "aliah11053@gmail.com",
+        "sendTo": "YOUR_EMAIL_HERE",
         "subject": "=FreelanceScout - {{ $('Dedupe by URL').all().length }} new gigs today",
         "emailType": "text",
         "message": "={{ $('Dedupe by URL').all().length }} new freelance gigs found today.\n\nTop 5 by budget:\n\n{{ $('Dedupe by URL').all().sort((a,b) => b.json.budget_usd_max - a.json.budget_usd_max).slice(0,5).map(i => '- ' + i.json.title + '\\n  ' + (i.json.budget_usd_max ? '$' + i.json.budget_usd_min + ' - $' + i.json.budget_usd_max : 'budget not listed') + ' | ' + i.json.source + '\\n  ' + i.json.url).join('\\n\\n') }}\n\nFull list in the Google Sheet.",
