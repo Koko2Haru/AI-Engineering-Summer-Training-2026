@@ -49,6 +49,8 @@ These aren't grammatically wrong, but they describe *duties* rather than *outcom
 | "Duties included..." | Reads like a job description, not an achievement | Rewrite as first-person (implied) achievement bullets |
 | "Tasked with..." | Focuses on assignment, not delivery | Focus on what was delivered as a result |
 | "Participated in..." | Ambiguous level of contribution | Specify the actual contribution |
+| "Supported..." | Vague; doesn't say what the support actually was | Name the specific action: "Supported the migration by writing the rollback scripts" not just "Supported the migration" |
+| "Collaborated on..." | States a group existed, not what was individually done | Name the specific piece owned within the collaboration |
 
 ## Weak Verbs (Overused / Low-Signal)
 

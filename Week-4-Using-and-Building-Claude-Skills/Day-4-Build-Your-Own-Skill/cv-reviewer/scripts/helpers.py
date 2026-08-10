@@ -4,8 +4,8 @@ Shared analysis helpers for the CV Reviewer skill.
 
 These formalize the heuristics described in SKILL.md and the references/
 directory into reusable functions: section detection, bullet splitting,
-quantification detection, weak-phrase/verb detection, and repetition
-analysis. review_cv.py composes these into a full report; they're also
+quantification detection, weak-phrase/verb detection, buzzword detection,
+and repetition analysis. review_cv.py composes these into a full report; they're also
 useful to run standalone against a large or ambiguous document to get a
 quick, mechanical first pass before writing the narrative review.
 
@@ -134,6 +134,8 @@ WEAK_PHRASES = [
     "duties included",
     "tasked with",
     "participated in",
+    "supported",
+    "collaborated on",
 ]
 
 WEAK_VERBS = ["did", "made", "used", "handled", "dealt with", "was in charge of", "got", "gave", "took care of"]
@@ -144,6 +146,33 @@ FIRST_PERSON_RE = re.compile(r"\b(I|my|me)\b", re.IGNORECASE)
 def find_weak_phrases(bullet: str) -> list:
     lower = bullet.lower()
     return [p for p in WEAK_PHRASES + WEAK_VERBS if p in lower]
+
+
+BUZZWORDS = [
+    "results-driven",
+    "highly motivated",
+    "passionate about",
+    "dynamic",
+    "detail-oriented",
+    "leverage synergies",
+    "spearheaded initiatives",
+    "thought leader",
+    "familiar with",
+    "exposure to",
+    "basic knowledge of",
+    "assisted in the development of",
+    "played a key role in",
+    "strong communication skills",
+]
+
+
+def find_buzzwords(bullet: str) -> list:
+    """Per `references/bullet-audits.md`'s Buzzword Audit. Same bullet-line
+    scope as find_weak_phrases, so a buzzword sitting in a Summary paragraph
+    or a bare Skills tag (not a bulleted line) won't surface here - flag those
+    manually, the same limitation weak-phrase detection already has."""
+    lower = bullet.lower()
+    return [b for b in BUZZWORDS if b in lower]
 
 
 def has_first_person(bullet: str) -> bool:
@@ -202,6 +231,11 @@ def analyze(text: str) -> dict:
             {"bullet": b, "flags": find_weak_phrases(b)}
             for b in bullets
             if find_weak_phrases(b)
+        ],
+        "buzzword_bullets": [
+            {"bullet": b, "flags": find_buzzwords(b)}
+            for b in bullets
+            if find_buzzwords(b)
         ],
         "first_person_bullets": [b for b in bullets if has_first_person(b)],
         "repeated_opening_verbs": repeated_opening_verbs(bullets),

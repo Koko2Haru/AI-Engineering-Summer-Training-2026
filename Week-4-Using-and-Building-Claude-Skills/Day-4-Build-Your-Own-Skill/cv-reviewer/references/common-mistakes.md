@@ -2,6 +2,23 @@
 
 A checklist to sanity-check against before finalizing any review — if the report doesn't mention any of the mistakes actually present in the document, the review isn't thorough enough.
 
+## Quick Reference — Common CV Crimes
+
+A one-glance cheat sheet for the fastest-scanning pass over a document, before the full category-by-category audit below. Each row is a pattern, not a single example — recognize the shape of the mistake, not just this exact wording.
+
+| Crime | Example | Fix |
+|---|---|---|
+| Responsibility listing | "Responsible for managing the team" | "Led a 12-person team that delivered X in Y weeks" |
+| Verb weakness | "Helped develop AI solutions" | "Built an AI solution architecture that..." |
+| No impact | "Worked on a RAG project" | "Built a RAG pipeline using LangChain/pgvector that converts PDFs into structured assessments" |
+| Fake quantification | "Significantly improved performance" | "Improved retrieval accuracy by 40% using hybrid TF-IDF and semantic search" |
+| Buzzword filler | "Results-driven team player with strong communication skills" | Delete. Show it through bullets. |
+| Burying the lead | Best achievement listed third or fourth | Move the most impressive thing up |
+| Skills inflation | Listing 25 technologies | Keep only what can be defended in an interview |
+| Inconsistent tense | Mixing present and past tense | Past tense for everything except current-role ongoing duties |
+| Vague project names | "AI Project" | "MindViz — EEG-to-Image Reconstruction (KAUST Capstone, 1st/135)" |
+| Missing dates | Experience with no time period | Every role must have month/year |
+
 ## Content Mistakes
 
 - **Listing duties instead of achievements.** "Managed social media accounts" vs. "Grew Instagram following from 2K to 40K in 6 months through a redesigned content calendar."

@@ -141,6 +141,14 @@ fully plausible to copy into a real report, flattening every table into literal
 internal heading levels, and adding an explicit rendering rule to `SKILL.md` — a
 defect only catchable by inspecting *rendered* output, not the Markdown source.
 
+**Enriched 2026-08-10:** a competing skill draft was reviewed, found stronger on
+content but structurally broken (invalid YAML, no file architecture), and merged in
+rather than adopted wholesale — `cv-reviewer` gained a mandatory 20-question intake
+step, four new bullet-level audits (So-What, Numbers, Credibility, Buzzword), and,
+after a direct "did you actually merge everything?" challenge surfaced 9 real gaps,
+a First Impression Check, a Skills Section Audit, and a Narrative Test. See
+[Day 4's addendum](Day-4-Build-Your-Own-Skill/DAY4-REPORT.md#-addendum--2026-08-10-enriched-from-a-revised-skill-description-ahead-of-the-day-5-chain-re-test).
+
 📄 **[`cv-reviewer/SKILL.md`](Day-4-Build-Your-Own-Skill/cv-reviewer/SKILL.md)** —
 the full skill specification.
 📄 **[`cv-reviewer/assets/report-example.md`](Day-4-Build-Your-Own-Skill/cv-reviewer/assets/report-example.md)** —
@@ -185,6 +193,19 @@ the second skill's specification.
 **[`optimized-cv.md`](Day-5-Test-and-Chain-Skills/Testing/Output/optimized-cv.md)**,
 **[`optimization-report.md`](Day-5-Test-and-Chain-Skills/Testing/Output/optimization-report.md)** —
 the real, live output of the two-skill chain, clarification transcript included.
+
+**Re-tested 2026-08-10**, once `cv-reviewer` was enriched, in a fresh
+[`Testing-v2/`](Day-5-Test-and-Chain-Skills/Testing-v2) folder (original `Testing/`
+kept untouched as evidence of what was true on 2026-07-26). The re-test itself
+surfaced three real bugs, caught by direct user pushback rather than by any check
+built into either skill: a path bug that wrote output into stray nested folders
+instead of `Testing-v2/Output/`; an intake-skip bug where a self-invented "no live
+candidate" excuse bypassed `cv-reviewer`'s own mandatory question step; and, once
+that was fixed and the questions were actually asked, proof the skip had mattered —
+live answers directly contradicted reused fixture data from the original run (a
+retracted API-performance metric, a changed migration figure, a reframed employment
+gap). See
+[Day 5's addendum](Day-5-Test-and-Chain-Skills/DAY5-REPORT.md#-addendum--2026-08-10-re-tested-the-chain-against-an-enriched-cv-reviewer-and-the-re-test-itself-surfaced-real-bugs).
 
 ---
 
@@ -239,7 +260,7 @@ Week-4-Using-and-Building-Claude-Skills/
 │   ├── DAY4-REPORT.md
 │   └── cv-reviewer/
 │       ├── SKILL.md
-│       ├── references/    (5 files)
+│       ├── references/    (7 files — 5 original + intake-questions.md/bullet-audits.md, 2026-08-10)
 │       ├── scripts/        (3 files)
 │       └── assets/         (3 files)
 └── Day-5-Test-and-Chain-Skills/
@@ -249,7 +270,10 @@ Week-4-Using-and-Building-Claude-Skills/
     │   ├── references/    (7 files)
     │   ├── scripts/        (5 files)
     │   └── assets/         (5 files)
-    └── Testing/
+    ├── Testing/                    ← 2026-07-26 original chain-run evidence
+    │   ├── Input/sample_cv.md
+    │   └── Output/         (review-report.md, optimized-cv.md, optimization-report.md)
+    └── Testing-v2/                 ← 2026-08-10 re-test evidence, see DAY5-REPORT.md addendum
         ├── Input/sample_cv.md
         └── Output/         (review-report.md, optimized-cv.md, optimization-report.md)
 ```

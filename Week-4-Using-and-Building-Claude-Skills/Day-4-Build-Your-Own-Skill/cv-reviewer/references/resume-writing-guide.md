@@ -14,6 +14,18 @@ Structural and stylistic conventions for a strong modern resume, used both to in
 
 Drop any section that doesn't add signal. A resume is a highlight reel, not a complete record.
 
+## First Impression Check (30-Second Scan)
+
+A recruiter spends roughly 6-30 seconds on a first pass. Before auditing line by line, check the document holds up at a glance:
+
+- What is the single clearest thing this CV communicates in the first 5 seconds?
+- Can the target role be identified from the CV alone, with no other context?
+- Is the most impressive thing on the document prominently placed, or buried below weaker content?
+- Does the layout guide the eye (clear hierarchy, logical grouping), or create friction?
+- Is there unnecessary whitespace, or is the document too dense to scan?
+
+A CV that fails this check needs a structural fix (reordering, cutting, promoting the strongest content) before line-level bullet work will make much difference — this is a prerequisite check, not a substitute for the full audit.
+
 ## Length Norms
 
 | Candidate Profile | Target Length |
@@ -24,6 +36,8 @@ Drop any section that doesn't add signal. A resume is a highlight reel, not a co
 | Academic/research CV | Length norms differ entirely — publications, grants, and talks justify multiple pages |
 
 Going over length to fit in weaker, less relevant content is worse than cutting to stay concise. Every line should be fighting for its place.
+
+Length alone isn't the only check — proportion matters too. Experience (and Projects, for early-career candidates) should dominate the page; a Skills list or Education section that takes up as much space as Experience is a proportion problem even on a document that hits its target length.
 
 ## The Bullet Point Formula (STAR / XYZ)
 
@@ -78,6 +92,13 @@ Infrastructure: AWS, Docker, Kubernetes, Terraform
 
 List skills the candidate can genuinely speak to in an interview — a long list of unfamiliar buzzwords is a liability, not an asset, once the interview starts.
 
+**Skills Section Audit** — check each of these before signing off on the section:
+- **Grouped logically** by category (Languages / Frameworks / Tools), not a flat undifferentiated list.
+- **Skill levels specified only if honest and useful** ("Proficient," "Familiar") — don't add levels just to look thorough, and never claim "Proficient" for something the candidate would hesitate on in an interview.
+- **Soft skills listed as bare traits** ("Communication," "Teamwork") rather than demonstrated through bullets is a red flag — cut them from Skills and make sure at least one Experience bullet actually shows the trait instead.
+- **No interview traps** — a listed technology that no bullet anywhere in the document actually demonstrates using is a liability, not a signal; either surface it in a bullet or drop it from Skills.
+- **ATS-optimized for the target role** — if a job description is available, the Skills section is the single highest-leverage place to match its exact terminology (see Tailoring to a Job Description, below).
+
 ## Tailoring to a Job Description
 
 When a job description is available:
@@ -85,6 +106,17 @@ When a job description is available:
 2. Check which are already present in the resume, in the posting's own terminology (not just a rough synonym).
 3. Flag genuinely missing ones the candidate can truthfully add.
 4. Reorder or emphasize existing bullets that map to the posting's top priorities — don't just append keywords disconnected from real experience.
+
+## Narrative Test
+
+Read the whole CV top to bottom as a story, not as a set of independent bullets:
+
+- What story does this CV tell about the candidate?
+- Is there a clear through-line — who they are, where they're headed, why the target role makes sense as the next step?
+- Does the most recent experience logically build on what came before, or does it read as unrelated jumps?
+- Is there anything that breaks the narrative or seems out of place given everything else on the page?
+
+A CV can pass every individual bullet-quality and ATS check and still fail this test if the overall arc doesn't cohere — flag narrative breaks as their own finding, not just as a collection of the individual bullets that caused them.
 
 ## Formatting Consistency Checklist
 

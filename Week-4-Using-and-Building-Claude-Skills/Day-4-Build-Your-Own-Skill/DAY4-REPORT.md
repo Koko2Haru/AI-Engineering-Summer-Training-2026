@@ -6,7 +6,7 @@
 
 **📅 Date:** 2026-07-22
 
-**✅ Status:** Completed (bug found and fixed post-delivery)
+**✅ Status:** Completed (bug found and fixed post-delivery; enriched again 2026-08-10, see Addendum below)
 
 ---
 
@@ -22,7 +22,9 @@
     │   ├── 📄 ats-best-practices.md   ← parser rules, common ATS failure patterns
     │   ├── 📄 resume-writing-guide.md ← section order, STAR/XYZ formula, length norms
     │   ├── 📄 action-verbs.md         ← verb bank by category + weak-phrase table
-    │   └── 📄 common-mistakes.md      ← content/structural/grammar/ATS/branding checklist
+    │   ├── 📄 common-mistakes.md      ← content/structural/grammar/ATS/branding checklist + Common CV Crimes table
+    │   ├── 📄 intake-questions.md     ← 20-question context intake, batched by theme (added 2026-08-10)
+    │   └── 📄 bullet-audits.md        ← So-What/Numbers/Credibility/Buzzword audits (added 2026-08-10)
     ├── 📁 scripts/
     │   ├── 📄 extract_text.py     ← PDF/DOCX/txt → raw text, image-PDF detection
     │   ├── 📄 helpers.py          ← section/bullet/quantification/weak-phrase regex analysis
@@ -33,7 +35,7 @@
         └── 📄 report-example.md   ← fully worked sample report (calibration reference)
 ```
 
-12 files, ~1,490 lines total.
+12 files, ~1,490 lines total as originally delivered 2026-07-22 (14 files, ~1,661 lines after the 2026-08-10 addendum below).
 
 ---
 
@@ -125,6 +127,28 @@ This is the kind of defect that only surfaces by actually looking at rendered ou
 
 ---
 
+## 🔁 Addendum — 2026-08-10: enriched from a revised skill description, ahead of the Day 5 chain re-test
+
+A second draft of the reviewer's persona and audit content (`temp.md`) was written independently and proposed as a wholesale replacement for `cv-reviewer`. Reviewing it before adopting anything found the content itself was genuinely stronger — a much richer context-intake question set, sharper persona framing, and several new bullet-level audits — but the file wasn't skill-ready: invalid YAML frontmatter (a folded `description: >` scalar without the indentation the format requires), no real Markdown structure, no `references/`/`scripts/`/`assets/` architecture, and missing everything already hardened here on Day 4 (the Output Format no-code-fence rule, Edge Cases, Failure Handling, the weighted scoring formula). Decision: merge the good content into the existing structure rather than replace it wholesale.
+
+**What got merged in:**
+- `references/intake-questions.md` (44 lines, new) — the 20-question context intake (about the person / the target / the content / the CV itself), batched by theme, wired into `SKILL.md`'s Workflow step 1 and Input Expectations.
+- `references/bullet-audits.md` (49 lines, new) — the So-What Test, a Harvard-style Numbers Audit, a Credibility Audit ("could the candidate defend this in an interview?"), and a Buzzword Audit; wired into the deep-dive weak/strong-bullet analysis step. The XYZ formula and verb audit already existed in `resume-writing-guide.md`/`action-verbs.md`, so those weren't duplicated.
+- `references/common-mistakes.md` — gained a "Common CV Crimes" quick-reference table (crime → example → fix) up top, as a fast first-pass scan before the fuller checklist below it.
+- `SKILL.md` — the four-lens persona framing (McKinsey / Google hiring committee / Harvard OCS / literal ATS parser) added to Purpose; a new **Communication Rules** section (never say "great start," always rewrite rather than just criticize, hold position under pushback, push back once on "I don't know the number," keep jargon out of the coaching, not the CV); File Usage table updated for the two new references.
+- **Mechanical layer** — the Buzzword Audit was the one addition concrete enough to mechanize: added a `BUZZWORDS` list + `find_buzzwords()` to `scripts/helpers.py` (mirrors the existing `WEAK_PHRASES` pattern — same bullet-line scope, same disclosed limitation that a buzzword sitting in a Summary paragraph or a bare Skills tag won't surface, only a bulleted line will), wired `buzzword_bullets` through `review_cv.py`'s `flags` output, and added the matching `buzzwords` list to `assets/scoring-matrix.json` per its own "keep both in sync" contract. Re-ran `review_cv.py` against `Day-5-Test-and-Chain-Skills/Testing/Input/sample_cv.md` afterward — output unchanged except for the new, empty `buzzword_bullets: []` field (that CV's flaw profile is duty-listing, not buzzwords), confirming the addition didn't regress the existing mechanical pass.
+- The So-What Test and Credibility Audit were deliberately **not** mechanized — they're judgment calls, the same category `review_cv.py` already marks `requires_manual_review` for Content Quality/Readability/Visual-Layout, and forcing a regex proxy onto them would produce a fake-precise number the same way the original Day 4 build was careful to avoid.
+
+`temp.md` (the source draft) was deleted after the merge — its content now lives in the files above.
+
+**Left untouched:** YAML frontmatter, the 7-category weighted scoring formula, Output Format's no-code-fence rule, Edge Cases, Failure Handling, `assets/review-template.md`, `assets/report-example.md` — all already correct, and `report-example.md` already matched the new Communication Rules' tone without needing a rewrite.
+
+**Updated footprint:** 14 files, ~1,661 lines (was 12 files, ~1,490 lines at original delivery).
+
+Next: re-run the full chain (`cv-reviewer` → `cv-optimizer`) against `Testing/Input/sample_cv.md` to confirm the richer reviewer output still hands off cleanly to the optimizer — pending.
+
+---
+
 ## 🚀 Next steps — Day 5 (Test & Chain Skills)
 
 Per the plan, Day 5's brief is: *"Chain two skills together to complete a multi-step workflow. Test and improve reliability through peer review."*
@@ -138,8 +162,9 @@ Per the plan, Day 5's brief is: *"Chain two skills together to complete a multi-
 
 ## 📚 References
 
-- **[`cv-reviewer/SKILL.md`](cv-reviewer/SKILL.md)** — the skill specification built today.
+- **[`cv-reviewer/SKILL.md`](cv-reviewer/SKILL.md)** — the skill specification built today (and enriched 2026-08-10, see Addendum).
 - **[`cv-reviewer/assets/report-example.md`](cv-reviewer/assets/report-example.md)** — the calibration example central to today's code-fence bug and fix.
+- **[`cv-reviewer/references/intake-questions.md`](cv-reviewer/references/intake-questions.md)** and **[`cv-reviewer/references/bullet-audits.md`](cv-reviewer/references/bullet-audits.md)** — added in the 2026-08-10 addendum, merged in from a revised skill draft.
 - **[`DAY2-REPORT.md`](../Day-2-Using-Existing-Skills/DAY2-REPORT.md)** — prior day's report; today's fence bug is a direct continuation of its closing lesson ("running a thing surfaces bugs that reading it never will").
 - **[`DAY1-REPORT.md`](../Day-1-What-is-a-skill/DAY1-REPORT.md)** — original skill-architecture reference this build followed (progressive disclosure, trigger-type framing).
 - **`.claude/skills/`** — the four official-style skills (`caveman`, `experiment-designer`, `md-slides`, `product-manager-toolkit`) used as the direct structural/frontmatter template for `SKILL.md`.

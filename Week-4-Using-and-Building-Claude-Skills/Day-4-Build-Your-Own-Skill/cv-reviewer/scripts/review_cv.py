@@ -125,6 +125,7 @@ def build_report(path: str) -> dict:
         },
         "flags": {
             "weak_phrase_bullets": analysis["weak_phrase_bullets"],
+            "buzzword_bullets": analysis["buzzword_bullets"],
             "repeated_opening_verbs": analysis["repeated_opening_verbs"],
             "missing_sections": analysis["sections_missing"],
         },

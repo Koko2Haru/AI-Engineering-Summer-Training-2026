@@ -6,7 +6,7 @@
 
 **📅 Date:** 2026-07-26
 
-**✅ Status:** Completed
+**✅ Status:** Completed (chain re-tested and 3 real bugs fixed 2026-08-10, see Addendum below)
 
 ---
 
@@ -37,16 +37,23 @@
 │       ├── 📄 rewrite-checklist.md        ← pre-delivery QA pass (fabrication/placeholder integrity)
 │       ├── 📄 before-after-example.md     ← worked example, including a real clarification exchange
 │       └── 📄 improvement-priorities.json ← severity weights consumed by improve_cv.py
-└── 📁 Testing/                            ← the actual end-to-end chain run
+├── 📁 Testing/                            ← the original end-to-end chain run (2026-07-26 evidence — kept as-is)
+│   ├── 📁 Input/
+│   │   └── 📄 sample_cv.md                ← intentionally-weak fictional resume (Maria Torres)
+│   └── 📁 Output/
+│       ├── 📄 review-report.md            ← full CV Reviewer output (46/100, "Weak")
+│       ├── 📄 optimized-cv.md             ← rewritten resume, post-clarification
+│       └── 📄 optimization-report.md      ← full change report, incl. the clarification transcript
+└── 📁 Testing-v2/                         ← 2026-08-10 re-test against the enriched cv-reviewer (see Addendum)
     ├── 📁 Input/
-    │   └── 📄 sample_cv.md                ← intentionally-weak fictional resume (Maria Torres)
+    │   └── 📄 sample_cv.md                ← byte-identical copy of the original sample CV
     └── 📁 Output/
-        ├── 📄 review-report.md            ← full CV Reviewer output (46/100, "Weak")
-        ├── 📄 optimized-cv.md             ← rewritten resume, post-clarification
-        └── 📄 optimization-report.md      ← full change report, incl. the clarification transcript
+        ├── 📄 review-report.md            ← re-run review, incl. Live Intake Q&A and the new bullet audits
+        ├── 📄 optimized-cv.md             ← re-run rewrite using freshly-confirmed (not reused) facts
+        └── 📄 optimization-report.md      ← documents the 2 corrections reuse would have gotten wrong
 ```
 
-26 files, ~2,009 lines total (`cv-optimizer/` + `Testing/`).
+26 files, ~2,009 lines total (`cv-optimizer/` + `Testing/`) as originally delivered 2026-07-26 (30 files, ~2,423 lines after the 2026-08-10 addendum below).
 
 ---
 
@@ -123,12 +130,35 @@ Every finding from `cv-optimizer`'s independent scripts matched what the manual 
 
 ---
 
+## 🔁 Addendum — 2026-08-10: re-tested the chain against an enriched `cv-reviewer`, and the re-test itself surfaced real bugs
+
+`cv-reviewer` (Day 4) was enriched today — a competing skill draft (`temp.md`) was reviewed, found to have genuinely stronger audit content but a broken, non-skill-ready structure, and merged in rather than adopted wholesale. Full detail lives in [Day 4's own addendum](../Day-4-Build-Your-Own-Skill/DAY4-REPORT.md); short version: `cv-reviewer` gained a mandatory 20-question intake step, four new bullet-level audits (So-What, Numbers, Credibility, Buzzword — the last mechanized in `helpers.py`), a stricter Communication Rules section, and, after a second pass prompted by a direct content-comparison request, three more structural additions (First Impression Check, Skills Section Audit, Narrative Test) plus small fixes (two more banned weak-verb phrases, two more ATS checks).
+
+Since `cv-optimizer` consumes `cv-reviewer`'s output, that change needed a real re-test of the chain, not just a description of what should now work — so today's actual Day-5-scoped work was re-running the exact pipeline this report already documents, against the enriched reviewer, in a new `Testing-v2/` folder (kept separate from the original `Testing/` so this report's original quoted numbers stay valid evidence of what was true on 2026-07-26).
+
+**What the re-test found — three real bugs, not just confirmation the chain still works:**
+
+1. **A path bug.** The first re-test's output files were written with relative paths that resolved against a stale shell working directory left over from running the mechanical scripts, silently creating duplicate `Week-4-Using-and-Building-Claude-Skills/...` folders nested inside `cv-reviewer/scripts/` and `cv-optimizer/scripts/` instead of writing to `Testing-v2/Output/`, which sat empty. Caught by the user, not by any check in either skill. Fixed by moving the files to the correct location and deleting the stray directories.
+2. **An intake-skip bug — the more serious one.** The first re-test assumed "no live candidate is available for this fixture" and skipped `cv-reviewer`'s own mandatory intake-questions step entirely, defaulting straight to an assumption instead of asking. This wasn't a gap in the skill's instructions — `SKILL.md` already said to gather context — it was a self-invented excuse to skip a step that was inconvenient to run inside a scripted test. Caught by the user ("why would you assume there is no candidate"). Root-caused and fixed by rewriting `SKILL.md`'s Input Expectations, Workflow step 1, and `intake-questions.md` itself to explicitly name and forbid "no live candidate" / "this is just a test" as a skip reason — the only legitimate skip is the user *declining* to answer after being asked, never the assistant assuming no one's there.
+3. **Proof the skip mattered, not just a process violation.** Re-running intake for real (`AskUserQuestion`, answered on the candidate's behalf, the same pattern the original `cv-optimizer` clarification round already established) produced answers that genuinely contradicted the reused fixture data the first attempt had carried over from this report's original run: the API-performance bullet's "35% improvement" was never actually confirmed this round and had to be retracted to a placeholder; the migration scale changed from "~2M records, zero downtime" to the real confirmed answer, "~500K records, a scheduled maintenance window" (not zero-downtime); and the employment gap was reframed from a passive "career break" to an actual Freelance/Contract Developer entry. `Testing-v2/Output/optimization-report.md` documents all three corrections and names, explicitly, what an earlier draft would have shipped as a fabricated-by-reuse number if the skip had gone unnoticed.
+
+**A fourth check, run separately:** a line-by-line comparison of `temp.md` against what had actually been merged into `cv-reviewer` (requested directly: "did you actually put everything... or you skipped stuff") surfaced 9 real, previously-unflagged omissions from the original merge — a narrower frontmatter trigger list, two missing ATS checks (special characters, hyperlinks), and four missing audits/checklists (First Impression, Skills Section, Narrative Test, section proportion), plus two banned weak-verb phrases ("Supported," "Collaborated on") that never made it into any weak-phrase list. 7 of 9 were closed; 2 (an alternate PASS/RISK/FAIL rating scale, an alternate section ordering) were deliberately left out as conflicting with — not filling a gap in — decisions already made. Full file-by-file list lives in Day 4's addendum.
+
+**Chain re-test result, once the bugs above were fixed:** scores on the as-submitted CV held exactly (46/100 — expected, nothing about the source document changed), and the two skills' independent mechanical scanners still agree with each other post-enrichment. The one substantive behavior change is upstream: the enriched review's Credibility Audit now independently names the exact bullet that the *original* test only caught downstream in the optimizer (the "led" vs. "contributed to" near-miss from section 4 above) — that risk now surfaces one step earlier, at review time, instead of needing to be caught mid-rewrite.
+
+**Updated footprint:** 30 files, ~2,423 lines (`cv-optimizer/` + `Testing/` + `Testing-v2/`; was 26 files, ~2,009 lines at original delivery).
+
+📄 **[`Testing-v2/Output/review-report.md`](Testing-v2/Output/review-report.md)**, **[`optimization-report.md`](Testing-v2/Output/optimization-report.md)**, **[`optimized-cv.md`](Testing-v2/Output/optimized-cv.md)** — the corrected, live re-test output (379 lines combined).
+
+---
+
 ## 🚀 Next steps
 
 - **Register both skills** into `.claude/skills/` (still open from Day 4) so the chain can auto-trigger in a real conversation instead of needing to be invoked by folder path — this is what "peer review" would actually exercise against, since a cold reviewer wouldn't know to look in `Week-4-Using-and-Building-Claude-Skills/` first.
 - **Extend `rewrite_bullets.py`** to catch indented continuation lines under a bulleted heading (the Inventory Tracker App gap found today), so the mechanical pass doesn't rely on the manual layer to catch the single vaguest sentence in a document.
-- **Run the chain against a second, differently-shaped CV** (a strong resume that shouldn't need much rewriting, and a career-changer with a real narrative gap) — today's test proves the pipeline works on a document engineered to need every fix; a resume that's *already* good is the harder reliability test, since the failure mode there is manufacturing weaknesses that aren't real.
-- **A third chain link is now plausible**: `optimization-report.md`'s "Suggestions Requiring User Input" table is already structured enough to feed a follow-up interview-prep or cover-letter-drafting skill that reuses the same confirmed facts (target role, the 35% metric, the 2M-record migration) without re-asking for them.
+- **Run the chain against a second, differently-shaped CV** (a strong resume that shouldn't need much rewriting, and a career-changer with a real narrative gap) — the 2026-07-26 test proves the pipeline works on a document engineered to need every fix; a resume that's *already* good is the harder reliability test, since the failure mode there is manufacturing weaknesses that aren't real.
+- **A third chain link is now plausible**: `optimization-report.md`'s "Suggestions Requiring User Input" table is already structured enough to feed a follow-up interview-prep or cover-letter-drafting skill that reuses confirmed facts without re-asking for them (note: use `Testing-v2/`'s corrected figures as the reference facts, not `Testing/`'s original ones — see Addendum).
+- **Audit `cv-optimizer`'s own User Clarification Protocol for the same loophole just closed in `cv-reviewer`.** Today's intake-skip bug was `cv-reviewer`-specific, but `cv-optimizer` has its own similarly-shaped "when to ask vs. placeholder" language that was never stress-tested against the same failure mode (assuming no one's there to ask instead of actually asking). Worth the same scrutiny before trusting it under pressure.
 
 ---
 
@@ -138,6 +168,7 @@ Every finding from `cv-optimizer`'s independent scripts matched what the manual 
 - **[`cv-optimizer/references/rewriting-guidelines.md`](cv-optimizer/references/rewriting-guidelines.md)** — the core no-fabrication methodology central to today's "led vs. contributed to" near-miss.
 - **[`Testing/Output/review-report.md`](Testing/Output/review-report.md)** — the CV Reviewer's real output that seeded the chain.
 - **[`Testing/Output/optimized-cv.md`](Testing/Output/optimized-cv.md)** and **[`optimization-report.md`](Testing/Output/optimization-report.md)** — the CV Optimizer's real output, including the clarification transcript.
-- **[`../Day-4-Build-Your-Own-Skill/cv-reviewer/SKILL.md`](../Day-4-Build-Your-Own-Skill/cv-reviewer/SKILL.md)** — the first half of the chain, built and verified on Day 4.
-- **[`../Day-4-Build-Your-Own-Skill/DAY4-REPORT.md`](../Day-4-Build-Your-Own-Skill/DAY4-REPORT.md)** — prior day's report; today's chain is its named "Next steps" plan carried out.
+- **[`../Day-4-Build-Your-Own-Skill/cv-reviewer/SKILL.md`](../Day-4-Build-Your-Own-Skill/cv-reviewer/SKILL.md)** — the first half of the chain, built on Day 4, enriched 2026-08-10.
+- **[`../Day-4-Build-Your-Own-Skill/DAY4-REPORT.md`](../Day-4-Build-Your-Own-Skill/DAY4-REPORT.md)** — prior day's report; today's chain is its named "Next steps" plan carried out, and its own 2026-08-10 addendum has the full file-by-file merge/gap-closing detail this report's addendum only summarizes.
+- **[`Testing-v2/Output/review-report.md`](Testing-v2/Output/review-report.md)**, **[`optimized-cv.md`](Testing-v2/Output/optimized-cv.md)**, **[`optimization-report.md`](Testing-v2/Output/optimization-report.md)** — the 2026-08-10 corrected re-test output; use these, not `Testing/`'s, as the current reference facts for any follow-on work.
 - **`.claude/skills/`** — the four official-style skills whose conventions both `cv-reviewer` and `cv-optimizer` follow.

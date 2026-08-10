@@ -15,6 +15,8 @@ Most modern ATS platforms convert the resume to plain text (or use a PDF text la
 - **Avoid embedding text as images or icons.** Any text inside a graphic (including "creative" resume templates that render whole sections as an image) is invisible to a parser — it does not exist as far as the ATS is concerned.
 - **Use standard fonts.** Stick to fonts installed on virtually all systems (Arial, Calibri, Georgia, Times New Roman, Helvetica). Custom or icon fonts can render as garbled characters when the parser or downstream viewer doesn't have the font.
 - **File format:** a text-based PDF (exported from a word processor, not scanned/flattened) or a .docx are both broadly safe. A scanned image saved as PDF has no text layer at all and will fail parsing completely — this is one of the most common and most severe ATS failures.
+- **Avoid fancy bullets, em dashes, and smart quotes where possible.** Decorative bullet glyphs, curly/smart quotes, and non-standard dashes can render as garbled characters (`�`, `?`) in some parsers' text extraction — plain hyphens, straight quotes, and standard bullet characters (`•`, `-`) are safer.
+- **Hyperlinks are fine, but the underlying text must be readable without clicking.** A LinkedIn/GitHub link styled as bare "here" or an icon with no visible URL text loses all its signal the moment a parser strips the hyperlink and keeps only the anchor text.
 
 ## Content Rules
 
