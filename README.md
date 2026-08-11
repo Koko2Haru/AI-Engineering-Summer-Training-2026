@@ -1,6 +1,6 @@
 # 🤖 AI Engineering Summer Training 2026
 
-[![Progress](https://img.shields.io/badge/progress-6%2F7%20weeks-blue)]()
+[![Progress](https://img.shields.io/badge/progress-7%2F7%20weeks-blue)]()
 [![Status](https://img.shields.io/badge/status-in%20progress-yellow)]()
 [![Made with](https://img.shields.io/badge/made%20with-Python%20%7C%20Claude%20%7C%20n8n-informational)]()
 
@@ -30,7 +30,7 @@ Alongside the program itself, I have also been juggling **4+ personal projects, 
 | 4 | Claude Skills — *cv-reviewer → cv-optimizer* | ✅ Done | [Week 4 README](Week-4-Using-and-Building-Claude-Skills/WEEK4-README.md) |
 | 5 | Agentic AI | ✅ Done | [Week 5 README](/Week-5-Agentic-AI-Fundamentals/WEEK5-README.md) |
 | 6 | n8n Automation | ✅ Done | [Week 6 README](/Week-6-Automation-and-Orchestration-with-n8n/WEEK6-README.md) |
-| 7 | Capstone Project | ⏳ Upcoming | — |
+| 7 | Capstone Project | 🛠️ Working on it | *`Week 7 README`* |
 
 <details>
 <summary><strong>📅 Week 1 — Foundations of AI Engineering</strong></summary>
@@ -96,7 +96,7 @@ Alongside the program itself, I have also been juggling **4+ personal projects, 
 
 </details>
 
-<details open>
+<details>
 <summary><strong>📅 Week 6 — n8n Automation (project: personalized-automated freelance job looker prototype)</strong></summary>
 
 | Day | Topic | What happened | Status | Link |
@@ -109,13 +109,13 @@ Alongside the program itself, I have also been juggling **4+ personal projects, 
 
 </details>
 
-<details>
-<summary><strong>📅 Week 7 — Capstone: Agentic AI Application</strong> (upcoming)</summary>
+<details open>
+<summary><strong>📅 Week 7 — Capstone: Agentic AI Application (project: Sanad — a Discord bot that fixes your CV, then finds you freelance work that fits it)</strong></summary>
 
 | Milestone | What happened | Status | Link |
 |-----------|----------------|:------:|------|
-| Project Planning | — | ⏳ | — |
-| Build & Integrate | — | ⏳ | — |
+| Project Planning | Planned the capstone instead of building it. Defined Sanad — a Discord bot that reviews, rewrites and matches CVs, and sends one gig every morning — then wrote the plan, requirements, architecture and risks. | ✅ Done | [DAY1-REPORT.md](/Week-7-Capstone-Project/Day-1-Project-Planning/DAY1-REPORT.md) |
+| Build & Integrate | — | 🛠️ Working on it | — |
 | Testing & Evaluation | — | ⏳ | — |
 | Documentation | — | ⏳ | — |
 | Demo Day | — | ⏳ | — |
@@ -167,7 +167,7 @@ AI-Engineering-Summer-Training-2026/
 ├── Week-4-Using-and-Building-Claude-Skills/
 ├── Week-5-Agentic-AI/            
 ├── Week-6-n8n-Automation/      
-└── Week-7-Capstone-Project/      (coming soon)
+└── Week-7-Capstone-Project/      
 ```
 
 ---
