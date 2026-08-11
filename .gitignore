@@ -17,3 +17,8 @@ venv/
 
 # my Claude
 .claude
+
+# Week 7 working files (handoff notes, tools, fixtures, skill copies)
+# NOTE: sanad_bridge.py, md2pdf.py and the CV fixtures are real project
+# components - move them somewhere tracked before the Day 5 submission.
+Week-7-Capstone-Project/Some-important-files/
