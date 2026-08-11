@@ -1,0 +1,23 @@
+{
+  "$schema_note": "Canonical machine-readable severity ranking for the CV Optimizer skill. Mirrors the Severity Prioritization section of references/rewriting-guidelines.md - keep both in sync if either changes. Used by scripts/improve_cv.py to build a priority queue when no cv-reviewer output is supplied.",
+  "severity_levels": [
+    { "key": "critical", "rank": 1, "meaning": "ATS-blocking structural issue; likely causes outright rejection before a human ever reads the resume" },
+    { "key": "high",     "rank": 2, "meaning": "Significantly weakens recruiter/hiring-manager impression or interview odds" },
+    { "key": "medium",   "rank": 3, "meaning": "Noticeable but not disqualifying; worth fixing in the same pass" },
+    { "key": "low",      "rank": 4, "meaning": "Polish-level; fix if time/space allows, never worth blocking on" }
+  ],
+  "issue_types": [
+    { "issue_type": "missing_text_layer", "severity": "critical", "note": "Image-based/scanned PDF with no extractable text - cannot be fixed by rewriting alone; ask for a text-based export." },
+    { "issue_type": "contact_info_placement", "severity": "critical", "note": "Contact info missing from the main body or undetectable near the top of the document." },
+    { "issue_type": "missing_standard_section", "severity": "high", "note": "No Experience, Education, or Skills section detected." },
+    { "issue_type": "weak_or_unquantified_bullets", "severity": "high", "note": "Bullets describe duties without outcomes, or use weak verbs/phrases throughout." },
+    { "issue_type": "generic_or_missing_summary", "severity": "high", "note": "Summary/objective is absent or too generic to differentiate the candidate." },
+    { "issue_type": "non_standard_section_header", "severity": "medium", "note": "Header uses non-standard wording that may not parse as its intended section." },
+    { "issue_type": "inconsistent_date_format", "severity": "medium", "note": "Multiple date formats used across entries." },
+    { "issue_type": "keyword_gap_vs_target_role", "severity": "medium", "note": "Job description or target role emphasizes terms genuinely absent from the resume." },
+    { "issue_type": "repetitive_verbs", "severity": "medium", "note": "Same opening verb used 3+ times across bullets." },
+    { "issue_type": "inconsistent_bullet_characters", "severity": "low", "note": "Multiple bullet character styles used in the document." },
+    { "issue_type": "inconsistent_spacing", "severity": "low", "note": "Uneven blank-line spacing between entries or sections." },
+    { "issue_type": "minor_grammar_spelling", "severity": "low", "note": "Isolated typos or punctuation inconsistencies not affecting overall clarity." }
+  ]
+}

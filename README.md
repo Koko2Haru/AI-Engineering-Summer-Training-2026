@@ -115,9 +115,9 @@ Alongside the program itself, I have also been juggling **4+ personal projects, 
 | Milestone | What happened | Status | Link |
 |-----------|----------------|:------:|------|
 | Project Planning | Planned the capstone instead of building it. Defined Sanad — a Discord bot that reviews, rewrites and matches CVs, and sends one gig every morning — then wrote the plan, requirements, architecture and risks. | ✅ Done | [DAY1-REPORT.md](/Week-7-Capstone-Project/Day-1-Project-Planning/DAY1-REPORT.md) |
+| Build - Core | Closed the last unknown in the architecture, then built the core loop: CV into a Discord DM, review PDF back. It worked — but only after four separate bugs. | ✅ Done | [DAY2-REPORT.md](/Week-7-Capstone-Project/Day-2-Build-Core/DAY2-REPORT.md) |
 | Build & Integrate | — | 🛠️ Working on it | — |
 | Testing & Evaluation | — | ⏳ | — |
-| Documentation | — | ⏳ | — |
 | Demo Day | — | ⏳ | — |
 
 </details>

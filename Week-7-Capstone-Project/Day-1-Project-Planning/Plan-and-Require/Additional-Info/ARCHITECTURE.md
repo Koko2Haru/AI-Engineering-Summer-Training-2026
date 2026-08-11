@@ -1,6 +1,6 @@
 # 🏗️ Sanad — Architecture
 
-**Date:** 2026-08-11 (Day 1) · **Status:** Locked · **Open unknowns:** 1 (see [RISKS.md](RISKS.md), R-1)
+**Date:** 2026-08-11 (Day 1) · **Status:** Locked · **Open unknowns:** **none** — the last one (R-1, n8n → bridge) was [verified on 2026-08-12](RISKS.md)
 
 > Parent documents: [../PROJECT-PLAN.md](../PROJECT-PLAN.md) · [../REQUIREMENTS.md](../REQUIREMENTS.md)
 

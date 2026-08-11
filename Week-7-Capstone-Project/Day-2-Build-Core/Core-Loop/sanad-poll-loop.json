@@ -1,0 +1,668 @@
+{
+  "name": "Sanad - Poll Loop",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "seconds",
+              "secondsInterval": 15
+            }
+          ]
+        }
+      },
+      "id": "aaaa0001-0000-4000-8000-000000000001",
+      "name": "Every 15 Seconds",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -680,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c1",
+              "name": "dm_channel_id",
+              "value": "1536751197627617401",
+              "type": "string"
+            },
+            {
+              "id": "c2",
+              "name": "workspace",
+              "value": "C:\\Users\\aliah\\Desktop\\AI-Engineering-Summer-Training-2026\\Week-7-Capstone-Project\\sanad\\workspace",
+              "type": "string"
+            },
+            {
+              "id": "c3",
+              "name": "bridge",
+              "value": "http://127.0.0.1:8900",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "aaaa0002-0000-4000-8000-000000000002",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -460,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://discord.com/api/v10/channels/{{ $json.dm_channel_id }}/messages?limit=10",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "discordBotApi",
+        "options": {}
+      },
+      "id": "aaaa0003-0000-4000-8000-000000000003",
+      "name": "Get Messages",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// FR-4: every message is processed exactly once, even when the work is slow.\n//\n// The cursor is claimed from the bridge BEFORE anything slow runs. n8n's own\n// static data cannot do this: it is only written when an execution finishes,\n// so while a 3-minute CV review was in flight, eight more 15-second polls all\n// read the same stale cursor and reprocessed the same CV. The bridge writes\n// the claim synchronously under a lock, so exactly one execution can win.\n//\n// Returning [] stops the branch, so nothing is sent when nothing is new.\n\nconst cfg = $('Config').first().json;\n\nconst msgs = [];\nfor (const item of $input.all()) {\n  const arr = Array.isArray(item.json) ? item.json : [item.json];\n  for (const m of arr) {\n    if (m && m.id) msgs.push(m);\n  }\n}\n\n// Snowflakes are numeric strings - compare as BigInt, never lexically.\nmsgs.sort((a, b) => (BigInt(a.id) < BigInt(b.id) ? -1 : 1));\n\n// Ignore Sanad's own replies, or it would answer itself every 15 seconds.\nconst human = msgs.filter((m) => !(m.author && m.author.bot));\nif (human.length === 0) return [];\n\n// Newest message only. Anything older is either already handled or superseded.\nconst m = human[human.length - 1];\n\nconst claim = await this.helpers.httpRequest({\n  method: 'POST',\n  url: `${cfg.bridge}/claim`,\n  body: { message_id: m.id },\n  json: true,\n});\n\nif (!claim || claim.claimed !== true) return [];\n\nconst atts = (m.attachments || []).filter((a) => /\\.pdf$/i.test(a.filename || ''));\n\nreturn [{\n  json: {\n    message_id: m.id,\n    content: m.content || '',\n    is_first_contact: claim.is_first_contact === true,\n    session_id: claim.session_id || null,\n    has_cv: atts.length > 0,\n    attachment_name: atts.length ? atts[0].filename : null,\n    attachment_url: atts.length ? atts[0].url : null,\n    cv_name: atts.length ? `cv-${m.id}.pdf` : null,\n    dm_channel_id: cfg.dm_channel_id,\n    workspace: cfg.workspace,\n    bridge: cfg.bridge,\n  },\n}];"
+      },
+      "id": "aaaa0004-0000-4000-8000-000000000004",
+      "name": "Pick New Messages",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "iscv",
+              "leftValue": "={{ $json.has_cv }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "aaaa0005-0000-4000-8000-000000000005",
+      "name": "Is CV Upload?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.bridge }}/fetch",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.attachment_url }}"
+            },
+            {
+              "name": "filename",
+              "value": "={{ $json.cv_name }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "aaaa0006-0000-4000-8000-000000000006",
+      "name": "Fetch CV to Workspace",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        420,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// A CV arrived: open a NEW Claude Code session and hand it the file path.\n// The session id is persisted through the bridge, not n8n static data, so the\n// next message can resume this exact conversation.\n\nconst m = $('Pick New Messages').first().json;\n// Single source of truth: the path the bridge actually wrote to.\nconst cvPath = $('Fetch CV to Workspace').first().json.path;\n\nconst uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {\n  const r = Math.floor(Math.random() * 16);\n  const v = c === 'x' ? r : ((r & 0x3) | 0x8);\n  return v.toString(16);\n});\n\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: `${m.bridge}/state`,\n  body: { patch: { session_id: uuid, cv_path: cvPath, cv_name: m.cv_name } },\n  json: true,\n});\n\nconst prompt = [\n  'You are Sanad, talking to someone in a Discord DM. They cannot see a terminal - only your chat messages.',\n  '',\n  'Use the cv-reviewer skill to review the CV at this path:',\n  cvPath,\n  '',\n  'How to behave here:',\n  '- Ask your intake questions ONE at a time, in a single short message. Three questions maximum.',\n  '- Never mention file paths, scripts, tools, or that you are a CLI.',\n  '- Keep every message under 1200 characters.',\n  '- Plain text with light Discord markdown (**bold**, *italic*, bullets). No code fences.',\n  '',\n  'When you have everything you need, deliver the review in EXACTLY this format and nothing else:',\n  '',\n  '===SUMMARY===',\n  '(a short friendly Discord message: the score out of 100, the three biggest problems, and one sentence on what happens next. Under 1200 characters.)',\n  '===REPORT===',\n  '(the complete review in Markdown - headings, tables, every finding. This becomes a PDF, so length is fine.)',\n  '',\n  'Right now: read the CV, then ask your FIRST intake question. Reply with just that question.',\n].join('\\n');\n\nreturn [{ json: { ...m, session_id: uuid, prompt } }];"
+      },
+      "id": "aaaa0008-0000-4000-8000-000000000008",
+      "name": "Start Review",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        860,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://discord.com/api/v10/channels/{{ $json.dm_channel_id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "discordBotApi",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "=📄 Got **{{ $json.attachment_name }}** - reading it now. This takes a minute or two."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "aaaa0009-0000-4000-8000-000000000009",
+      "name": "Send Ack",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1080,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Not a CV: resume the existing Claude Code session. This is how intake answers,\n// the \"yes fix it\" approval and general questions are all handled - Claude Code\n// owns the conversation, n8n just carries the text.\n\nconst m = $('Pick New Messages').first().json;\n\nlet sessionId = m.session_id;\nlet prompt;\n\nif (!sessionId) {\n  // Chatting before any CV was sent. Start a session so Sanad can still answer.\n  sessionId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {\n    const r = Math.floor(Math.random() * 16);\n    const v = c === 'x' ? r : ((r & 0x3) | 0x8);\n    return v.toString(16);\n  });\n\n  await this.helpers.httpRequest({\n    method: 'POST',\n    url: `${m.bridge}/state`,\n    body: { patch: { session_id: sessionId } },\n    json: true,\n  });\n\n  prompt = [\n    'You are Sanad, a helper in a Discord DM. You review and rewrite CVs, then match them against live freelance projects.',\n    'No CV has been sent yet - if they are ready, ask them to send one as a PDF.',\n    'Keep replies under 1200 characters, plain text with light Discord markdown, no code fences.',\n    '',\n    'The person said:',\n    m.content,\n  ].join('\\n');\n} else {\n  prompt = [\n    m.content,\n    '',\n    '(Reminder: you are Sanad in a Discord DM. Under 1200 characters. When you deliver the CV review, use the ===SUMMARY=== / ===REPORT=== format exactly as instructed.)',\n  ].join('\\n');\n}\n\nreturn [{ json: { ...m, session_id: sessionId, prompt } }];"
+      },
+      "id": "aaaa0010-0000-4000-8000-000000000010",
+      "name": "Continue Chat",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.bridge }}/claude",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "session_id",
+              "value": "={{ $json.session_id }}"
+            },
+            {
+              "name": "prompt",
+              "value": "={{ $json.prompt }}"
+            },
+            {
+              "name": "cwd",
+              "value": "={{ $json.workspace }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 600000
+        }
+      },
+      "id": "aaaa0011-0000-4000-8000-000000000011",
+      "name": "Call Claude",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1300,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// R-5 discipline: never trust the shape of an LLM response. Validate first,\n// then decide whether this turn is a chat reply or the finished review.\n\nconst r = $input.first().json;\nconst m = $('Pick New Messages').first().json;\n\nif (!r || r.ok !== true) {\n  throw new Error('Bridge call failed: ' + JSON.stringify(r && r.error ? r.error : r).slice(0, 400));\n}\n\nconst out = String(r.output || '').trim();\nif (!out) throw new Error('Bridge returned an empty response.');\n\nconst S = '===SUMMARY===';\nconst R = '===REPORT===';\n\nlet hasReport = out.includes(R);\nlet summary = out;\nlet report = '';\n\nif (hasReport) {\n  const si = out.indexOf(S);\n  const ri = out.indexOf(R);\n  summary = (si >= 0 ? out.slice(si + S.length, ri) : out.slice(0, ri)).trim();\n  report = out.slice(ri + R.length).trim();\n\n  // Guard: the marker appeared but the body did not. Treat it as chat rather\n  // than shipping an empty PDF.\n  if (report.length < 40) {\n    hasReport = false;\n    summary = out;\n    report = '';\n  }\n}\n\n// Discord hard-caps a message at 2000 characters.\nif (summary.length > 1900) summary = summary.slice(0, 1890) + '\\n\\u2026';\n\nreturn [{\n  json: {\n    has_report: hasReport,\n    summary,\n    report,\n    session_id: r.session_id,\n    resumed: r.resumed,\n    dm_channel_id: m.dm_channel_id,\n    bridge: m.bridge,\n    workspace: m.workspace,\n    pdf_name: `sanad-review-${m.message_id}.pdf`,\n  },\n}];"
+      },
+      "id": "aaaa0012-0000-4000-8000-000000000012",
+      "name": "Parse Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1520,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "hasrep",
+              "leftValue": "={{ $json.has_report }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "aaaa0013-0000-4000-8000-000000000013",
+      "name": "Review Finished?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1740,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.bridge }}/md2pdf",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "markdown",
+              "value": "={{ $json.report }}"
+            },
+            {
+              "name": "filename",
+              "value": "={{ $json.pdf_name }}"
+            },
+            {
+              "name": "title",
+              "value": "Sanad - CV Review"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "aaaa0014-0000-4000-8000-000000000014",
+      "name": "Make PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1960,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Parse Output').item.json.bridge }}/file?name={{ $json.filename }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data"
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "id": "aaaa0015-0000-4000-8000-000000000015",
+      "name": "Download PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2180,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://discord.com/api/v10/channels/{{ $('Parse Output').item.json.dm_channel_id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "discordBotApi",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "payload_json",
+              "value": "={{ JSON.stringify({ content: $('Parse Output').item.json.summary }) }}"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "files[0]",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "aaaa0016-0000-4000-8000-000000000016",
+      "name": "Send Review + PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2400,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://discord.com/api/v10/channels/{{ $json.dm_channel_id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "discordBotApi",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "={{ $json.summary }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "aaaa0017-0000-4000-8000-000000000017",
+      "name": "Send Chat Reply",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1960,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fc",
+              "leftValue": "={{ $json.is_first_contact }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "nocv",
+              "leftValue": "={{ $json.has_cv }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "aaaa0018-0000-4000-8000-000000000018",
+      "name": "First Contact?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        100,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://discord.com/api/v10/channels/{{ $json.dm_channel_id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "discordBotApi",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "👋 **Ahlan! I'm Sanad.**\n\nI help you land freelance work in two steps:\n\n**1. Fix your CV** — send it as a PDF and I'll review it, score it, then rewrite it. You get both back as PDFs.\n**2. Find you work** — say *\"find me work\"* and I'll match your CV against live freelance projects and write you a pitch for each one.\n\nI'll also send you **one gig every morning**, without you asking.\n\n📎 **Start by sending me your CV as a PDF.**"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "aaaa0019-0000-4000-8000-000000000019",
+      "name": "Send Welcome",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        320,
+        380
+      ]
+    }
+  ],
+  "connections": {
+    "Every 15 Seconds": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Get Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Messages": {
+      "main": [
+        [
+          {
+            "node": "Pick New Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick New Messages": {
+      "main": [
+        [
+          {
+            "node": "First Contact?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is CV Upload?": {
+      "main": [
+        [
+          {
+            "node": "Fetch CV to Workspace",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Continue Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch CV to Workspace": {
+      "main": [
+        [
+          {
+            "node": "Start Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start Review": {
+      "main": [
+        [
+          {
+            "node": "Send Ack",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Call Claude",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Continue Chat": {
+      "main": [
+        [
+          {
+            "node": "Call Claude",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Claude": {
+      "main": [
+        [
+          {
+            "node": "Parse Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Output": {
+      "main": [
+        [
+          {
+            "node": "Review Finished?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Review Finished?": {
+      "main": [
+        [
+          {
+            "node": "Make PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Chat Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Make PDF": {
+      "main": [
+        [
+          {
+            "node": "Download PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download PDF": {
+      "main": [
+        [
+          {
+            "node": "Send Review + PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "First Contact?": {
+      "main": [
+        [
+          {
+            "node": "Send Welcome",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Is CV Upload?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
