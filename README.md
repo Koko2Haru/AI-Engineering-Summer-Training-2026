@@ -1,7 +1,7 @@
 # 🤖 AI Engineering Summer Training 2026
 
 [![Progress](https://img.shields.io/badge/progress-7%2F7%20weeks-blue)]()
-[![Status](https://img.shields.io/badge/status-in%20progress-yellow)]()
+[![Status](https://img.shields.io/badge/status-complete-brightgreen)]()
 [![Made with](https://img.shields.io/badge/made%20with-Python%20%7C%20Claude%20%7C%20n8n-informational)]()
 
 A running log of a **7-week AI Engineering Summer Training Program** — LLMs, prompt engineering, AI-assisted development, Claude Skills, agentic AI, and workflow automation, learned through daily hands-on exercises and shipped mini-projects (not just notes).
@@ -30,7 +30,7 @@ Alongside the program itself, I have also been juggling **4+ personal projects, 
 | 4 | Claude Skills — *cv-reviewer → cv-optimizer* | ✅ Done | [Week 4 README](Week-4-Using-and-Building-Claude-Skills/WEEK4-README.md) |
 | 5 | Agentic AI | ✅ Done | [Week 5 README](/Week-5-Agentic-AI-Fundamentals/WEEK5-README.md) |
 | 6 | n8n Automation | ✅ Done | [Week 6 README](/Week-6-Automation-and-Orchestration-with-n8n/WEEK6-README.md) |
-| 7 | Capstone Project | 🛠️ Working on it | *`Week 7 README`* |
+| 7 | Capstone Project | ✅ Done | [Week 7 README](/Week-7-Capstone-Project/WEEK7-README.md) |
 
 <details>
 <summary><strong>📅 Week 1 — Foundations of AI Engineering</strong></summary>
@@ -118,7 +118,7 @@ Alongside the program itself, I have also been juggling **4+ personal projects, 
 | Build - Core | Closed the last unknown in the architecture, then built the core loop: CV into a Discord DM, review PDF back. It worked — but only after four separate bugs. | ✅ Done | [DAY2-REPORT.md](/Week-7-Capstone-Project/Day-2-Build-Core/DAY2-REPORT.md) |
 | Build & Integrate | Finished v1. Chained the optimizer, ported Week 6's job matching, added the agent layer, and built the 08:00 digest. Four things I thought were skill problems turned out to be my prompt. | ✅ Done | [DAY3-REPORT.md](/Week-7-Capstone-Project/Day-3-Build-Integration/DAY3-REPORT.md) |
 | Testing & Evaluation | Stopped building and started measuring. Put a number on the claim the whole project rests on: Sanad's rewrite takes the CV from 42/100 to 73/100 — two points off a professionally written version of the same person. | ✅ Done  | [DAY4-REPORT.md](/Week-7-Capstone-Project/Day-4-Testing-and-Evalualation/DAY4-REPORT.md) |
-| Demo Day | — | ⏳ | — |
+| Demo Day | Packaged the whole project into a source pack for NotebookLM — seven self-contained documents covering what Sanad is, how it's built, how it was built, whether it works, how to run it, why these choices, and what's broken. | ✅ Done | [DAY5-REPORT.md](/Week-7-Capstone-Project/Day-5-Demo-Day/DAY5-REPORT.md) |
 
 </details>
 
@@ -165,17 +165,33 @@ AI-Engineering-Summer-Training-2026/
 ├── Week-2-AI-Assisted-Development/
 ├── Week-3-Writing-md-Files-to-AI/
 ├── Week-4-Using-and-Building-Claude-Skills/
-├── Week-5-Agentic-AI/            
-├── Week-6-n8n-Automation/      
-└── Week-7-Capstone-Project/      
+├── Week-5-Agentic-AI-Fundamentals/
+├── Week-6-Automation-and-Orchestration-with-n8n/
+└── Week-7-Capstone-Project/          ← Sanad, the capstone
 ```
 
 ---
 
 ## 🎯 Goal
 
-By the end of this program, this repository will contain all notebooks, projects, and exercises completed throughout the training — a full record of hands-on progress in AI Engineering, from first API call to a shipped capstone project.
+This repository was meant to end up containing every notebook, project and exercise from the training — a full record of hands-on progress in AI Engineering, from a first API call to a shipped capstone.
+
+**It does.** Seven weeks, seven projects, all of them here with the working code, the reports, and the things that went wrong.
 
 ---
 
-⭐ Follow along as this repository grows week by week.
+## 🏁 That's a wrap
+
+Seven weeks ago this repo was one Python file making its first API call and printing a response.
+
+It ends with **Sanad** — a Discord bot that reads your CV, asks you fourteen questions about the vague parts, rewrites it, and then goes and finds you freelance work that actually fits. It takes a CV from **42/100 to 73/100**, two points off a professionally written version of the same person, and every morning at 08:00 it sends a job nobody asked it for.
+
+The path there wasn't a straight line: a gamified finance tracker, a LeetCode clone built entirely from markdown specs, two Claude Skills, an agent, an n8n pipeline, and finally something that decides for itself what you're asking for.
+
+What I'll actually keep from it isn't any one project. It's the habit of asking **why** something worked instead of being satisfied that it did — because nearly every real bug I hit in the final week was something that appeared to work for a reason I'd assumed rather than checked.
+
+Genuinely happy with how this ended. 🎓
+
+---
+
+⭐ Seven weeks, start to finish. Thanks for reading.
