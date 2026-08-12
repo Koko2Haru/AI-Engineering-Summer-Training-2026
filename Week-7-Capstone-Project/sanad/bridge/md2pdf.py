@@ -23,8 +23,12 @@ ACCENT = colors.HexColor("#1F3864")
 GREY = colors.HexColor("#555555")
 LIGHT = colors.HexColor("#EEF1F6")
 
+INK = colors.HexColor("#111111")
+
 _ss = getSampleStyleSheet()
-S = {
+
+# "report" - the review and change-report documents: navy headings, roomy.
+REPORT = {
     "h1": ParagraphStyle("h1", parent=_ss["Normal"], fontName="Helvetica-Bold",
                          fontSize=16, textColor=ACCENT, spaceBefore=10, spaceAfter=5, leading=19),
     "h2": ParagraphStyle("h2", parent=_ss["Normal"], fontName="Helvetica-Bold",
@@ -34,7 +38,9 @@ S = {
     "body": ParagraphStyle("body", parent=_ss["Normal"], fontName="Helvetica",
                            fontSize=9.5, leading=13, spaceAfter=4, alignment=TA_LEFT),
     "bullet": ParagraphStyle("bullet", parent=_ss["Normal"], fontName="Helvetica",
-                             fontSize=9.5, leading=12.5, spaceAfter=1.5),
+                             fontSize=9.5, leading=12.5, spaceAfter=1.5,
+                             leftIndent=13, bulletIndent=3, bulletFontSize=9.5,
+                             bulletFontName="Helvetica"),
     "cell": ParagraphStyle("cell", parent=_ss["Normal"], fontName="Helvetica",
                            fontSize=8.5, leading=11),
     "cellh": ParagraphStyle("cellh", parent=_ss["Normal"], fontName="Helvetica-Bold",
@@ -42,7 +48,46 @@ S = {
     "quote": ParagraphStyle("quote", parent=_ss["Normal"], fontName="Helvetica-Oblique",
                             fontSize=9.5, leading=13, leftIndent=10,
                             textColor=GREY, spaceAfter=4),
+    "rule_after_h2": False,
+    "bullet_size": 7,
+    "margins": (17, 17, 15, 15),  # left, right, top, bottom in mm
 }
+
+# "resume" - the optimised CV. A resume is not a report: the name carries the
+# page, section headers are quiet rules rather than coloured titles, and density
+# matters because it has to stay on one page.
+RESUME = {
+    "h1": ParagraphStyle("cvname", parent=_ss["Normal"], fontName="Helvetica-Bold",
+                         fontSize=19, textColor=INK, spaceBefore=0, spaceAfter=2, leading=22),
+    "h2": ParagraphStyle("cvsection", parent=_ss["Normal"], fontName="Helvetica-Bold",
+                         fontSize=10, textColor=INK, spaceBefore=9, spaceAfter=1, leading=12),
+    "h3": ParagraphStyle("cvsub", parent=_ss["Normal"], fontName="Helvetica-Bold",
+                         fontSize=9.5, textColor=INK, spaceBefore=5, spaceAfter=1, leading=12),
+    "body": ParagraphStyle("cvbody", parent=_ss["Normal"], fontName="Helvetica",
+                           fontSize=9, leading=11.6, spaceAfter=2, alignment=TA_LEFT),
+    "bullet": ParagraphStyle("cvbullet", parent=_ss["Normal"], fontName="Helvetica",
+                             fontSize=9, leading=11.6, spaceAfter=1.5,
+                             leftIndent=12, bulletIndent=2, bulletFontSize=9,
+                             bulletFontName="Helvetica"),
+    "cell": ParagraphStyle("cvcell", parent=_ss["Normal"], fontName="Helvetica",
+                           fontSize=8.5, leading=10.5),
+    "cellh": ParagraphStyle("cvcellh", parent=_ss["Normal"], fontName="Helvetica-Bold",
+                            fontSize=8.5, leading=10.5, textColor=colors.white),
+    "quote": ParagraphStyle("cvquote", parent=_ss["Normal"], fontName="Helvetica-Oblique",
+                            fontSize=9, leading=11.6, leftIndent=10,
+                            textColor=GREY, spaceAfter=2),
+    # The contact line under the name: smaller and grey, so the name owns the top.
+    "contact": ParagraphStyle("cvcontact", parent=_ss["Normal"], fontName="Helvetica",
+                              fontSize=9, leading=11.5, textColor=GREY, spaceAfter=1),
+    "rule_after_h2": True,
+    "bullet_size": 4,
+    "margins": (15, 15, 13, 13),
+}
+
+STYLES = {"report": REPORT, "resume": RESUME}
+
+# Kept so anything importing md2pdf.S still works.
+S = REPORT
 
 
 def inline(text):
@@ -69,7 +114,7 @@ def split_row(line):
     return [c.strip() for c in line.strip().strip("|").split("|")]
 
 
-def build_table(rows):
+def build_table(rows, S=REPORT):
     header, *body = rows
     data = [[Paragraph(inline(c), S["cellh"]) for c in header]]
     for r in body:
@@ -91,16 +136,24 @@ def build_table(rows):
     return t
 
 
-def convert(md_text):
+def convert(md_text, style="report"):
+    S = STYLES.get(style, REPORT)
     story, lines, i = [], md_text.replace("\r\n", "\n").split("\n"), 0
     pending_bullets = []
 
+    # Resume only: everything between the name (h1) and the first section (h2)
+    # is the contact block, and gets the quieter contact style.
+    in_header_block = False
+
     def flush_bullets():
+        # Paragraph-level bullets rather than ListFlowable: ListFlowable renders
+        # the glyph tiny and raised off the baseline, which looks like a
+        # rendering artefact rather than a bullet. The <bullet> tag sits on the
+        # text baseline and takes the style's own font size.
         if pending_bullets:
-            story.append(ListFlowable(
-                [ListItem(Paragraph(inline(b), S["bullet"]), leftIndent=12)
-                 for b in pending_bullets],
-                bulletType="bullet", bulletFontSize=6, leftIndent=10, spaceAfter=4))
+            for b in pending_bullets:
+                story.append(Paragraph("<bullet>&bull;</bullet>" + inline(b), S["bullet"]))
+            story.append(Spacer(1, 3))
             pending_bullets.clear()
 
     in_fence = False
@@ -135,7 +188,7 @@ def convert(md_text):
                 rows.append(split_row(lines[i]))
                 i += 1
             story.append(Spacer(1, 3))
-            story.append(build_table(rows))
+            story.append(build_table(rows, S))
             story.append(Spacer(1, 6))
             continue
 
@@ -152,8 +205,18 @@ def convert(md_text):
         if m:
             flush_bullets()
             level = len(m.group(1))
-            style = S["h1"] if level == 1 else S["h2"] if level == 2 else S["h3"]
-            story.append(Paragraph(inline(m.group(2)), style))
+            hstyle = S["h1"] if level == 1 else S["h2"] if level == 2 else S["h3"]
+            story.append(Paragraph(inline(m.group(2)), hstyle))
+
+            if level == 1:
+                in_header_block = True
+            elif level == 2:
+                in_header_block = False
+                # A hairline under each section header - the resume equivalent
+                # of a coloured heading, and far quieter on the page.
+                if S["rule_after_h2"]:
+                    story.append(HRFlowable(width="100%", thickness=0.7, color=INK,
+                                            spaceBefore=1, spaceAfter=4))
             i += 1
             continue
 
@@ -181,7 +244,8 @@ def convert(md_text):
             continue
 
         flush_bullets()
-        story.append(Paragraph(inline(line.strip()), S["body"]))
+        body_style = S["contact"] if (in_header_block and "contact" in S) else S["body"]
+        story.append(Paragraph(inline(line.strip()), body_style))
         i += 1
 
     flush_bullets()

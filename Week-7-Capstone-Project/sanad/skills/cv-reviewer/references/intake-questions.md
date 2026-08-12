@@ -28,17 +28,33 @@ Before writing feedback, gather context — a CV reviewed with no context is onl
 14. What's missing that the candidate has actually done but left out — and why was it left out?
 15. Is there anything inflated or made to sound better than it was?
 
+## Numbers that aren't there yet
+
+Q12 covers numbers already on the CV. This covers the bigger problem: claims with **no** number at all. Most weak CVs don't fail on bad numbers — they fail on *"many happy clients"*, *"saved them time"*, *"worked on a lot of projects"*. Nothing above catches those, because there is no metric there to interrogate.
+
+16. **Go through the CV line by line and find every claim with no number attached. Each one becomes its own question.** Triggers: *many, several, some, a lot of, various, multiple, helped with, worked on, assisted with, involved in* — plus any project, tool or system described with no scale, no volume and no outcome.
+
+17. **Ask for the number and its unit in the same question.** "How much time did it save?" invites an answer you can't use. "How many hours, and over what period — per week, per month, or one-off?" does not.
+
+18. **Check every answer before using it.** Three failure modes, all common:
+    - **Missing unit** — *"saved 2–10 hrs"* → per week? per month? once, total?
+    - **Unclear attribution** — *"used by 100+ clients"* → the tool's users, or the candidate's own client count? These are wildly different claims.
+    - **Vague quantifier survived** — *"most"*, *"a majority"*, *"loads"*
+
+    Ask once more, naming exactly what is unclear. If it is still ambiguous after that one round, put a bracketed placeholder in the output rather than resolving it — and **never resolve it in the more impressive direction**. An unfilled placeholder is safer than a number the candidate cannot defend in an interview.
+
 ## About the CV itself
 
-16. What format is this in — self-designed or a template?
-17. Has anyone reviewed this before? What feedback came back?
-18. How long has this version been in circulation? Any interviews from it?
-19. Target length — one page, two pages, no preference?
-20. Any section the candidate already feels unsure about or wants focused on specifically?
+19. What format is this in — self-designed or a template?
+20. Has anyone reviewed this before? What feedback came back?
+21. How long has this version been in circulation? Any interviews from it?
+22. Target length — one page, two pages, no preference?
+23. Any section the candidate already feels unsure about or wants focused on specifically?
 
 ## How to use these
 
 - Ask all at once or in themed batches — whichever fits the conversation. Don't drip-feed one question at a time when several are needed.
-- Prioritize by what would most change the review: target role (Q6) and content confidence (Q12-13) usually matter more than format history (Q16-18).
+- **Q16 usually generates the most questions, and they are the ones worth asking.** A CV with ten unquantified claims should produce roughly ten questions. Expect the intake to be longer than the fixed list above, not shorter — the numbered list is a starting point, and Q16 expands it to fit the actual document.
+- Prioritize by what would most change the review: target role (Q6), content confidence (Q12-13) and unquantified claims (Q16) matter more than format history (Q19-21).
 - If answers reveal a claim the candidate can't defend (Q13, Q15), that's a Credibility Audit finding — see `bullet-audits.md`.
-- Missing answers are not a blocker. Proceed with a stated assumption and flag which questions are still open so the user can fill them in later.
+- Missing answers are not a blocker. Proceed with a stated assumption and flag which questions are still open so the user can fill them in later. But an answer that arrived *ambiguous* is different from one that never arrived: clarify it once (Q18) before falling back to an assumption.

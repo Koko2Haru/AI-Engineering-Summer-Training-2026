@@ -1,0 +1,895 @@
+{
+  "name": "Sanad - Job Matching",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "bbbb0000-0000-4000-8000-000000000000",
+      "name": "When Called",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -980,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b1",
+              "name": "bridge",
+              "value": "http://127.0.0.1:8900",
+              "type": "string"
+            },
+            {
+              "id": "b2",
+              "name": "top_k",
+              "value": "={{ $json.top_k || 5 }}",
+              "type": "number"
+            },
+            {
+              "id": "b3",
+              "name": "mode",
+              "value": "={{ $json.mode || 'on-request' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bbbb0001-0000-4000-8000-000000000001",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -780,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.bridge }}/state",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "bbbb0002-0000-4000-8000-000000000002",
+      "name": "Get State",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -580,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Match against the OPTIMISED CV when one exists - that is the whole point of\n// putting the review and rewrite in front of the matching. Fall back to the\n// original upload if the rewrite has not happened yet.\n\nconst cfg = $('Config').first().json;\nconst state = ($input.first().json || {}).state || {};\n\nconst name = state.cv_optimised_name || state.cv_name;\nif (!name) {\n  throw new Error('No CV on file yet. Send a CV to Sanad before asking for work.');\n}\n\nreturn [{\n  json: {\n    cv_file: name,\n    used_optimised: Boolean(state.cv_optimised_name),\n    bridge: cfg.bridge,\n    top_k: cfg.top_k,\n    mode: cfg.mode,\n  },\n}];"
+      },
+      "id": "bbbb0003-0000-4000-8000-000000000003",
+      "name": "Pick CV",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -380,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.bridge }}/file?name={{ $json.cv_file }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data"
+            }
+          },
+          "timeout": 60000
+        }
+      },
+      "id": "bbbb0004-0000-4000-8000-000000000004",
+      "name": "Download CV",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -180,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "data",
+        "options": {}
+      },
+      "id": "bbbb0005-0000-4000-8000-000000000005",
+      "name": "Extract CV Text",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        20,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a CV parser. Read the CV below and produce a structured profile.\n\nReturn ONLY valid JSON. No markdown fences, no commentary. Exactly this shape:\n{\n  \"headline\": \"one line describing this person professionally\",\n  \"seniority\": \"junior | mid | senior\",\n  \"core_skills\": [\"skills they are genuinely strong in\"],\n  \"secondary_skills\": [\"skills they have touched but are not specialists in\"],\n  \"domains\": [\"industries or problem areas they have worked in\"],\n  \"notable_projects\": [\n    {\"name\": \"project name as written on the CV\",\n     \"what\": \"one line on what it did\",\n     \"tech\": [\"technologies used\"],\n     \"result\": \"the measurable outcome if the CV states one, else null\"}\n  ],\n  \"not_suited_to\": [\"kinds of work this person should NOT be matched with\"]\n}\n\nnotable_projects is the most important field: the pitch step can only cite work\nit can see here. Include every distinct project, tool or system on the CV.\n\nOnly list what actually appears in the CV. Do not infer or invent.\n\nCV TEXT:\n{{ $json.text }}"
+      },
+      "id": "bbbb0006-0000-4000-8000-000000000006",
+      "name": "Profile CV",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {
+          "maxOutputTokens": 4096
+        }
+      },
+      "id": "bbbb0007-0000-4000-8000-000000000007",
+      "name": "Gemini Flash",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        220,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Carry-over fix #8: never trust an LLM's shape. Week 6 saw a valid HTTP 200\n// carrying JSON truncated at exactly 4096 tokens.\n\nlet raw = $input.first().json.text ?? $input.first().json.output ?? '';\nraw = String(raw).replace(/```json/gi, '').replace(/```/g, '').trim();\n\nlet p;\ntry {\n  p = JSON.parse(raw);\n} catch (e) {\n  throw new Error('Profile step did not return valid JSON. First 300 chars: ' + raw.slice(0, 300));\n}\n\nif (!Array.isArray(p.core_skills) || p.core_skills.length === 0) {\n  throw new Error('Profile has no core_skills - refusing to match on an empty profile.');\n}\nif (!Array.isArray(p.notable_projects) || p.notable_projects.length === 0) {\n  // Not fatal, but the pitches will be weaker - this is exactly the Week 6 bug.\n  p.notable_projects = [];\n}\n\nconst prev = $('Pick CV').first().json;\nreturn [{ json: { ...prev, profile: p, profile_json: JSON.stringify(p) } }];"
+      },
+      "id": "bbbb0008-0000-4000-8000-000000000008",
+      "name": "Parse Profile",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.freelancer.com/api/projects/0.1/projects/active/?limit=50&job_details=true",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "bbbb0009-0000-4000-8000-000000000009",
+      "name": "Fetch Projects",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        620,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Carry-over fix #5: the API exposes `language`, and roughly 7 of 50 projects\n// come back in another language. One filter, deliberately skipped in Week 6.\n\nconst res = $input.first().json;\nconst projects = (res.result && res.result.projects) || [];\n\nconst out = [];\nfor (const p of projects) {\n  if ((p.language || '').toLowerCase() !== 'en') continue;\n\n  const b = p.budget || {};\n  const cur = (p.currency || {}).code || '';\n  out.push({\n    json: {\n      job_id: String(p.id),\n      title: p.title || '',\n      description: String(p.preview_description || '').slice(0, 600),\n      budget_min: b.minimum ?? '',\n      budget_max: b.maximum ?? '',\n      currency: cur,\n      skills: (p.jobs || []).map((j) => j.name).join(', '),\n      url: p.seo_url ? ('https://www.freelancer.com/projects/' + p.seo_url) : '',\n      language: p.language || '',\n      fetched_at: new Date().toISOString().slice(0, 16).replace('T', ' '),\n    },\n  });\n}\n\nif (out.length === 0) throw new Error('Freelancer returned no English projects.');\nreturn out;"
+      },
+      "id": "bbbb0010-0000-4000-8000-000000000010",
+      "name": "Normalise and Filter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        820,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1GRaUUEDghekkY3bHRCLs5Yoy5PWJKC-jSyQ6Rdfdij4",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Matches",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "bbbb0011-0000-4000-8000-000000000011",
+      "name": "Read Sent Matches",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1020,
+        0
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// FR-31: a job already sent is never sent again. This is what stops the daily\n// digest repeating itself, so it is checked BEFORE scoring, not after.\n//\n// Read Sent Matches is a Sheets node, so $json here is sheet rows - the fresh\n// jobs have to be pulled from their own node by name (R-19).\n\nconst fresh = $('Normalise and Filter').all().map((i) => i.json);\n\nconst sent = new Set(\n  $input.all()\n    .map((i) => String((i.json || {}).job_id || '').trim())\n    .filter(Boolean)\n);\n\nconst unseen = fresh.filter((j) => !sent.has(String(j.job_id)));\n\nif (unseen.length === 0) {\n  // Deliberately not an error: \"nothing new today\" is a valid outcome (FR-32).\n  return [{ json: { __empty: true, reason: 'every fetched project has already been sent' } }];\n}\n\nreturn unseen.map((j) => ({ json: j }));"
+      },
+      "id": "bbbb0012-0000-4000-8000-000000000012",
+      "name": "Drop Already Sent",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1GRaUUEDghekkY3bHRCLs5Yoy5PWJKC-jSyQ6Rdfdij4",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Jobs",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "job_id": "={{ $json.job_id }}",
+            "title": "={{ $json.title }}",
+            "description": "={{ $json.description }}",
+            "budget_min": "={{ $json.budget_min }}",
+            "budget_max": "={{ $json.budget_max }}",
+            "currency": "={{ $json.currency }}",
+            "skills": "={{ $json.skills }}",
+            "url": "={{ $json.url }}",
+            "language": "={{ $json.language }}",
+            "fetched_at": "={{ $json.fetched_at }}"
+          },
+          "schema": [
+            {
+              "id": "job_id",
+              "displayName": "job_id",
+              "required": true,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "budget_min",
+              "displayName": "budget_min",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "budget_max",
+              "displayName": "budget_max",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "skills",
+              "displayName": "skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "language",
+              "displayName": "language",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fetched_at",
+              "displayName": "fetched_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "matchingColumns": [
+            "job_id"
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "bbbb0013-0000-4000-8000-000000000013",
+      "name": "Save Jobs",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1420,
+        -180
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "jobs",
+        "options": {}
+      },
+      "id": "bbbb0014-0000-4000-8000-000000000014",
+      "name": "Bundle Jobs",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1420,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are matching freelance projects to one specific freelancer.\n\nFREELANCER PROFILE:\n{{ $('Parse Profile').first().json.profile_json }}\n\nPROJECTS TO SCORE (JSON array):\n{{ JSON.stringify($json.jobs.map(j => ({job_id: j.job_id, title: j.title, skills: j.skills, budget_max: j.budget_max, currency: j.currency}))) }}\n\nFor EVERY project in the array, score 0-100 for how well it fits this freelancer,\nplus one short sentence of reasoning.\n\nScoring rules:\n- 80-100: squarely in their core skills\n- 50-79: adjacent, they could do it with some stretch\n- 20-49: weak overlap\n- 0-19: wrong field entirely\nBe honest and be willing to score low. A project needing skills this freelancer\ndoes not have MUST score below 20. Never credit them with skills absent from the\nprofile.\n\nReturn ONLY a valid JSON array, no markdown fences, one object per project:\n[{\"job_id\": \"...\", \"score\": 0, \"reason\": \"...\"}]"
+      },
+      "id": "bbbb0015-0000-4000-8000-000000000015",
+      "name": "Score Jobs",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        1620,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "model": "deepseek/deepseek-chat",
+        "options": {
+          "maxTokens": 4096,
+          "temperature": 0
+        }
+      },
+      "id": "bbbb0016-0000-4000-8000-000000000016",
+      "name": "OpenRouter DeepSeek",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1620,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validate, then rank. Carry-over fix #8 again.\n\nlet raw = $input.first().json.text ?? $input.first().json.output ?? '';\nraw = String(raw).replace(/```json/gi, '').replace(/```/g, '').trim();\n\nlet scored;\ntry {\n  scored = JSON.parse(raw);\n} catch (e) {\n  throw new Error('Scoring step did not return valid JSON. First 300 chars: ' + raw.slice(0, 300));\n}\nif (!Array.isArray(scored) || scored.length === 0) {\n  throw new Error('Scoring step returned no usable array.');\n}\n\nconst jobs = $('Bundle Jobs').first().json.jobs;\nconst byId = new Map(jobs.map((j) => [String(j.job_id), j]));\n\nconst merged = scored\n  .map((s) => {\n    const j = byId.get(String(s.job_id));\n    if (!j) return null;                       // hallucinated id - drop it\n    return { ...j, score: Number(s.score) || 0, reason: s.reason || '' };\n  })\n  .filter(Boolean);\n\nif (merged.length === 0) {\n  throw new Error('Scoring returned ids that match none of the fetched projects.');\n}\n\nconst asked = Number($('Parse Profile').first().json.top_k) || 5;\nconst k = Math.min(Math.max(asked, 1), 10);   // a typo must not ask for 900\n\nmerged.sort((a, b) => b.score - a.score);\nreturn [{ json: { top: merged.slice(0, k), total_scored: merged.length, k } }];"
+      },
+      "id": "bbbb0017-0000-4000-8000-000000000017",
+      "name": "Rank Top K",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1820,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write a short application pitch for each freelance project below, in the freelancer's own voice.\n\nFREELANCER PROFILE (including notable_projects):\n{{ $('Parse Profile').first().json.profile_json }}\n\nTOP PROJECTS:\n{{ JSON.stringify($json.top) }}\n\nFor each project, 2-3 SHORT sentences that:\n- open with the specific relevant experience for THAT project\n- CITE ONE SPECIFIC PROJECT BY NAME from notable_projects, and say what it did\n- state concretely what you would do first on this job\n- no greetings, no sign-offs\n\nEvery pitch MUST name a real project from notable_projects. A pitch that cites\nno specific past work is a failed pitch - pick the closest one and say why it is\nrelevant.\n\nBANNED phrasing, do not use in any form:\n\"deliver a high-quality solution\", \"meets your requirements\", \"I am excited\",\n\"passionate\", \"extensive experience\", \"proven track record\".\n\nNever invent experience the profile does not contain.\n\nKeep every pitch under 400 characters. Return ONLY a valid JSON array, no\nmarkdown fences, no trailing commentary:\n[{\"job_id\": \"...\", \"pitch\": \"...\"}]"
+      },
+      "id": "bbbb0018-0000-4000-8000-000000000018",
+      "name": "Write Pitches",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        2020,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {
+          "maxTokensToSample": 2000,
+          "temperature": 0.2
+        }
+      },
+      "id": "bbbb0019-0000-4000-8000-000000000019",
+      "name": "Groq Llama",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        2020,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validate the pitches, then check the carry-over fix actually held: every\n// pitch must cite a real project, and none may contain the Week 6 filler.\n\nlet raw = $input.first().json.text ?? $input.first().json.output ?? '';\nraw = String(raw).replace(/```json/gi, '').replace(/```/g, '').trim();\n\nlet pitches;\nlet truncated = false;\n\ntry {\n  pitches = JSON.parse(raw);\n} catch (e) {\n  // Carry-over #8: the response was cut off mid-JSON. Salvage the objects that\n  // did complete rather than losing all five because the last one was clipped.\n  truncated = true;\n  const re = /\"job_id\"\\s*:\\s*\"?([^\",}]+)\"?\\s*,\\s*\"pitch\"\\s*:\\s*\"((?:[^\"\\\\]|\\\\.)*)\"/g;\n  pitches = [];\n  let m;\n  while ((m = re.exec(raw)) !== null) {\n    pitches.push({ job_id: m[1], pitch: m[2].replace(/\\\\\"/g, '\"') });\n  }\n  if (pitches.length === 0) {\n    throw new Error('Pitch step returned unparseable JSON and nothing could be salvaged. First 300 chars: ' + raw.slice(0, 300));\n  }\n}\n\nif (!Array.isArray(pitches)) {\n  throw new Error('Pitch step did not return an array.');\n}\n\nconst top = $('Rank Top K').first().json.top;\nconst byId = new Map(pitches.map((p) => [String(p.job_id), p.pitch || '']));\n\nconst BANNED = [\n  'deliver a high-quality solution', 'meets your requirements', 'i am excited',\n  'passionate', 'extensive experience', 'proven track record',\n];\nconst projects = ($('Parse Profile').first().json.profile.notable_projects || [])\n  .map((p) => String(p.name || '').toLowerCase())\n  .filter(Boolean);\n\nconst stamp = new Date().toISOString().slice(0, 16).replace('T', ' ');\nconst mode = $('Parse Profile').first().json.mode || 'on-request';\n\nreturn top.map((j, i) => {\n  const pitch = byId.get(String(j.job_id)) || '';\n  const low = pitch.toLowerCase();\n  return {\n    json: {\n      rank: i + 1,\n      job_id: j.job_id,\n      title: j.title,\n      url: j.url,\n      score: j.score,\n      reason: j.reason,\n      pitch,\n      budget: [j.budget_min, j.budget_max].filter(Boolean).join(' - ') + ' ' + (j.currency || ''),\n      // Reported, not enforced: Day 4 checks these rather than failing a live run.\n      cites_project: projects.some((n) => n && low.includes(n)),\n      has_banned_phrase: BANNED.some((b) => low.includes(b)),\n      pitch_missing: pitch.length === 0,\n      response_was_truncated: truncated,\n      source: mode,\n      sent_at: stamp,\n    },\n  };\n});"
+      },
+      "id": "bbbb0020-0000-4000-8000-000000000020",
+      "name": "Parse Pitches",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1GRaUUEDghekkY3bHRCLs5Yoy5PWJKC-jSyQ6Rdfdij4",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Matches",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "job_id": "={{ $json.job_id }}",
+            "title": "={{ $json.title }}",
+            "url": "={{ $json.url }}",
+            "score": "={{ $json.score }}",
+            "reason": "={{ $json.reason }}",
+            "pitch": "={{ $json.pitch }}",
+            "source": "={{ $json.source }}",
+            "sent_at": "={{ $json.sent_at }}"
+          },
+          "schema": [
+            {
+              "id": "job_id",
+              "displayName": "job_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "score",
+              "displayName": "score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reason",
+              "displayName": "reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "pitch",
+              "displayName": "pitch",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sent_at",
+              "displayName": "sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "matchingColumns": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "bbbb0021-0000-4000-8000-000000000021",
+      "name": "Save Matches",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2420,
+        -180
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// What the calling workflow receives.\nconst items = $('Parse Pitches').all().map((i) => i.json);\nreturn [{ json: {\n  ok: true,\n  count: items.length,\n  used_optimised_cv: $('Parse Profile').first().json.used_optimised === true,\n  matches: items,\n} }];"
+      },
+      "id": "bbbb0022-0000-4000-8000-000000000022",
+      "name": "Return Matches",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2420,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "any",
+              "leftValue": "={{ $json.__empty }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "bbbb0100-0000-4000-8000-000000000100",
+      "name": "Any New Jobs?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1320,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// FR-32: having nothing to say is a valid outcome and must be said out loud.\n// A digest that goes quiet is indistinguishable from a digest that is broken.\nreturn [{ json: {\n  ok: true,\n  count: 0,\n  matches: [],\n  reason: $input.first().json.reason || 'no new projects',\n} }];"
+      },
+      "id": "bbbb0101-0000-4000-8000-000000000101",
+      "name": "Return Empty",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        220
+      ]
+    }
+  ],
+  "connections": {
+    "When Called": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Get State",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get State": {
+      "main": [
+        [
+          {
+            "node": "Pick CV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick CV": {
+      "main": [
+        [
+          {
+            "node": "Download CV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download CV": {
+      "main": [
+        [
+          {
+            "node": "Extract CV Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract CV Text": {
+      "main": [
+        [
+          {
+            "node": "Profile CV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Profile CV": {
+      "main": [
+        [
+          {
+            "node": "Parse Profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Profile": {
+      "main": [
+        [
+          {
+            "node": "Fetch Projects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Projects": {
+      "main": [
+        [
+          {
+            "node": "Normalise and Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalise and Filter": {
+      "main": [
+        [
+          {
+            "node": "Read Sent Matches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Sent Matches": {
+      "main": [
+        [
+          {
+            "node": "Drop Already Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drop Already Sent": {
+      "main": [
+        [
+          {
+            "node": "Any New Jobs?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bundle Jobs": {
+      "main": [
+        [
+          {
+            "node": "Score Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Score Jobs": {
+      "main": [
+        [
+          {
+            "node": "Rank Top K",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rank Top K": {
+      "main": [
+        [
+          {
+            "node": "Write Pitches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Pitches": {
+      "main": [
+        [
+          {
+            "node": "Parse Pitches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Pitches": {
+      "main": [
+        [
+          {
+            "node": "Save Matches",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Return Matches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Flash": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Profile CV",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter DeepSeek": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Score Jobs",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Llama": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Write Pitches",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Any New Jobs?": {
+      "main": [
+        [
+          {
+            "node": "Save Jobs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Bundle Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return Empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

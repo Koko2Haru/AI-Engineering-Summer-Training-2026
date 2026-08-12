@@ -1,0 +1,281 @@
+{
+  "name": "Sanad - Daily Digest",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "triggerAtHour": 8,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      },
+      "id": "cccc0000-0000-4000-8000-000000000000",
+      "name": "Every Morning at 08:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -700,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d1",
+              "name": "bridge",
+              "value": "http://127.0.0.1:8900",
+              "type": "string"
+            },
+            {
+              "id": "d2",
+              "name": "dm_channel_id",
+              "value": "1536751197627617401",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cccc0001-0000-4000-8000-000000000001",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -500,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.bridge }}/state",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "cccc0002-0000-4000-8000-000000000002",
+      "name": "Get State",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -300,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "hascv",
+              "leftValue": "={{ $json.state.cv_optimised_name || $json.state.cv_name || '' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "cccc0003-0000-4000-8000-000000000003",
+      "name": "Has a CV?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -100,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// One job, not five - that is the whole difference between the digest and\n// \"find me work\". mode tags the row in the Matches sheet so the write-up can\n// show which suggestions were asked for and which arrived unprompted.\n\nconst cfg = $('Config').first().json;\n\nreturn [{ json: {\n  top_k: 1,\n  mode: 'daily',\n  bridge: cfg.bridge,\n  dm_channel_id: cfg.dm_channel_id,\n} }];"
+      },
+      "id": "cccc0004-0000-4000-8000-000000000004",
+      "name": "Digest Params",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        120,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "59cNrzucFx9RoVyz",
+          "mode": "list",
+          "cachedResultName": "Sanad - Job Matching"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "cccc0005-0000-4000-8000-000000000005",
+      "name": "Run Job Matching",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        340,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// FR-32: say something even when there is nothing. Silence reads as broken.\n\nconst cfg = $('Config').first().json;\nconst res = $input.first().json || {};\nconst m = (res.matches || [])[0];\n\nif (!m) {\n  return [{ json: {\n    dm_channel_id: cfg.dm_channel_id,\n    text: '\\uD83C\\uDF19 **Nothing new today.**\\nEvery live project that fits your CV has already been sent your way. I will keep looking and send one tomorrow morning.',\n  } }];\n}\n\nconst budget = String(m.budget || '').trim();\nconst lines = [\n  '\\u2600\\uFE0F **Good morning - one gig for you today**',\n  '',\n  '**' + m.title + '**  \\u2014  ' + m.score + '/100' + (budget ? '  \\u00B7  ' + budget : ''),\n];\n\nlet pitch = String(m.pitch || '').trim();\nif (pitch.length > 600) pitch = pitch.slice(0, 597) + '...';\nif (pitch) {\n  lines.push('');\n  lines.push('_Your opening line:_');\n  lines.push('> ' + pitch);\n}\nif (m.url) {\n  lines.push('');\n  lines.push(m.url);\n}\n\nlet text = lines.join('\\n');\nif (text.length > 1950) text = text.slice(0, 1940) + '\\n\\u2026';\n\nreturn [{ json: { dm_channel_id: cfg.dm_channel_id, text } }];"
+      },
+      "id": "cccc0006-0000-4000-8000-000000000006",
+      "name": "Format Digest",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://discord.com/api/v10/channels/{{ $json.dm_channel_id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "discordBotApi",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "={{ $json.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cccc0007-0000-4000-8000-000000000007",
+      "name": "Send Digest",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        780,
+        -120
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "cccc0008-0000-4000-8000-000000000008",
+      "name": "No CV - Stay Silent",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        120,
+        140
+      ]
+    }
+  ],
+  "connections": {
+    "Every Morning at 08:00": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Get State",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get State": {
+      "main": [
+        [
+          {
+            "node": "Has a CV?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has a CV?": {
+      "main": [
+        [
+          {
+            "node": "Digest Params",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No CV - Stay Silent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Digest Params": {
+      "main": [
+        [
+          {
+            "node": "Run Job Matching",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Job Matching": {
+      "main": [
+        [
+          {
+            "node": "Format Digest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Digest": {
+      "main": [
+        [
+          {
+            "node": "Send Digest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

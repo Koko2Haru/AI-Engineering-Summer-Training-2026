@@ -71,6 +71,17 @@ HOST = "127.0.0.1"
 PORT = 8900
 TIMEOUT = 600  # a full cv-reviewer run can take minutes
 
+# The skills run their own Python (extract_text.py, review_cv.py, ...). Claude
+# Code asks permission before running them, and in headless -p mode there is
+# nobody to ask - it just replies "I need permission" into the Discord chat.
+#
+# Permissions are granted per working directory, so this surfaced the moment the
+# workspace moved: the old directory had accumulated approvals, the new one had
+# none. Bypassing is scoped by the fact that cwd is the workspace, which holds
+# only uploaded CVs and generated PDFs. Override if you want it stricter:
+#   set SANAD_PERMISSION_MODE=acceptEdits
+PERMISSION_MODE = os.environ.get("SANAD_PERMISSION_MODE", "bypassPermissions")
+
 # Runtime scratch: downloaded CVs in, generated PDFs out. Gitignored.
 WORKSPACE = os.path.abspath(
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "workspace")
@@ -115,6 +126,8 @@ def run_claude(session_id, prompt, cwd=None):
     resumed = session_exists(session_id)
     flag = ["--resume", session_id] if resumed else ["--session-id", session_id]
     cmd = [CLAUDE, "-p", *flag]
+    if PERMISSION_MODE:
+        cmd += ["--permission-mode", PERMISSION_MODE]
 
     # Claude Code sandboxes file access to its working directory. Default to the
     # workspace, which is where the CV was just written - otherwise the session
@@ -213,8 +226,12 @@ def fetch_to_workspace(url, filename, max_bytes=25 * 1024 * 1024):
     return dst
 
 
-def render_pdf(markdown, filename, title):
+def render_pdf(markdown, filename, title, style="report"):
     """Markdown -> PDF via md2pdf.convert(), in-process.
+
+    `style` picks the look: "report" for the review and change report, "resume"
+    for the optimised CV, which needs a denser layout and a name that carries
+    the top of the page.
 
     reportlab is imported lazily so that a machine without it can still use
     /claude - only PDF generation should fail, not the whole bridge.
@@ -228,17 +245,27 @@ def render_pdf(markdown, filename, title):
     os.makedirs(WORKSPACE, exist_ok=True)
     dst = os.path.join(WORKSPACE, filename)
 
+    # Keep the source markdown next to the PDF. When output looks wrong it is
+    # usually the model's markdown, not the renderer - this makes that a
+    # one-second check instead of a guess.
+    try:
+        with open(os.path.splitext(dst)[0] + ".md", "w", encoding="utf-8") as fh:
+            fh.write(markdown)
+    except OSError:
+        pass  # debugging aid only, never fail the render over it
+
+    left, right, top, bottom = md2pdf.STYLES.get(style, md2pdf.REPORT)["margins"]
     doc = SimpleDocTemplate(
         dst,
         pagesize=A4,
-        leftMargin=17 * mm,
-        rightMargin=17 * mm,
-        topMargin=15 * mm,
-        bottomMargin=15 * mm,
+        leftMargin=left * mm,
+        rightMargin=right * mm,
+        topMargin=top * mm,
+        bottomMargin=bottom * mm,
         title=title,
         author="Sanad",
     )
-    doc.build(md2pdf.convert(markdown))
+    doc.build(md2pdf.convert(markdown, style=style))
     return dst
 
 
@@ -293,7 +320,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         route = urlparse(self.path).path.rstrip("/")
-        if route not in ("/claude", "/md2pdf", "/fetch", "/claim", "/state"):
+        if route not in ("/claude", "/md2pdf", "/fetch", "/claim", "/state", "/reset"):
             return self._send(404, {"ok": False, "error": "not found"})
 
         try:
@@ -310,7 +337,25 @@ class Handler(BaseHTTPRequestHandler):
             return self._handle_claim(data)
         if route == "/state":
             return self._handle_state(data)
+        if route == "/reset":
+            return self._handle_reset()
         return self._handle_claude(data)
+
+    def _handle_reset(self):
+        """Forget the conversation, keep the cursor.
+
+        Start a clean demo without replaying the whole DM history: dropping
+        session_id and greeted means the next message gets the welcome and opens
+        a fresh Claude session, while last_seen_message_id stays put so old
+        messages are not reprocessed.
+        """
+        with STATE_LOCK:
+            state = read_state()
+            kept = {"last_seen_message_id": state.get("last_seen_message_id")}
+            write_state({k: v for k, v in kept.items() if v is not None})
+            state = read_state()
+
+        self._send(200, {"ok": True, "reset": True, "state": state})
 
     def _handle_claim(self, data):
         """Atomically claim a Discord message. Only one caller can ever win."""
@@ -391,9 +436,10 @@ class Handler(BaseHTTPRequestHandler):
 
         filename = safe_name(data.get("filename"))
         title = (data.get("title") or "Sanad Report").strip()
+        style = (data.get("style") or "report").strip().lower()
 
         try:
-            path = render_pdf(markdown, filename, title)
+            path = render_pdf(markdown, filename, title, style)
         except ImportError as exc:
             return self._send(500, {
                 "ok": False,
@@ -427,4 +473,6 @@ if __name__ == "__main__":
     print("  POST /fetch   {url, filename?}")
     print("  POST /claim   {message_id}")
     print("  POST /state   {patch: {...}}")
+    print("  POST /reset   (forget session + greeting, keep the cursor)")
+    print(f"  permission-mode: {PERMISSION_MODE}")
     ThreadingHTTPServer((HOST, PORT), Handler).serve_forever()
