@@ -1,0 +1,22 @@
+====================================================================
+MATCH QUALITY ACROSS 3 RUNS
+====================================================================
+exec 832   n=5  scores=[90, 85, 85, 80, 80]   cites=5/5  banned=0  missing=0  TRUNCATED
+exec 894   n=5  scores=[80, 80, 80, 80, 70]   cites=4/5  banned=0  missing=0
+exec 948   n=1  scores=[70]                   cites=1/1  banned=0  missing=0
+
+--------------------------------------------------------------------
+TOTALS over 11 matches in 3 runs
+--------------------------------------------------------------------
+  pitches citing a real project : 10/11  (91%)
+  pitches with banned filler    : 0/11
+  pitches missing entirely      : 0/11
+
+  score distribution:
+      90 : # (1)
+      85 : ## (2)
+      80 : ###### (6)
+      70 : ## (2)
+
+  distinct score values: 4 across 11 matches
+  most common score    : 80 appears 6 times (55% of all matches)

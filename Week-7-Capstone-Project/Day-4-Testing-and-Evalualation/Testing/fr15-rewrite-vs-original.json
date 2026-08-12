@@ -1,0 +1,26 @@
+[
+  {
+    "label": "messy-run1",
+    "file": "synthetic-cv-messy.pdf",
+    "seconds": 65.2,
+    "output": "SCORE: 42\nBAND: Weak\nTOP3: Zero quantification anywhere \u2014 every bullet lists duties (\"Responsible for,\" \"Helped with\") with no numbers, scope, or outcomes; Non-standard section headers (\"Where I've Worked,\" \"Stuff I Know,\" \"Things I Built\") plus a first-person narrative-style Experience section risk ATS mis-parsing and read as informal for an in-house application; Irrelevant/risky personal data in the header (Age 28, Single, Portuguese nationality), an unprofessional email, and first-person pronouns throughout are professionalism red flags that can trigger rejection before content is even weighed."
+  },
+  {
+    "label": "optimised",
+    "file": "sanad-cv-1536906890473381978.pdf",
+    "seconds": 66.5,
+    "output": "SCORE: 73\nBAND: Adequate\nTOP3: Contact info left as unfilled placeholders (\"[Add phone number]\", \"[Add GitHub or portfolio link]\") plus an unprofessional email address, reading as an unfinished submission; experience is almost entirely WordPress/Shopify freelance/CMS work with little evidence of custom full-stack engineering (no backend framework, API, or database design named, React listed only as \"working knowledge\"), a mismatch for an in-house full-stack junior-mid ATS screen; inconsistent date formatting and entry-formatting style between the two jobs (missing end month, differing title/company separator)."
+  },
+  {
+    "label": "polished",
+    "file": "synthetic-cv-polished.pdf",
+    "seconds": 89.2,
+    "output": "SCORE: 75\nBAND: Strong\nTOP3: Entire resume reads as an independent freelance e-commerce/WordPress specialist, not an in-house full-stack team engineer \u2014 no signals of code review, CI/CD, testing, or collaborative delivery that a junior-mid in-house role expects; First-person pronouns (\"I take projects end to end,\" \"I write documentation\") in the Profile break standard resume conventions and read as unpolished; Skills section is bloated and unfocused across six categories (e-commerce, automation, BI, infra) while Projects is placed ahead of Experience, burying the real 6-year work history and diluting the full-stack signal recruiters scan for first."
+  },
+  {
+    "label": "messy-run2",
+    "file": "synthetic-cv-messy.pdf",
+    "seconds": 94.9,
+    "output": "SCORE: 42\nBAND: Weak\nTOP3: Zero quantified results anywhere\u2014every bullet lists duties/things built with no numbers, scale, or outcomes; Non-standard section headers (\"Where I've Worked,\" \"Stuff I Know,\" \"Things I Built\") plus inconsistent bullet styles and a paragraph-form current role hurt ATS parsing and scannability; Unprofessional presentation\u2014first-person voice throughout, irrelevant personal info (age/marital status/nationality), unprofessional email handle, generic filler Objective"
+  }
+]
