@@ -1,4 +1,4 @@
-"""Sanad bridge — a tiny local HTTP server that lets n8n talk to Claude Code.
+"""Rafid bridge — a tiny local HTTP server that lets n8n talk to Claude Code.
 
 Why this exists
 ---------------
@@ -15,7 +15,7 @@ a shell.
 Standard library only — no pip install.
 
 Run:
-    python sanad_bridge.py            # listens on 127.0.0.1:8900
+    python rafid_bridge.py            # listens on 127.0.0.1:8900
 
 Endpoints
 ---------
@@ -31,7 +31,7 @@ POST /claude
     messages, since every poll is a separate n8n execution.
 
 POST /md2pdf
-    body: {"markdown": "...", "filename": "sanad-review.pdf", "title": "..."}
+    body: {"markdown": "...", "filename": "rafid-review.pdf", "title": "..."}
     -> {"ok": true, "path": "<abs path>", "filename": "...", "bytes": 12345}
 
     The skills emit Markdown; Discord needs a PDF attachment. n8n cannot run a
@@ -79,8 +79,8 @@ TIMEOUT = 600  # a full cv-reviewer run can take minutes
 # workspace moved: the old directory had accumulated approvals, the new one had
 # none. Bypassing is scoped by the fact that cwd is the workspace, which holds
 # only uploaded CVs and generated PDFs. Override if you want it stricter:
-#   set SANAD_PERMISSION_MODE=acceptEdits
-PERMISSION_MODE = os.environ.get("SANAD_PERMISSION_MODE", "bypassPermissions")
+#   set RAFID_PERMISSION_MODE=acceptEdits
+PERMISSION_MODE = os.environ.get("RAFID_PERMISSION_MODE", "bypassPermissions")
 
 # Runtime scratch: downloaded CVs in, generated PDFs out. Gitignored.
 WORKSPACE = os.path.abspath(
@@ -158,7 +158,7 @@ def run_claude(session_id, prompt, cwd=None):
     return True, (proc.stdout or "").strip(), resumed
 
 
-def safe_name(name, default="sanad-report.pdf"):
+def safe_name(name, default="rafid-report.pdf"):
     """Reduce a caller-supplied filename to something that cannot escape WORKSPACE."""
     name = os.path.basename(name or "")          # kill any directory component
     name = re.sub(r"[^A-Za-z0-9._-]", "-", name).strip("-.")
@@ -214,7 +214,7 @@ def fetch_to_workspace(url, filename, max_bytes=25 * 1024 * 1024):
     os.makedirs(WORKSPACE, exist_ok=True)
     dst = workspace_path(filename)
 
-    req = urllib.request.Request(url, headers={"User-Agent": "sanad-bridge/1.0"})
+    req = urllib.request.Request(url, headers={"User-Agent": "rafid-bridge/1.0"})
     with urllib.request.urlopen(req, timeout=120) as resp:
         data = resp.read(max_bytes + 1)
 
@@ -263,7 +263,7 @@ def render_pdf(markdown, filename, title, style="report"):
         topMargin=top * mm,
         bottomMargin=bottom * mm,
         title=title,
-        author="Sanad",
+        author="Rafid",
     )
     doc.build(md2pdf.convert(markdown, style=style))
     return dst
@@ -435,7 +435,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(400, {"ok": False, "error": "markdown is required"})
 
         filename = safe_name(data.get("filename"))
-        title = (data.get("title") or "Sanad Report").strip()
+        title = (data.get("title") or "Rafid Report").strip()
         style = (data.get("style") or "report").strip().lower()
 
         try:
@@ -456,13 +456,13 @@ class Handler(BaseHTTPRequestHandler):
         })
 
     def log_message(self, fmt, *args):
-        sys.stderr.write("[sanad-bridge] %s\n" % (fmt % args))
+        sys.stderr.write("[rafid-bridge] %s\n" % (fmt % args))
 
 
 if __name__ == "__main__":
     if not CLAUDE:
         print("WARNING: claude executable not found on this machine.", file=sys.stderr)
-    print(f"sanad-bridge listening on http://{HOST}:{PORT}")
+    print(f"rafid-bridge listening on http://{HOST}:{PORT}")
     print(f"  claude:    {CLAUDE}")
     print(f"  workspace: {WORKSPACE}")
     print("  GET  /health")

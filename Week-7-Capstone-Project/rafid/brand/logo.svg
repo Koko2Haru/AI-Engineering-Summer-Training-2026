@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 150" width="560" height="150" role="img" aria-label="Rafid">
+  <g transform="translate(4 -6) scale(0.30)">
+    <g fill="none" stroke="#E0A31C" stroke-width="58" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M172 132 V 380"/>
+      <path d="M172 132 H 258 A 70 70 0 0 1 258 272 H 172"/>
+      <path d="M244 272 L 344 380"/>
+    </g>
+  </g>
+  <g font-family="'Helvetica Neue',Helvetica,Arial,sans-serif">
+    <text x="132" y="70" font-size="52" font-weight="700" fill="#1F3864" letter-spacing="5">RAFID</text>
+    <text x="134" y="110" font-size="30" font-weight="600" fill="#E0A31C"
+          font-family="'Segoe UI','Noto Naskh Arabic',Tahoma,sans-serif">رافد</text>
+  </g>
+</svg>

@@ -19,12 +19,14 @@ venv/
 .claude
 
 # Week 7 working notes and superseded scaffolding.
-# The real project components (sanad_bridge.py, md2pdf.py, the skills, the CV
-# fixtures, the launch scripts) were moved to Week-7-Capstone-Project/sanad/
+# The real project components (rafid_bridge.py, md2pdf.py, the skills, the CV
+# fixtures, the launch scripts) were moved to Week-7-Capstone-Project/rafid/
 # on 2026-08-12 and ARE tracked. What is left here is the handoff record, the
 # one-off Discord test workflows and the superseded PowerShell wrapper.
 Week-7-Capstone-Project/Some-important-files/
 
 # Sanad runtime scratch: downloaded CVs, generated PDFs, cursor/session state.
 # Never commit - it contains whatever CV was last uploaded.
-Week-7-Capstone-Project/sanad/workspace/
+Week-7-Capstone-Project/rafid/workspace/
+
+Week-7-Capstone-Project/handoff

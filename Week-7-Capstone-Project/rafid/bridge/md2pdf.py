@@ -1,6 +1,6 @@
 """Markdown -> PDF, using only reportlab.
 
-Written for Sanad: both Claude Skills emit Markdown reports (headings, tables,
+Written for Rafid: both Claude Skills emit Markdown reports (headings, tables,
 bullets, bold), and Discord needs a PDF attachment. pandoc would need a LaTeX
 install of several GB; this needs `pip install reportlab` and nothing else.
 
@@ -258,7 +258,7 @@ def main():
         raise SystemExit(2)
 
     src, dst = sys.argv[1], sys.argv[2]
-    title = sys.argv[3] if len(sys.argv) > 3 else "Sanad Report"
+    title = sys.argv[3] if len(sys.argv) > 3 else "Rafid Report"
 
     with open(src, encoding="utf-8") as f:
         md = f.read()
@@ -267,7 +267,7 @@ def main():
         dst, pagesize=A4,
         leftMargin=17 * mm, rightMargin=17 * mm,
         topMargin=15 * mm, bottomMargin=15 * mm,
-        title=title, author="Sanad",
+        title=title, author="Rafid",
     )
     doc.build(convert(md))
     print(f"wrote {dst}")

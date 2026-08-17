@@ -1,6 +1,6 @@
-# Installing Sanad
+# Installing Rafid
 
-**Sanad** is a Discord bot that reviews and rewrites your CV, then finds live freelance work that fits it — and sends you one job every morning without being asked.
+**Rafid** is a Discord bot that reviews and rewrites your CV, then finds live freelance work that fits it — and sends you one job every morning without being asked.
 
 This is the practical guide: what to take from this repo, and how to get it running on your own machine.
 
@@ -11,19 +11,20 @@ This is the practical guide: what to take from this repo, and how to get it runn
 
 ## 1. What to take from this repo
 
-Three things, from three places.
+**One folder: `rafid/`.** That's the whole application.
 
-| Take this | What it is |
-|---|---|
-| **`sanad/`** | the application — bridge, skills, demo CVs, launch scripts |
-| **`Day-3-Build-Integration/Integration/*.json`** | the three n8n workflows |
-| **this file** | the instructions |
+```
+rafid/
+├── bridge/      rafid_bridge.py · md2pdf.py
+├── skills/      cv-reviewer · cv-optimizer
+├── workflows/   the three n8n workflows
+├── fixtures/    two demo CVs, for testing the install
+└── scripts/     start-rafid.bat · stop-rafid.bat
+```
 
-> ⚠️ **Take the workflows from `Day-3-Build-Integration/`, not `Day-2-Build-Core/`.**
-> Day 2 contains an earlier version of `sanad-poll-loop.json` kept as a coursework
-> record. It is missing job matching, the agent layer and the reset command.
+Plus **this file** for the instructions.
 
-Everything else in this folder is the write-up: daily reports, planning documents, test results. Useful to read, not needed to run.
+> The `Day-1` … `Day-5` folders are the coursework write-up — daily reports, planning documents, test results. They also contain **older copies of the workflows** under their original name, kept as a dated record. Don't import those; use `rafid/workflows/`.
 
 ---
 
@@ -37,7 +38,7 @@ Everything else in this folder is the write-up: daily reports, planning document
 | **A Google account** | Google Sheets |
 | **A Discord account** | the interface |
 
-> **Your Claude subscription is enough — you do not need API credit.** They are separate products. A direct API call fails with `credit balance is too low` even with product credit on the account. Sanad runs the Claude Code CLI, which uses the subscription.
+> **Your Claude subscription is enough — you do not need API credit.** They are separate products. A direct API call fails with `credit balance is too low` even with product credit on the account. Rafid runs the Claude Code CLI, which uses the subscription.
 
 ---
 
@@ -55,8 +56,8 @@ Run `claude` once and log in. Built against **v2.1.226**.
 ### 3.2 The skills
 
 ```bash
-cp -r sanad/skills/cv-reviewer   ~/.claude/skills/
-cp -r sanad/skills/cv-optimizer  ~/.claude/skills/
+cp -r rafid/skills/cv-reviewer   ~/.claude/skills/
+cp -r rafid/skills/cv-optimizer  ~/.claude/skills/
 ```
 
 Windows: `C:\Users\<you>\.claude\skills\`. Delete any `__pycache__` folders that came along.
@@ -103,7 +104,7 @@ curl -X POST "https://discord.com/api/v10/users/@me/channels" \
 
 ### 4.2 Google Sheets
 
-Create a spreadsheet called `Sanad` with **two tabs**. Row 1 of each, exactly:
+Create a spreadsheet called `Rafid` with **two tabs**. Row 1 of each, exactly:
 
 **`Jobs`**
 ```
@@ -124,7 +125,7 @@ job_id  title  url  score  reason  pitch  source  sent_at
 3. **Credentials → Create Credentials → Service account** → name it → Done
 4. Open it → **Keys → Add key → Create new key → JSON** → a file downloads
 5. In n8n: new Google Sheets credential → **Service Account** auth → paste `client_email` and `private_key` from that file
-6. **Share your `Sanad` sheet with that `client_email`, as Editor**
+6. **Share your `Rafid` sheet with that `client_email`, as Editor**
 
 Step 6 is the one people forget. Without it you get a confusing permissions error — a service account is a separate identity and only sees what's shared with it.
 
@@ -147,9 +148,9 @@ Free tier on all three. Create an n8n credential for each.
 In n8n: **Create Workflow → ⋮ → Import from File**, once per file.
 
 ```
-1. sanad-job-matching.json     ← import FIRST, the others reference it
-2. sanad-poll-loop.json
-3. sanad-daily-digest.json
+1. rafid-job-matching.json     ← import FIRST, the others reference it
+2. rafid-poll-loop.json
+3. rafid-daily-digest.json
 ```
 
 ### Re-select every credential after importing
@@ -171,7 +172,7 @@ The workflows ship with the author's values. Replace all four.
 | # | What | Where |
 |:-:|---|---|
 | 1 | **DM channel ID** | `Config` node → `dm_channel_id`, in **Poll Loop** *and* **Daily Digest** |
-| 2 | **Workspace path** | `Config` node → `workspace`, in **Poll Loop**. Set it to your own `sanad/workspace` folder |
+| 2 | **Workspace path** | `Config` node → `workspace`, in **Poll Loop**. Set it to your own `rafid/workspace` folder |
 | 3 | **Spreadsheet ID** | the three Sheets nodes in **Job Matching** — the long string from your sheet's URL |
 | 4 | **Job Matching reference** | `Run Job Matching` node in **Poll Loop** *and* **Daily Digest** — re-select your imported copy from the dropdown |
 
@@ -182,7 +183,7 @@ Miss #4 and the job search silently does nothing. Miss #2 and Claude Code can't 
 ## 7. Start it
 
 ```bash
-sanad/scripts/start-sanad.bat
+rafid/scripts/start-rafid.bat
 ```
 
 Launches n8n and the bridge in two minimised windows. n8n takes 20–30 seconds.
@@ -191,7 +192,7 @@ Or by hand:
 
 ```bash
 n8n start
-python sanad/bridge/sanad_bridge.py
+python rafid/bridge/rafid_bridge.py
 ```
 
 **Check the bridge:** open `http://127.0.0.1:8900/health` — you want `{"ok": true, ...}` and the path to your Claude Code executable.
@@ -202,9 +203,35 @@ The bridge's terminal sits there doing nothing after printing its routes. That's
 
 ## 8. Publish
 
-**Publish only `Sanad - Poll Loop` and `Sanad - Daily Digest`.**
+**Publish all three, and publish `Rafid - Job Matching` FIRST.**
 
-`Sanad - Job Matching` is a sub-workflow, called by the other two. Publishing it does nothing.
+n8n 2.x refuses to publish a workflow whose sub-workflows are not published:
+
+```
+Cannot publish workflow: Node "Run Job Matching" references workflow
+<id> which is not published. Please publish all referenced sub-workflows first.
+```
+
+So the order is:
+
+1. **`Rafid - Job Matching`** — publish it
+2. **`Rafid - Poll Loop`** — publish
+3. **`Rafid - Daily Digest`** — publish
+
+> If you get that error and Job Matching *is* published, the `Run Job Matching`
+> node is pointing at a different copy.
+>
+> **Do not trust the dropdown.** n8n stores that field as an ID plus a cached
+> label, and it renders the *label*. A node can display **"Rafid - Job Matching"**
+> while pointing at a workflow that no longer exists — so "re-selecting" the value
+> already shown changes nothing.
+>
+> **Set it by ID instead:** open the node, switch the Workflow selector from
+> `From list` to `By ID`, and paste the id from the workflow's URL
+> (`/workflow/<id>`). Do this in **both** Poll Loop and Daily Digest.
+>
+> The shipped files leave this field **empty on purpose**, so it fails loudly
+> rather than looking correct.
 
 > "Publish" is what older n8n called "Active". Unpublished workflows don't run on their schedule.
 
@@ -262,7 +289,7 @@ Fuller detail, with a fix identified for each, in
 
 | | |
 |---|---|
-| What Sanad is and why | [`Resources/00-WHAT-IS-SANAD.md`](Day-5-Demo-Day/Resources/00-WHAT-IS-SANAD.md) |
+| What Rafid is and why | [`Resources/00-WHAT-IS-RAFID.md`](Day-5-Demo-Day/Resources/00-WHAT-IS-RAFID.md) |
 | How it's built | [`Resources/01-ARCHITECTURE.md`](Day-5-Demo-Day/Resources/01-ARCHITECTURE.md) |
 | Does it actually work | [`Resources/03-EVALUATION-AND-RESULTS.md`](Day-5-Demo-Day/Resources/03-EVALUATION-AND-RESULTS.md) |
 | Why these choices | [`Resources/05-DECISIONS-AND-REJECTED.md`](Day-5-Demo-Day/Resources/05-DECISIONS-AND-REJECTED.md) |

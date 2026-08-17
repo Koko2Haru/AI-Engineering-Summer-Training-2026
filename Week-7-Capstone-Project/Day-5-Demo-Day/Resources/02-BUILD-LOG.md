@@ -1,8 +1,8 @@
-# Sanad — Build Log
+# Rafid — Build Log
 
 *Source document 3 of 7. Self-contained: assumes no knowledge of the other files.*
 
-Sanad is a Discord bot that reviews and rewrites CVs, then matches them against live freelance work. It was built in five days. This document is the story of how, including every bug that mattered.
+Rafid is a Discord bot that reviews and rewrites CVs, then matches them against live freelance work. It was built in five days. This document is the story of how, including every bug that mattered.
 
 ---
 
@@ -152,7 +152,7 @@ Everything was pinned except the document — same skill, same target role, no i
 |---|:-:|
 | Original messy fixture | **42** |
 | Original, second run | **42** |
-| **Sanad's rewrite of it** | **73** |
+| **Rafid's rewrite of it** | **73** |
 | Hand-written "polished" version | **75** |
 
 **+31 points, and within 2 of a professionally written CV of the same person.**
@@ -163,7 +163,7 @@ The two identical 42s also corrected a standing assumption: earlier score variat
 
 Across 11 matches from real executions:
 
-| | Predecessor | Sanad |
+| | Predecessor | Rafid |
 |---|:-:|:-:|
 | Pitches citing a real past project | 0/5 | **10/11 (91%)** |
 | Pitches with banned filler | 3/5 | **0/11** |

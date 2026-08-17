@@ -1,8 +1,8 @@
-# Sanad — Architecture
+# Rafid — Architecture
 
 *Source document 2 of 7. Self-contained: assumes no knowledge of the other files.*
 
-Sanad is a Discord bot that reviews and rewrites CVs, then matches them against live freelance projects. This document describes how it is built.
+Rafid is a Discord bot that reviews and rewrites CVs, then matches them against live freelance projects. This document describes how it is built.
 
 ---
 
@@ -11,7 +11,7 @@ Sanad is a Discord bot that reviews and rewrites CVs, then matches them against 
 ```
 Discord DM  ──poll every 15s──►  n8n (self-hosted, native npm)
                                    │
-                                   ├─ HTTP ──►  sanad_bridge.py  ──►  Claude Code CLI
+                                   ├─ HTTP ──►  rafid_bridge.py  ──►  Claude Code CLI
                                    │            (127.0.0.1:8900)      + two Claude Skills
                                    │
                                    ├──────────►  Freelancer.com API
@@ -33,7 +33,7 @@ The cost is latency: a message is noticed within 15 seconds rather than instantl
 
 ### 2. The bridge owns every side effect
 
-`sanad_bridge.py` is the only component that touches the filesystem, holds durable state, or invokes a language model outside of n8n's own nodes. n8n polls, branches and formats. **n8n speaks nothing but HTTP.**
+`rafid_bridge.py` is the only component that touches the filesystem, holds durable state, or invokes a language model outside of n8n's own nodes. n8n polls, branches and formats. **n8n speaks nothing but HTTP.**
 
 This was not the Day 1 design. It was forced by two discoveries during the build, and the architecture is better for it — see §5.
 
@@ -46,7 +46,7 @@ This was not the Day 1 design. It was forced by two discoveries during the build
 | **Discord** | the interface — messages, attachments, delivery | any logic |
 | **n8n** | polling, branching, formatting, scheduling, the job pipeline | the conversation |
 | **LLM classifier** | deciding what each message *means* | doing the work |
-| **`sanad_bridge.py`** | files, durable state, invoking Claude Code, rendering PDFs | any Sanad-specific logic |
+| **`rafid_bridge.py`** | files, durable state, invoking Claude Code, rendering PDFs | any Rafid-specific logic |
 | **Claude Code + skills** | the CV conversation: intake, review, rewrite | Discord, job matching, storage |
 | **Google Sheets** | the job pool and the record of what was sent | logic |
 | **Gemini / DeepSeek / Groq** | routing, profiling, scoring, pitch writing | conversation state |
@@ -59,9 +59,9 @@ Split by **trigger**, not by feature — the only thing that genuinely cannot be
 
 | Workflow | Trigger | Nodes | Role |
 |---|---|:-:|---|
-| **Sanad - Poll Loop** | schedule, every 15s | 31 | the conversation |
-| **Sanad - Job Matching** | called by the other two | 25 | fetch, score, rank, pitch |
-| **Sanad - Daily Digest** | schedule, 08:00 daily | 9 | one gig, unprompted |
+| **Rafid - Poll Loop** | schedule, every 15s | 31 | the conversation |
+| **Rafid - Job Matching** | called by the other two | 25 | fetch, score, rank, pitch |
+| **Rafid - Daily Digest** | schedule, 08:00 daily | 9 | one gig, unprompted |
 
 Matching is called by both the conversation and the digest, so it became a **sub-workflow** rather than being written twice. The digest differs from "find me work" only in shape: one job instead of five, and rows tagged `source: daily`.
 
@@ -168,9 +168,9 @@ Claude Code signals "I am finished, here are documents" with delimiters:
 
 ```
 ===SUMMARY===              the chat message
-===FILE:sanad-review===    the full review
-===FILE:sanad-cv===        the optimised CV
-===FILE:sanad-changes===   what changed and why
+===FILE:rafid-review===    the full review
+===FILE:rafid-cv===        the optimised CV
+===FILE:rafid-changes===   what changed and why
 ```
 
 Any number of `===FILE:name===` blocks fan out into one PDF each. The review sends one, the rewrite sends two, and the same four nodes handle both. **Adding a document type needs no new nodes.**

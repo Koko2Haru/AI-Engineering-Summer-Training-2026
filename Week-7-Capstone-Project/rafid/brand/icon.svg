@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Rafid">
+  <!-- Rafid monogram. Geometric R, rounded terminals, centred so Discord's
+       circular crop never clips it. Flat colour - stays crisp at 32px. -->
+
+  <rect width="512" height="512" fill="#1F3864"/>
+
+  <g fill="none" stroke="#F0B429" stroke-width="58" stroke-linecap="round" stroke-linejoin="round">
+    <!-- stem -->
+    <path d="M172 132 V 380"/>
+    <!-- bowl -->
+    <path d="M172 132 H 258 A 70 70 0 0 1 258 272 H 172"/>
+    <!-- leg -->
+    <path d="M244 272 L 344 380"/>
+  </g>
+</svg>

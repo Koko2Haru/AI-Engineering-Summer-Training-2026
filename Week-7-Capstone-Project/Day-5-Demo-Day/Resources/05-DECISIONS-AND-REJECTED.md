@@ -1,8 +1,8 @@
-# Sanad — Decisions and Rejected Alternatives
+# Rafid — Decisions and Rejected Alternatives
 
 *Source document 6 of 7. Self-contained: assumes no knowledge of the other files.*
 
-Sanad is a Discord bot that reviews and rewrites CVs, then matches them against live freelance work. This document records what was chosen, what was rejected, and why. Recording the rejections is as much a part of the design as the choices.
+Rafid is a Discord bot that reviews and rewrites CVs, then matches them against live freelance work. This document records what was chosen, what was rejected, and why. Recording the rejections is as much a part of the design as the choices.
 
 ---
 

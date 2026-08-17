@@ -1,4 +1,4 @@
-# Sanad — What It Is
+# Rafid — What It Is
 
 *Source document 1 of 7. Self-contained: assumes no knowledge of the other files.*
 
@@ -6,7 +6,7 @@
 
 ## The one-line version
 
-**Sanad takes a badly written CV, rewrites it into a strong one, then finds live freelance work that fits it — all inside a Discord chat, and it sends one job suggestion every morning without being asked.**
+**Rafid takes a badly written CV, rewrites it into a strong one, then finds live freelance work that fits it — all inside a Discord chat, and it sends one job suggestion every morning without being asked.**
 
 Measured result: the same CV went from **42/100 to 73/100**, two points short of a professionally written version of the same person.
 
@@ -14,7 +14,7 @@ Measured result: the same CV went from **42/100 to 73/100**, two points short of
 
 ## The name
 
-**Sanad** (سند) is Arabic for *support, backing, the thing you lean on*. Chosen over the alternatives "Rizq" and keeping the old name "FreelanceScout". The framing that stuck: *"like a guy named Sanad who helps you fix your CV and find you a freelance job."*
+**Rafid** (رافد) is Arabic for *a tributary — the smaller stream that feeds a larger river* — and also *one who supports or provides*. Renamed from "Sanad" partway through the build; the Day 1–4 reports still use the old name as a dated record.
 
 ---
 
@@ -26,7 +26,7 @@ Applying for freelance work has two failure points, and they compound.
 
 **The second is the search.** Freelance boards return hundreds of projects a day, almost none relevant. Reading them is the whole job.
 
-Solving only the second problem — which is what the predecessor project did — assumes the CV is already good. Sanad fixes the CV **first**, then matches with the improved version.
+Solving only the second problem — which is what the predecessor project did — assumes the CV is already good. Rafid fixes the CV **first**, then matches with the improved version.
 
 ---
 
@@ -46,13 +46,13 @@ Point 5 is what makes it an automation rather than a chatbot, and it is central 
 
 ```
 You     hi
-Sanad   Ahlan! I'm Sanad. I help you land freelance work in two steps...
+Rafid   Ahlan! I'm Rafid. I help you land freelance work in two steps...
         Start by sending me your CV as a PDF.
 
 You     [synthetic-cv-messy.pdf]
-Sanad   Got synthetic-cv-messy.pdf - reading it now. This takes a minute or two.
+Rafid   Got synthetic-cv-messy.pdf - reading it now. This takes a minute or two.
 
-Sanad   1. What's the target role and seniority you're applying for?
+Rafid   1. What's the target role and seniority you're applying for?
         2. Freelance (2020-present): how many total clients?
         3. How many websites/online stores have you built?
         ... 14 questions total ...
@@ -62,22 +62,22 @@ You     1. Junior Full-Stack Developer
         2. Approximately 25 clients
         ...
 
-Sanad   Thanks, these are solid. A few points still need precision:
+Rafid   Thanks, these are solid. A few points still need precision:
         1. The 20% sales increase - compared to what baseline, over what window?
         2. "Several thousand products" - do you have an actual number?
 
 You     1. Compared to pre-launch sales, first 3 months.
         2. Approximately 2,000-5,000.
 
-Sanad   Here's the full review - 40/100, Weak. [+ PDF attached]
+Rafid   Here's the full review - 40/100, Weak. [+ PDF attached]
         Want me to rewrite this?
 
 You     yes
-Sanad   Done. Nothing invented. [+ optimised CV PDF] [+ change report PDF]
+Rafid   Done. Nothing invented. [+ optimised CV PDF] [+ change report PDF]
 
 You     find me work
-Sanad   Searching live projects and matching them to your CV - about a minute.
-Sanad   5 projects that fit your CV
+Rafid   Searching live projects and matching them to your CV - about a minute.
+Rafid   5 projects that fit your CV
         1. WordPress & Elementor Enhancements - 80/100 - 8-15 CAD
            > With expertise in WordPress and Elementor, I enhanced the design
              of a homeware e-commerce shop, increasing sales by 20%...
@@ -85,7 +85,7 @@ Sanad   5 projects that fit your CV
 
 --- next morning, without being asked ---
 
-Sanad   Good morning - one gig for you today
+Rafid   Good morning - one gig for you today
         Build Indian Personal Finance Web App - 70/100 - 12500-37500 INR
 ```
 
@@ -95,7 +95,7 @@ Sanad   Good morning - one gig for you today
 
 The capstone this was built for is titled **"Agentic AI Application"**. The predecessor project was a deterministic pipeline; this is the layer above it.
 
-| | Predecessor (FreelanceScout) | Sanad |
+| | Predecessor (FreelanceScout) | Rafid |
 |---|---|---|
 | **Entry point** | one web form | free-form chat, any message |
 | **Control flow** | fixed node order | an agent decides intent per message |

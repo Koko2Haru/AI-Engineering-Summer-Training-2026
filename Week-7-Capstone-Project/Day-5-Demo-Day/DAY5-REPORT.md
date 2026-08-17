@@ -16,7 +16,7 @@
 📁 Day-5-Demo-Day/
 ├── 📄 DAY5-REPORT.md                        ← this report
 ├── 📁 Resources/                            source pack, written for NotebookLM
-│   ├── 📄 00-WHAT-IS-SANAD.md               the pitch, use case, why it's agentic
+│   ├── 📄 00-WHAT-IS-RAFID.md               the pitch, use case, why it's agentic
 │   ├── 📄 01-ARCHITECTURE.md                workflows, bridge API, data model
 │   ├── 📄 02-BUILD-LOG.md                   five days, every bug that mattered
 │   ├── 📄 03-EVALUATION-AND-RESULTS.md      every number and its method
@@ -40,11 +40,11 @@ The approach: **write a source pack for NotebookLM** rather than a single README
 
 ## 📚 1. The resource pack
 
-Seven documents, ~72 KB, each **self-contained**. That constraint is deliberate: NotebookLM answers from whichever sources are relevant, so a document that says *"as described in the architecture file"* is a document that fails when asked in isolation. Every one restates what Sanad is in its first two lines.
+Seven documents, ~72 KB, each **self-contained**. That constraint is deliberate: NotebookLM answers from whichever sources are relevant, so a document that says *"as described in the architecture file"* is a document that fails when asked in isolation. Every one restates what Rafid is in its first two lines.
 
 | Document | Answers |
 |---|---|
-| **00 — What Is Sanad** | What is this? Who is it for? What does a conversation look like? Why is it "agentic"? |
+| **00 — What Is Rafid** | What is this? Who is it for? What does a conversation look like? Why is it "agentic"? |
 | **01 — Architecture** | How is it built? What owns what? How does memory survive between messages? |
 | **02 — Build Log** | How did it get built, and what went wrong? |
 | **03 — Evaluation and Results** | Does it work, and how do you know? |
@@ -114,7 +114,7 @@ Stated plainly rather than glossed.
 | ⏳ | **Placeholders for personal values** | DM channel ID, sheet ID and the Windows path are hardcoded. Not secrets — no tokens or keys are in the repo — but they make the workflows unrunnable for anyone else |
 | ⏳ | **Live demo** | The point of the day |
 
-The recording is the one that cannot be skipped. Everything Sanad does depends on six services being simultaneously healthy, and three of them are free tiers with per-minute limits.
+The recording is the one that cannot be skipped. Everything Rafid does depends on six services being simultaneously healthy, and three of them are free tiers with per-minute limits.
 
 ---
 

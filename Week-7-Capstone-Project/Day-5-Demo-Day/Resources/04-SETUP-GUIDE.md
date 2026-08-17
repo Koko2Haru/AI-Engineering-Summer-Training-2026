@@ -1,8 +1,8 @@
-# Sanad — Setup Guide
+# Rafid — Setup Guide
 
 *Source document 5 of 7. Self-contained: assumes no knowledge of the other files.*
 
-Sanad is a Discord bot that reviews and rewrites CVs, then matches them against live freelance work. It runs entirely on one PC. This document is how to get it running from nothing.
+Rafid is a Discord bot that reviews and rewrites CVs, then matches them against live freelance work. It runs entirely on one PC. This document is how to get it running from nothing.
 
 **Realistic time: 45–60 minutes**, most of it waiting on account setup.
 
@@ -13,7 +13,7 @@ Sanad is a Discord bot that reviews and rewrites CVs, then matches them against 
 ```
 Discord DM  ──poll every 15s──►  n8n (localhost:5678)
                                    │
-                                   ├─ HTTP ──►  sanad_bridge.py (127.0.0.1:8900)
+                                   ├─ HTTP ──►  rafid_bridge.py (127.0.0.1:8900)
                                    │              └──►  Claude Code CLI + 2 skills
                                    ├──────────►  Freelancer.com API
                                    ├──────────►  Gemini / DeepSeek / Groq
@@ -54,8 +54,8 @@ Run `claude` once interactively and log in. Verified working on **v2.1.226**.
 Copy both skill folders into your Claude Code skills directory:
 
 ```bash
-cp -r sanad/skills/cv-reviewer   ~/.claude/skills/
-cp -r sanad/skills/cv-optimizer  ~/.claude/skills/
+cp -r rafid/skills/cv-reviewer   ~/.claude/skills/
+cp -r rafid/skills/cv-optimizer  ~/.claude/skills/
 ```
 
 On Windows that is `C:\Users\<you>\.claude\skills\`.
@@ -118,7 +118,7 @@ Save the `id` from the response — that is your **DM channel ID**, needed by ev
 
 ## 6. Google Sheets
 
-Create a spreadsheet named `Sanad` with **two tabs**, and put these exact headers in **row 1**:
+Create a spreadsheet named `Rafid` with **two tabs**, and put these exact headers in **row 1**:
 
 **`Jobs`**
 ```
@@ -142,7 +142,7 @@ job_id  title  url  score  reason  pitch  source  sent_at
 4. Open it → **Keys → Add key → Create new key → JSON**. A file downloads
 5. From that file you need two values: **`client_email`** and **`private_key`**
 6. In n8n, create a Google Sheets credential using **Service Account** auth and paste those two in
-7. **Open your `Sanad` sheet → Share → paste the `client_email` → give it Editor**
+7. **Open your `Rafid` sheet → Share → paste the `client_email` → give it Editor**
 
 Step 7 is the one everyone forgets. Without it you get a confusing permissions error, because a service account is a separate identity that can only see what is explicitly shared with it.
 
@@ -167,7 +167,7 @@ All three have free tiers. Create a credential in n8n for each.
 ## 8. Start the services
 
 ```bash
-sanad/scripts/start-sanad.bat
+rafid/scripts/start-rafid.bat
 ```
 
 That launches both n8n and the bridge in minimised windows. n8n takes 20–30 seconds to boot.
@@ -176,7 +176,7 @@ Or start them by hand:
 
 ```bash
 n8n start
-python sanad/bridge/sanad_bridge.py
+python rafid/bridge/rafid_bridge.py
 ```
 
 **Check the bridge:** open `http://127.0.0.1:8900/health`. You should see `{"ok": true, ...}` with the path to your Claude Code executable.
@@ -190,9 +190,9 @@ The bridge's terminal will sit there doing nothing after printing its routes. Th
 In n8n, for each of the three files: **Create Workflow → ⋮ → Import from File**.
 
 ```
-sanad-job-matching.json     import this FIRST - the others reference it
-sanad-poll-loop.json
-sanad-daily-digest.json
+rafid-job-matching.json     import this FIRST - the others reference it
+rafid-poll-loop.json
+rafid-daily-digest.json
 ```
 
 ### After every import, re-select every credential and dropdown by hand
@@ -220,9 +220,18 @@ Three things are specific to your installation:
 
 ## 10. Publish
 
-**Publish only two workflows: Poll Loop and Daily Digest.**
+**Publish all three, and publish Job Matching FIRST.**
 
-Job Matching is a sub-workflow — it is invoked by the other two, not by a trigger. Publishing it does nothing.
+Job Matching has no trigger of its own — it is called by the other two — but n8n 2.x still refuses to publish a workflow whose sub-workflows are unpublished:
+
+```
+Cannot publish workflow: Node "Run Job Matching" references workflow
+<id> which is not published. Please publish all referenced sub-workflows first.
+```
+
+Order: **Job Matching → Poll Loop → Daily Digest.**
+
+If that error appears while Job Matching *is* published, the `Run Job Matching` node is pointing at a different copy — open it and re-select the workflow from the dropdown. That reference is stored by ID, so it survives a rename but not a re-import.
 
 > In n8n 2.x, "Publish" is what older versions called "Active". A workflow that is not published will not run on its schedule.
 
@@ -261,4 +270,4 @@ If something goes wrong, `reset` clears the conversation and starts fresh withou
 
 **Nothing.** Claude Code runs on an existing subscription; Gemini, OpenRouter and Groq are used within free tiers; n8n is self-hosted; Google Sheets is free; Discord is free.
 
-The real cost is that **Sanad only runs while the PC is on and both processes are running.**
+The real cost is that **Rafid only runs while the PC is on and both processes are running.**

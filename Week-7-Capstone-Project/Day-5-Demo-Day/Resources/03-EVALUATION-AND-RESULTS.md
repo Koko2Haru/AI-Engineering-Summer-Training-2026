@@ -1,8 +1,8 @@
-# Sanad — Evaluation and Results
+# Rafid — Evaluation and Results
 
 *Source document 4 of 7. Self-contained: assumes no knowledge of the other files.*
 
-Sanad is a Discord bot that reviews and rewrites CVs, then matches them against live freelance work. This document contains every measurement taken, the method behind each, and what was deliberately left unmeasured.
+Rafid is a Discord bot that reviews and rewrites CVs, then matches them against live freelance work. This document contains every measurement taken, the method behind each, and what was deliberately left unmeasured.
 
 ---
 
@@ -25,12 +25,12 @@ This is the claim the entire project rests on, and for three days it was an assu
 |---|:-:|---|
 | Original messy fixture | **42** | Weak |
 | Original messy fixture *(re-run)* | **42** | Weak |
-| **Sanad's rewrite of it** | **73** | Adequate |
+| **Rafid's rewrite of it** | **73** | Adequate |
 | Hand-written "polished" version | **75** | Strong |
 
 ### **+31 points. Two points short of a professionally written CV of the same person.**
 
-Same facts, same person, same reviewer. The only thing that changed is that Sanad rewrote it.
+Same facts, same person, same reviewer. The only thing that changed is that Rafid rewrote it.
 
 ---
 
@@ -70,7 +70,7 @@ That is the correct place for a rewrite to stop, and it is what a working "never
 
 **Sample: 11 matches across 3 runs.**
 
-| Metric | Predecessor project | Sanad |
+| Metric | Predecessor project | Rafid |
 |---|:-:|:-:|
 | Pitches citing a **real past project** | **0 / 5** | **10 / 11 (91%)** |
 | Pitches containing banned filler | **3 / 5 (60%)** | **0 / 11** |

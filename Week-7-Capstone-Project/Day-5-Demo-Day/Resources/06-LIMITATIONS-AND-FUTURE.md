@@ -1,8 +1,8 @@
-# Sanad — Limitations and Future Work
+# Rafid — Limitations and Future Work
 
 *Source document 7 of 7. Self-contained: assumes no knowledge of the other files.*
 
-Sanad is a Discord bot that reviews and rewrites CVs, then matches them against live freelance work. This document is the honest account of what it cannot do, what is known to be imperfect, and what a next version would fix.
+Rafid is a Discord bot that reviews and rewrites CVs, then matches them against live freelance work. This document is the honest account of what it cannot do, what is known to be imperfect, and what a next version would fix.
 
 ---
 
@@ -18,7 +18,7 @@ This is the direct cost of the "no inbound networking" decision, which is also w
 
 ### One user per instance
 
-No user table, no authentication, no multi-tenancy. Every person who wants Sanad runs their own copy.
+No user table, no authentication, no multi-tenancy. Every person who wants Rafid runs their own copy.
 
 This single cut is what made everything else fit in a three-day build window.
 
@@ -38,7 +38,7 @@ The original vision ranked jobs on money, difficulty, skills gained and resume w
 
 ### It finds and pitches; it does not apply
 
-Sanad hands you a link and an opening line. A human sends it.
+Rafid hands you a link and an opening line. A human sends it.
 
 ### PDF and plain text only
 

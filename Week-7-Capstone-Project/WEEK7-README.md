@@ -11,9 +11,9 @@ Student: **Ali** ([koko2haru](https://github.com/Koko2Haru))
 
 ---
 
-## 🎯 The Capstone: Sanad
+## 🎯 The Capstone: Rafid
 
-**Sanad** (سند — *support, backing, the thing you lean on*) is a Discord DM bot that
+**Rafid** (رافد — *a tributary that feeds a larger river; one who supports*) is a Discord DM bot that
 takes a badly written CV, rewrites it into a strong one, then finds live freelance work
 that fits it — and sends one job suggestion every morning without being asked.
 
@@ -32,12 +32,12 @@ usually honest but badly written — duties instead of results, no numbers, form
 ATS cannot parse — and the person cannot see it, because they wrote it. **The search**
 returns hundreds of irrelevant projects a day.
 
-Week 6's FreelanceScout solved the second problem and assumed the first away. Sanad
+Week 6's FreelanceScout solved the second problem and assumed the first away. Rafid
 fixes the CV **first**, then matches with the improved version.
 
 ### What makes it agentic
 
-Week 6 was a fixed pipeline behind a web form. Sanad has to answer, on **every single
+Week 6 was a fixed pipeline behind a web form. Rafid has to answer, on **every single
 message**: *is this a CV upload, an answer to a question I asked, an approval, a job
 request, or just chat?* A language model reads each message and routes it — **there is
 no keyword matching anywhere.** The Week 6 pipeline is no longer the product; it is a
@@ -161,7 +161,7 @@ no intake questions:
 |---|:-:|
 | Original messy fixture | **42** |
 | Original, second run | **42** |
-| **Sanad's rewrite** | **73** |
+| **Rafid's rewrite** | **73** |
 | Hand-written "polished" version | **75** |
 
 The two identical 42s corrected a standing assumption: earlier variation (46, 49, 40)
@@ -241,7 +241,7 @@ money.** Discord has no such restriction.
 | Interface | **Discord DM**, polled every 15s — no inbound networking at all |
 | Orchestration | **n8n 2.33.7**, self-hosted natively — 3 workflows, 65 nodes |
 | CV review & rewrite | **Claude Code CLI** + two Claude Skills from Week 4 |
-| Bridge | **`sanad_bridge.py`** — 9 endpoints; owns files, state, PDFs, the lock |
+| Bridge | **`rafid_bridge.py`** — 9 endpoints; owns files, state, PDFs, the lock |
 | PDF | **`md2pdf.py`** — `reportlab` only, two style profiles |
 | Job source | **Freelancer.com API** |
 | Models | **Gemini** (routing, profiling) · **DeepSeek** (scoring) · **Groq** (pitches) |
@@ -255,11 +255,12 @@ money.** Discord has no such restriction.
 ```
 Week-7-Capstone-Project/
 ├── WEEK7-README.md                    this file
-├── sanad/                             the application
-│   ├── bridge/        sanad_bridge.py · md2pdf.py
+├── rafid/                             the application
+│   ├── bridge/        rafid_bridge.py · md2pdf.py
 │   ├── skills/        cv-reviewer · cv-optimizer
+│   ├── workflows/     the three live n8n workflows
 │   ├── fixtures/      the messy and polished demo CVs
-│   └── scripts/       start-sanad.bat · stop-sanad.bat
+│   └── scripts/       start-rafid.bat · stop-rafid.bat
 ├── Day-1-Project-Planning/            plan, requirements, architecture, risks
 ├── Day-2-Build-Core/                  the conversation loop
 ├── Day-3-Build-Integration/           matching, the agent, the digest
@@ -267,7 +268,7 @@ Week-7-Capstone-Project/
 └── Day-5-Demo-Day/                    Resources/ + NotebookLM-Outputs/
 ```
 
-**Start here:** [`Day-5-Demo-Day/Resources/00-WHAT-IS-SANAD.md`](Day-5-Demo-Day/Resources/00-WHAT-IS-SANAD.md)
+**Start here:** [`Day-5-Demo-Day/Resources/00-WHAT-IS-RAFID.md`](Day-5-Demo-Day/Resources/00-WHAT-IS-RAFID.md)
 for what it is, or [`04-SETUP-GUIDE.md`](Day-5-Demo-Day/Resources/04-SETUP-GUIDE.md) to
 run it yourself.
 

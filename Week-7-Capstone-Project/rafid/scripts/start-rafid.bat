@@ -1,10 +1,10 @@
 @echo off
 REM ============================================================================
-REM  Sanad - start both background services
+REM  Rafid - start both background services
 REM ============================================================================
-REM  Sanad needs two processes running:
+REM  Rafid needs two processes running:
 REM     1. n8n            - the workflow engine (http://localhost:5678)
-REM     2. sanad_bridge   - n8n's way of reaching Claude Code (port 8900)
+REM     2. rafid_bridge   - n8n's way of reaching Claude Code (port 8900)
 REM
 REM  NOT INSTALLED / NOT ACTIVE.
 REM  This file does nothing until you either double-click it, or copy it into
@@ -14,28 +14,28 @@ REM  Recommendation: keep it manual until the build is finished. During
 REM  development you want to control when things restart, and an n8n you forgot
 REM  was running is a confusing thing to debug against.
 REM
-REM  To stop: close the two windows it opens, or run stop-sanad.bat
+REM  To stop: close the two windows it opens, or run stop-rafid.bat
 REM ============================================================================
 
 setlocal
 
 REM Folder this script lives in (with trailing backslash)
-set "SANAD_DIR=%~dp0"
-REM The bridge lives in a sibling folder: sanad\scripts\ -> sanad\bridge\
-set "BRIDGE=%SANAD_DIR%..\bridge\sanad_bridge.py"
+set "RAFID_DIR=%~dp0"
+REM The bridge lives in a sibling folder: rafid\scripts\ -> rafid\bridge\
+set "BRIDGE=%RAFID_DIR%..\bridge\rafid_bridge.py"
 
-echo Starting Sanad services...
+echo Starting Rafid services...
 echo.
 
 REM --- 1. the Claude Code bridge -------------------------------------------
 if not exist "%BRIDGE%" (
-    echo [ERROR] sanad_bridge.py not found.
+    echo [ERROR] rafid_bridge.py not found.
     echo         Expected at: %BRIDGE%
     pause
     exit /b 1
 )
-echo   - sanad-bridge  ^(http://127.0.0.1:8900^)
-start "Sanad Bridge" /min cmd /c python "%BRIDGE%"
+echo   - rafid-bridge  ^(http://127.0.0.1:8900^)
+start "Rafid Bridge" /min cmd /c python "%BRIDGE%"
 
 REM --- 2. n8n ---------------------------------------------------------------
 echo   - n8n           ^(http://localhost:5678^)
